@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import Login from "../features/auth/login";
 
 const Header = () => {
+  const [loginModal, setLoginModal] = useState(false);
+  const handleLogin = () => {
+    setLoginModal((prev) => !prev);
+  };
   return (
-    <header className="bg-primary text-white py-4 px-8 z-10 ml-16">
+    <header className="bg-primary text-white py-4 px-8  ml-16">
       <div className="container mx-auto flex justify-between items-center">
         {/* Left Side: Logo and Navigation */}
         <div className="flex items-center space-x-6">
-          
-
           {/* Navigation: Hidden on mobile */}
           <nav className="hidden md:flex space-x-4">
             <a href="#tvshows" className="hover:text-gray-400">
@@ -34,11 +37,15 @@ const Header = () => {
           </div>
 
           {/* Login Button */}
-          <button className="bg-secondary py-2 px-8 rounded-md">
+          <button
+            className="bg-secondary py-2 px-8 rounded-md"
+            onClick={handleLogin}
+          >
             Login
           </button>
         </div>
       </div>
+      <Login login={loginModal}  />
     </header>
   );
 };
