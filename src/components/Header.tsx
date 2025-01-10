@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Login from "../features/auth/login";
+import Login from "../features/auth/Login";
 
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
@@ -38,7 +38,7 @@ const Header = () => {
 
           {/* Login Button */}
           <button
-            className="bg-secondary py-2 px-8 rounded-md"
+            className="bg-secondary py-2 text-black font-bold px-8 rounded-md"
             onClick={handleLogin}
           >
             Login

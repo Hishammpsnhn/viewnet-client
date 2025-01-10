@@ -22,7 +22,7 @@ const MovieCard = () => {
         />
         {/* Title at the Top */}
         <div className="absolute top-0 left-0 w-full text-white p-2">
-          <h2 className="font-bold text-lg">{movie.title}</h2>
+          <h2 className="font-semibold text-md">{movie.title}</h2>
         </div>
         {/* Buttons at the Bottom */}
         <div className="absolute bottom-2 left-2 right-2 flex flex-col ">
