@@ -4,7 +4,8 @@ import MainLayout from "../layouts/MainLayout";
 import ProfileCreation from "../pages/user/ProfileCreation";
 import EmptyLayout from "../layouts/EmptyLayout";
 import Settings from "../pages/user/SettingsPage";
-import SecondaryLayout from "../layouts/secondaryLayout";
+import SecondaryLayout from "../layouts/SecondaryLayout";
+
 
 const AppRoutes = () => {
   return (
@@ -19,7 +20,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:id"
           element={
             <EmptyLayout>
               <ProfileCreation />
