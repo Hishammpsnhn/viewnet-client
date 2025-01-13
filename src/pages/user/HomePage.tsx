@@ -1,6 +1,5 @@
-import React from 'react';
-import Carousel from '../../components/Carousel';
-import MovieCard from '../../components/card/MovieCard';
+import Carousel from "../../components/Carousel";
+import MovieCard from "../../components/card/MovieCard";
 
 export const HomePage = () => {
   return (
@@ -12,7 +11,7 @@ export const HomePage = () => {
 
       {/* Horizontal Scroll Section */}
       <div className="ml-16 overflow-x-auto scrollbar-hidden">
-        <h1 className='text-2xl font-bold pb-6'>Recommended</h1>
+        <h1 className="text-2xl font-bold pb-6">Recommended</h1>
         <div className="flex space-x-12 w-max scrollbar-hidden">
           <MovieCard />
           <MovieCard />

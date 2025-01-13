@@ -5,9 +5,17 @@ import ProfileCreation from "../pages/user/ProfileCreation";
 import EmptyLayout from "../layouts/EmptyLayout";
 import Settings from "../pages/user/SettingsPage";
 import SecondaryLayout from "../layouts/SecondaryLayout";
+import { useEffect } from "react";
+import { getME } from "../reducers/authReducers";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
 
 
 const AppRoutes = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getME());
+  }, []);
   return (
     <BrowserRouter>
       <Routes>

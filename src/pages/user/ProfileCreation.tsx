@@ -15,8 +15,7 @@ const ProfileCreation = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-   (id);
-   (user, user?._id);
+   
   const profilePics = [
     profilePic1,
     profilePic2,

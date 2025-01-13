@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import Login from "../features/auth/Login";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
+  console.log(user);
   const handleLogin = () => {
     setLoginModal((prev) => !prev);
   };
@@ -37,15 +41,17 @@ const Header = () => {
           </div>
 
           {/* Login Button */}
-          <button
-            className="bg-secondary py-2 text-black font-bold px-8 rounded-md"
-            onClick={handleLogin}
-          >
-            Login
-          </button>
+          {!user && (
+            <button
+              className="bg-secondary py-2 text-black font-bold px-8 rounded-md"
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+          )}
         </div>
       </div>
-      <Login login={loginModal}  />
+      <Login login={loginModal} />
     </header>
   );
 };

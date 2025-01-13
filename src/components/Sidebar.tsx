@@ -1,7 +1,12 @@
 import React from "react";
 import { FaSearch, FaCog, FaHome } from "react-icons/fa"; // Import icons
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/settings");
+  }
   return (
     <div className="flex relative">
       {/* Sidebar */}
@@ -35,7 +40,7 @@ const Sidebar = () => {
 
           {/* Settings Icon with Text */}
           <div className="relative group flex items-center">
-            <FaCog className="text-white text-2xl opacity-85 hover:opacity-100 hover:ml-1" />
+            <FaCog className="text-white text-2xl opacity-85 hover:opacity-100 hover:ml-1" onClick={handleNavigate} />
             <div className="absolute left-full hidden group-hover:block text-white bg-primary px-10 py-2 rounded-r-md transform translate-x-8 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 animate-fade-right animate-once animate-ease-in-out animate-normal">
               Settings
             </div>

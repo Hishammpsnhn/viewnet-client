@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useLoginValidator } from "../../hooks/useValidate";
 import { loginUser, verifyOtp } from "../../reducers/authReducers";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store.ts";
+import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { QRSave_API, QRValidate_API } from "../../api/user/qrLogin.ts";
@@ -22,6 +22,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [random, setRandom] = useState<string | null>(null);
+
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   useEffect(() => {
     setIsOpen(login);
@@ -45,7 +49,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       }
     }
   };
-  
+
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -93,24 +97,29 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !otpVisible) {
       const randomNumber = Math.floor(Math.random() * 1000000).toString();
+      console.log("random number: ", randomNumber);
       setRandom(randomNumber);
       QRSave_API(randomNumber);
+  
+      const validateQRCode = async () => {
+        console.log("Checking QR...");
+        const data = await QRValidate_API(randomNumber); 
+        console.log(data);
+        if (data.message === "validated") {
+          clearInterval(intervalId);
+          console.log("Validation complete. Interval stopped.");
+        }
+      };
+  
+      const intervalId = setInterval(validateQRCode, 7000);
+  
+      return () => clearInterval(intervalId);
     }
-  }, [isOpen]);
+  }, [isOpen, otpVisible]); 
+  
 
-  let intervalId = setInterval(async () => {
-    if (random) {
-      const data = await QRValidate_API(random);
-      console.log(data);
-      if (data.message === "validated") {
-        // Stop the interval
-        clearInterval(intervalId);
-        console.log("Validation complete. Interval stopped.");
-      }
-    }
-  }, 7000);
 
   return (
     <>

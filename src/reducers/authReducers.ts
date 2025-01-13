@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { login_API, OtpVerify_API } from "../api/user/userApi";
+import { GETMe_API, login_API, OtpVerify_API } from "../api/user/userApi";
 import { UserType } from "../model/types/user.types";
 import { ProfileCreate_API } from "../api/user/profileApis";
 
@@ -42,6 +42,20 @@ export const verifyOtp = createAsyncThunk(
     try {
       return OtpVerify_API(otp, email);
     } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An error occurred"
+      );
+    }
+  }
+);
+export const getME = createAsyncThunk(
+  "user/me",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await GETMe_API(); // Ensure GETMe_API returns the data
+      return data; // Return the data if successful
+    } catch (error: any) {
+      // Handle the error, use rejectWithValue to send the error message
       return rejectWithValue(
         error.response?.data?.message || "An error occurred"
       );
@@ -106,11 +120,29 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-        console.log(action.payload)
+        console.log(action.payload);
         localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(verifyOtp.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Me cases
+      .addCase(getME.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getME.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.loading = false;
+        state.user = action.payload?.user;
+        state.isAuthenticated = action.payload?.user ? true : false;
+        console.log(action.payload);
+        //localStorage.setItem("token", action.payload.accessToken);
+      })
+      .addCase(getME.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.isAuthenticated = false;
         state.error = action.payload as string;
       })
 
@@ -120,9 +152,9 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
-         (action.payload)
+        action.payload;
         state.loading = false;
-        state.user = action.payload.user; 
+        state.user = action.payload.user;
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(
