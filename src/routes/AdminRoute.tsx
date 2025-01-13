@@ -19,36 +19,18 @@ const AppRoutes = () => {
     dispatch(getME());
   }, []);
   return (
-   
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <MainLayout>
-              <HomePage />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/profile/:id"
-          element={
-            <EmptyLayout>
-              <ProfileCreation />
-            </EmptyLayout>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <SecondaryLayout>
-                <Settings />
-              </SecondaryLayout>
-            </ProtectedRoute>
-          }
-        />
-
-      </Routes>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <AdminProtectedRoute>
+            <SecondaryLayout>
+              <AdminDashboard />
+            </SecondaryLayout>
+          </AdminProtectedRoute>
+        }
+      />
+    </Routes>
   );
 };
 
