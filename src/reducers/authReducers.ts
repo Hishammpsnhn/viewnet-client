@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GETMe_API, login_API, OtpVerify_API } from "../api/user/userApi";
 import { UserType } from "../model/types/user.types";
-import { ProfileCreate_API } from "../api/user/profileApis";
+import { ProfileCreate_API, updateProfile_API } from "../api/user/profileApis";
 
 interface UserState {
   loading: boolean;
   error: string | null;
   user: UserType | null;
   isAuthenticated: boolean;
+  selectedProfile: any;
 }
 
 // Initial state
@@ -16,6 +17,7 @@ const initialState: UserState = {
   error: null,
   user: null,
   isAuthenticated: false,
+  selectedProfile: null,
 };
 
 // Thunk to login user
@@ -85,6 +87,22 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
+export const updateDefaultProfile = createAsyncThunk(
+  "user/updateDefaultProfile",
+  async (
+    { userId, defaultProfile }: { userId: string; defaultProfile: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateProfile_API(userId, defaultProfile); 
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An error occurred"
+      );
+    }
+  }
+);
 
 // Create the slice
 const userSlice = createSlice({
@@ -120,7 +138,9 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-        console.log(action.payload);
+        state.selectedProfile = action.payload.user.profiles.find(
+          (item: any) => item._id === action.payload.user.defaultProfile
+        );
         localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(verifyOtp.rejected, (state, action: PayloadAction<any>) => {
@@ -133,11 +153,14 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(getME.fulfilled, (state, action) => {
-        console.log(action.payload);
+        action.payload;
         state.loading = false;
         state.user = action.payload?.user;
         state.isAuthenticated = action.payload?.user ? true : false;
-        console.log(action.payload);
+        state.selectedProfile = action.payload.user.profiles.find(
+          (item: any) => item._id === action.payload.user.defaultProfile
+        );
+        action.payload;
         //localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(getME.rejected, (state, action: PayloadAction<any>) => {
@@ -155,10 +178,34 @@ const userSlice = createSlice({
         action.payload;
         state.loading = false;
         state.user = action.payload.user;
+        state.selectedProfile = action.payload.user.profiles.find(
+          (item: any) => item._id === action.payload.user.defaultProfile
+        );
         localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(
         updateUserProfile.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        }
+      )
+      // Update default profile cases
+      .addCase(updateDefaultProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateDefaultProfile.fulfilled, (state, action) => {
+        action.payload;
+        state.loading = false;
+        state.user = action.payload.user;
+        state.selectedProfile = action.payload.user.profiles.find(
+          (item: any) => item._id === action.payload.user.defaultProfile
+        );
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(
+        updateDefaultProfile.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload as string;

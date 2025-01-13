@@ -1,28 +1,17 @@
 import React, { useState } from "react";
 import bgImg from "../../assets/bg/IN-en-20240506-popsignuptwoweeks-perspective_alpha_website_large.webp";
-import profilePic1 from "../../assets/profilepic/067-squid-game-pictures-3pds48yf8itgimau.webp";
-import profilePic2 from "../../assets/profilepic/1679995562-StrangerThings_Prod_1920x1080.webp";
-import profilePic3 from "../../assets/profilepic/cartoon-style-boy-with-silver-short-hair.webp";
-import profilePic4 from "../../assets/profilepic/who-is-arguably-the-most-famous-cartoon-character-of-all-v0-ee2zokrs2rzb1.webp";
-import profilePic5 from "../../assets/profilepic/5ba098f6c84bf867ab88939a9a605139.webp";
 import { useTenantLoginValidator } from "../../hooks/useValidate";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
-import { ProfileCreate_API } from "../../api/user/profileApis.ts";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateUserProfile } from "../../reducers/authReducers.ts";
+import { profilePics } from "../../utils/mockData.ts";
+
 const ProfileCreation = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
    
-  const profilePics = [
-    profilePic1,
-    profilePic2,
-    profilePic3,
-    profilePic4,
-    profilePic5,
-  ];
   const [selectedPic, setSelectedPic] = useState(
     Math.floor(profilePics.length / 2)
   );

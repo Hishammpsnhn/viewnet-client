@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { useLoginValidator } from "../../hooks/useValidate";
-import { loginUser, verifyOtp } from "../../reducers/authReducers";
+import { getME, loginUser, verifyOtp } from "../../reducers/authReducers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   const dispatch = useDispatch<AppDispatch>();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isOpen, setIsOpen] = useState(login);
@@ -83,7 +84,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         }
         closeModal();
       } else {
-        ("OTP verification failed");
         toast.error("Invalid OTP. Please try again.");
       }
     } catch (error) {
@@ -99,33 +99,39 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   useEffect(() => {
     if (isOpen && !otpVisible) {
       const randomNumber = Math.floor(Math.random() * 1000000).toString();
-      console.log("random number: ", randomNumber);
       setRandom(randomNumber);
       QRSave_API(randomNumber);
-  
+      console.log(`http://172.16.1.83:5173/?token=${randomNumber}`);
+
       const validateQRCode = async () => {
-        console.log("Checking QR...");
-        const data = await QRValidate_API(randomNumber); 
-        console.log(data);
-        if (data.message === "validated") {
+        ("Checking QR...");
+        const data = await QRValidate_API(randomNumber);
+        data;
+        if (data.success) {
           clearInterval(intervalId);
+          closeModal();
+          toast.success("Successfully logged in", {
+            theme: "dark",
+            
+          });
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          dispatch(getME());
           console.log("Validation complete. Interval stopped.");
         }
       };
-  
+
       const intervalId = setInterval(validateQRCode, 7000);
-  
+
       return () => clearInterval(intervalId);
     }
-  }, [isOpen, otpVisible]); 
-  
-
+  }, [isOpen, otpVisible]);
 
   return (
     <>
       {isOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-black px-20 py-12 rounded-lg relative">
+          <div className="bg-black px-6 py-8 sm:px-12 sm:py-10 md:px-20 md:py-12 rounded-lg relative w-full max-w-3xl">
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 text-gray-600 hover:text-gray-700"
@@ -140,24 +146,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
             </div>
 
             {!otpVisible ? (
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex justify-center flex-1">
+              <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+                <div className="flex justify-center flex-1 mb-4 md:mb-0">
                   <div className="text-center">
                     <QRCodeSVG
-                      value={`http://localhost:4000/api/user/qr-scan${random}`}
+                      value={`http://172.16.1.83:5173/?token=${random}`}
                       size={150}
                     />
                     <h6 className="font-semibold text-gray-100 p-1">
                       Use Camera To Scan
                     </h6>
                     <p className="text-gray-600 text-[10px]">
-                      Click on the link generated <br /> to redirect to Tiny
-                      Moviez mobile app
+                      Click on the link generated <br /> to redirect to View Net
+                      mobile app
                     </p>
                   </div>
                 </div>
 
-                <div className="border-l-2 border-gray-600 h-60 mx-4"></div>
+                <div className="border-l-2 border-gray-600 h-60 mx-4 md:mx-6 hidden md:block"></div>
 
                 <form
                   noValidate

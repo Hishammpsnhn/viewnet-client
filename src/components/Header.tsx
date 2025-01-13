@@ -6,7 +6,7 @@ import { RootState } from "../store";
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
-  console.log(user);
+   (user);
   const handleLogin = () => {
     setLoginModal((prev) => !prev);
   };
