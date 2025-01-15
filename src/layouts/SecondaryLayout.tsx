@@ -14,7 +14,7 @@ const SecondaryLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className=" fixed top-0 left-0 h-full z-10">
           <Sidebar />
         </div>
-        <main className="flex-grow overflow-y-auto ml-16 bg-primary px-10 py-5">{children}</main>
+        <main className="flex-grow overflow-y-auto ml-16 bg-primary">{children}</main>
       </div>
     </div>
   );

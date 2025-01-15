@@ -1,4 +1,3 @@
-
 interface ProfileType {
   isAdult: boolean;
   username: string;
@@ -17,5 +16,15 @@ export interface UserType {
   updatedAt: string;
   __v: number;
   defaultProfile: string;
-  profiles: ProfileType[]; 
+  profiles: ProfileType[];
+}
+export interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  sessionLimit: number;
+  duration: number;
+  isActive: boolean;
+  features: string[] ;
 }

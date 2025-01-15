@@ -35,7 +35,7 @@ const Settings = () => {
   }, [user.user?.defaultProfile, selectedProfile]);
 
   return (
-    <div>
+    <div className=" px-10 py-5">
       <div>
         <h2 className="text-2xl font-semibold mb-5">Settings</h2>
         <div className="flex justify-between mb-5">
@@ -44,7 +44,10 @@ const Settings = () => {
             <br />
             Net
           </h2>
-          <button className="px-3 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md opacity-90 hover:opacity-100">
+          <button
+            className="px-3 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md opacity-90 hover:opacity-100"
+            onClick={() => navigate("/plans")}
+          >
             Subscribe
           </button>
         </div>

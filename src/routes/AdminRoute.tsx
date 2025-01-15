@@ -1,17 +1,15 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { HomePage } from "../pages/user/HomePage";
-import MainLayout from "../layouts/MainLayout";
-import ProfileCreation from "../pages/user/ProfileCreation";
-import EmptyLayout from "../layouts/EmptyLayout";
-import Settings from "../pages/user/SettingsPage";
+import { Route, Routes } from "react-router-dom";
 import SecondaryLayout from "../layouts/SecondaryLayout";
 import { useEffect } from "react";
 import { getME } from "../reducers/authReducers";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
-import ProtectedRoute from "./Protected/ProtectedRoute";
 import AdminProtectedRoute from "./Protected/AdminProtectedRoute";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminLayout from "../layouts/AdminLayout";
+import MovieUploadPage from "../pages/admin/MovieUploadPage";
+import SeriesUploadPage from "../pages/admin/SeriesUploadPage";
+import PlansPage from "../pages/user/PlansPage";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,9 +22,39 @@ const AppRoutes = () => {
         path="/"
         element={
           <AdminProtectedRoute>
-            <SecondaryLayout>
+            <AdminLayout>
               <AdminDashboard />
-            </SecondaryLayout>
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/upload/movie"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <MovieUploadPage />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/upload/series"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <SeriesUploadPage />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/plans"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <PlansPage isAdmin={true}/>
+            </AdminLayout>
           </AdminProtectedRoute>
         }
       />

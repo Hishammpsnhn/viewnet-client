@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { profilePics } from "../../utils/mockData";
-import { updateUserProfile } from "../../reducers/authReducers";
+import { editProfile, updateUserProfile } from "../../reducers/authReducers";
+
+// Define the profile data type
+interface Profile {
+  _id: string;
+  profilePic: string;
+  username: string;
+  isAdult: boolean;
+}
 
 interface NewProfileProps {
   closeModal: () => void;
+  profileData: Profile | null; // Accept the profile data prop
 }
 
-const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
+const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
   const user = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
-  const [isAdult, setIsAdult] = useState(false);
-  const [username, setUsername] = useState("");
-  const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
+  const [isAdult, setIsAdult] = useState(profileData?.isAdult || false);
+  const [username, setUsername] = useState(profileData?.username || "");
+  const [selectedProfile, setSelectedProfile] = useState<string | null>(
+    profileData?.profilePic || null
+  );
   const [availableProfile, setAvailableProfile] = useState<string[] | []>([]);
   const [validateError, setValidError] = useState<string | null>(null);
 
@@ -24,6 +35,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
+
   const handleSubmit = async () => {
     setValidError(null);
     if (!selectedProfile) {
@@ -35,17 +47,32 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
       setValidError("Please provide a valid name. ");
       return;
     }
+
     if (user.user) {
-      const res = await dispatch(
-        updateUserProfile({
-          userId: user.user?._id,
-          profileData: {
-            isAdult: isAdult,
-            profilePic: selectedProfile,
-            username: username,
-          },
-        })
-      ).unwrap();
+      if (profileData) {
+        dispatch(
+          editProfile({
+            userId: user.user?._id,
+            profileData: {
+              id:profileData?._id,
+              isAdult: isAdult,
+              profilePic: selectedProfile,
+              username: username,
+            },
+          })
+        );
+      } else {
+        const res = await dispatch(
+          updateUserProfile({
+            userId: user.user?._id,
+            profileData: {
+              isAdult: isAdult,
+              profilePic: selectedProfile,
+              username: username,
+            },
+          })
+        ).unwrap();
+      }
     }
     closeModal();
   };
@@ -61,9 +88,11 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
       );
       setAvailableProfile(availableProfiles);
     }
-  }, []);
+  }, [user.user?.profiles]);
+  console.log(profileData);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-100 flex justify-center items-center">
       <div className="relative border p-6 rounded-lg w-3/4 md:w-3/6 lg:w-2/6">
         <button
           onClick={closeModal}
@@ -71,31 +100,32 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
         >
           X
         </button>
+        {!profileData ? (
+          <h2 className="text-xl font-semibold mb-4">Create Profile</h2>
+        ) : (
+          <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
+        )}
 
-        <h2 className="text-xl font-semibold mb-4">Create Profile</h2>
-
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           {validateError && (
-            <p className="text-sm  text-red-700 mb-2 w-full">{validateError}</p>
+            <p className="text-sm text-red-700 mb-2 w-full">{validateError}</p>
           )}
           <div className="flex gap-4 h-[15vh]">
-            {availableProfile.map((item, index) => {
-              return (
-                <img
-                  key={index}
-                  src={item}
-                  alt={`Profile ${index + 1}`}
-                  onClick={() => {
-                    setSelectedProfile(item);
-                  }}
-                  className={`rounded-full border-2 object-cover cursor-pointer transition-all duration-300 ease-in-out ${
-                    selectedProfile === item
-                      ? "w-20 h-20 border-secondary"
-                      : "w-16 h-16 border-gray-300"
-                  }`}
-                />
-              );
-            })}
+            {availableProfile.map((item, index) => (
+              <img
+                key={index}
+                src={item}
+                alt={`Profile ${index + 1}`}
+                onClick={() => {
+                  setSelectedProfile(item);
+                }}
+                className={`rounded-full border-2 object-cover cursor-pointer transition-all duration-300 ease-in-out ${
+                  selectedProfile === item
+                    ? "w-20 h-20 border-secondary"
+                    : "w-16 h-16 border-gray-300"
+                }`}
+              />
+            ))}
           </div>
         </div>
 
@@ -124,7 +154,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal }) => {
               id="isAdult"
               checked={isAdult}
               onChange={handleCheckboxChange}
-              className="mr-2 "
+              className="mr-2"
             />
           </div>
         </div>

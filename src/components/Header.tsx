@@ -5,8 +5,10 @@ import { RootState } from "../store";
 
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
-  const { user } = useSelector((state: RootState) => state.auth);
-   (user);
+  const { user, selectedProfile } = useSelector(
+    (state: RootState) => state.auth
+  );
+  console.log(selectedProfile);
   const handleLogin = () => {
     setLoginModal((prev) => !prev);
   };
@@ -41,13 +43,24 @@ const Header = () => {
           </div>
 
           {/* Login Button */}
-          {!user && (
-            <button
-              className="bg-secondary py-2 text-black font-bold px-8 rounded-md"
-              onClick={handleLogin}
-            >
-              Login
-            </button>
+          {!user ? (
+            <>
+              <button
+                className="bg-secondary py-2 text-black font-bold px-8 rounded-md"
+                onClick={handleLogin}
+              >
+                Login
+              </button>
+            </>
+          ) : (
+            <img
+              src={selectedProfile.profilePic}
+              alt={`Profile`}
+              // onClick={() => handleChangeProfile(item._id)}
+              className={`rounded-full border-2 object-cover cursor-pointer 
+                w-10 h-10 border-secondary
+                `}
+            />
           )}
         </div>
       </div>

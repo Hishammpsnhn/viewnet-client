@@ -1,32 +1,40 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
+import { Plan } from "../../model/types/user.types";
 
-interface ProfileData {
-  username: string;
-  isAdult: boolean;
-  profilePic: string;
-}
-
-interface ProfileCreateResponse {
+export interface PlansResponse {
   success: boolean;
-  user: any;
+  plans: Plan[];
 }
-
-export const ProfileCreate_API = async (
-  userId: string,
-  profileData: ProfileData
-): Promise<ProfileCreateResponse> => {
+export const GetPlans_API = async (): Promise<PlansResponse> => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
     accessToken;
-    const { data } = await axios.post<ProfileCreateResponse>(
-      `${gateWayUrl}/api/user/profile`,
+    const { data } = await axios.get(`${gateWayUrl}/api/subscription`);
+    return data;
+  } catch (error: any) {
+    console.error("Error creating profile:", error);
+    throw new Error(
+      error.response?.data?.message || "An unexpected error occurred"
+    );
+  }
+};
+export const CreatePlans_API = async (
+  planData: Plan
+): Promise<PlansResponse> => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token is missing");
+    }
+    accessToken;
+    const { data } = await axios.post(
+      `${gateWayUrl}/api/subscription`,
       {
-        userId,
-        profileData,
+        planData,
       },
       {
         withCredentials: true,
@@ -43,20 +51,20 @@ export const ProfileCreate_API = async (
     );
   }
 };
-export const updateProfile_API = async (
-  userId: string,
-  defaultProfile: any
-): Promise<any> => {
+export const UpdatePlans_API = async (
+  planId:string,
+  planData: Plan
+): Promise<PlansResponse> => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
     accessToken;
-    const { data } = await axios.patch<any>(
-      `${gateWayUrl}/api/user/profile/${userId}`,
+    const { data } = await axios.post(
+      `${gateWayUrl}/api/subscription/${planId}`,
       {
-        defaultProfile,
+        planData,
       },
       {
         withCredentials: true,

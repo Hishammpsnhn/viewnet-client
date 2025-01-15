@@ -66,19 +66,20 @@ export const getME = createAsyncThunk(
 );
 
 interface ProfileData {
+  id?: string;
   username: string;
   isAdult: boolean;
   profilePic: string;
 }
 // Thunk to update user profile
-export const updateUserProfile = createAsyncThunk(
-  "user/updateProfile",
+export const editProfile = createAsyncThunk(
+  "user/EditProfile",
   async (
     { userId, profileData }: { userId: string; profileData: ProfileData },
     { rejectWithValue }
   ) => {
     try {
-      const response = await ProfileCreate_API(userId, profileData); // Call your API here
+      const response = await updateProfile_API(userId, profileData);
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -87,6 +88,23 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
+export const updateUserProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (
+    { userId, profileData }: { userId: string; profileData: ProfileData },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await ProfileCreate_API(userId, profileData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An error occurred"
+      );
+    }
+  }
+);
+
 export const updateDefaultProfile = createAsyncThunk(
   "user/updateDefaultProfile",
   async (
@@ -94,7 +112,7 @@ export const updateDefaultProfile = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await updateProfile_API(userId, defaultProfile); 
+      const response = await updateProfile_API(userId, defaultProfile);
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -157,7 +175,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload?.user;
         state.isAuthenticated = action.payload?.user ? true : false;
-        state.selectedProfile = action.payload.user.profiles.find(
+        state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
         action.payload;
@@ -190,6 +208,34 @@ const userSlice = createSlice({
           state.error = action.payload as string;
         }
       )
+
+      .addCase(editProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload);
+
+        // Update the user profiles in the state
+        if (state.user) {
+          const updatedProfileIndex = state.user.profiles.findIndex(
+            (profile: any) => profile._id === action.payload.user.id
+          );
+          console.log(updatedProfileIndex);
+          if (updatedProfileIndex !== -1) {
+            state.user.profiles[updatedProfileIndex] = action.payload.user;
+          }
+        }
+
+        // Update local storage
+        localStorage.setItem("user", JSON.stringify(state.user));
+      })
+      .addCase(editProfile.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
       // Update default profile cases
       .addCase(updateDefaultProfile.pending, (state) => {
         state.loading = true;
