@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { HomePage } from "../pages/user/HomePage";
 import MainLayout from "../layouts/MainLayout";
 import ProfileCreation from "../pages/user/ProfileCreation";
@@ -7,8 +7,8 @@ import Settings from "../pages/user/SettingsPage";
 import SecondaryLayout from "../layouts/SecondaryLayout";
 import { useEffect, useState } from "react";
 import { getME } from "../reducers/authReducers";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
 import ProtectedRoute from "./Protected/ProtectedRoute";
 import PlansPage from "../pages/user/PlansPage";
 import ProfileEditPage from "../pages/user/ProfileEditPage";
@@ -16,12 +16,19 @@ import ProfileEditPage from "../pages/user/ProfileEditPage";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getME()).finally(() => {
       setLoading(false);
     });
   }, [dispatch]);
+  useEffect(() => {
+    if (user && !user.profiles.length) {
+      navigate(`/profile/${user._id}`);
+    }
+  }, [user]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -39,9 +46,11 @@ const AppRoutes = () => {
       <Route
         path="/profile/:id"
         element={
-          <EmptyLayout>
-            <ProfileCreation />
-          </EmptyLayout>
+          <ProtectedRoute>
+            <EmptyLayout>
+              <ProfileCreation />
+            </EmptyLayout>
+          </ProtectedRoute>
         }
       />
       <Route
@@ -68,7 +77,7 @@ const AppRoutes = () => {
         path="/plans"
         element={
           <SecondaryLayout>
-            <PlansPage isAdmin={false}/>
+            <PlansPage isAdmin={false} />
           </SecondaryLayout>
         }
       />

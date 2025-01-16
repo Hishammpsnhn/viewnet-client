@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Login from "../features/auth/Login";
+import Login from "../features/user/Login";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -54,7 +54,7 @@ const Header = () => {
             </>
           ) : (
             <img
-              src={selectedProfile.profilePic}
+              src={selectedProfile?.profilePic}
               alt={`Profile`}
               // onClick={() => handleChangeProfile(item._id)}
               className={`rounded-full border-2 object-cover cursor-pointer 

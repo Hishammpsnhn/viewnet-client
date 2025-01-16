@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import NewProfile from "../../features/auth/NewProfile";
+import NewProfile from "../../features/user/NewProfile";
 
 // Define the profile type
 interface Profile {
@@ -17,13 +17,13 @@ const ProfileEditPage = () => {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
   const handleOpenModal = (profile: Profile) => {
-    setCurrentProfile(profile); // Set the clicked profile data
-    setIsModalOpen(true); // Open the modal
+    setCurrentProfile(profile);
+    setIsModalOpen(true); 
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
-    setCurrentProfile(null); // Reset the current profile
+    setIsModalOpen(false); 
+    setCurrentProfile(null);
   };
 
   return (

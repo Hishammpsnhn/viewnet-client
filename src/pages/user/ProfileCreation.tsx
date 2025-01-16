@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bgImg from "../../assets/bg/IN-en-20240506-popsignuptwoweeks-perspective_alpha_website_large.webp";
 import { useTenantLoginValidator } from "../../hooks/useValidate";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,12 +11,11 @@ const ProfileCreation = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-   
+
   const [selectedPic, setSelectedPic] = useState(
     Math.floor(profilePics.length / 2)
   );
 
-  // Single useState for all form fields
   const [formData, setFormData] = useState({
     username: "",
     phone: "",
@@ -44,11 +43,10 @@ const ProfileCreation = () => {
     e.preventDefault();
     setValidationError(null);
     const validate = useTenantLoginValidator(formData);
-     (validate);
+    validate;
     if (validate) {
       setValidationError(validate);
     } else {
-       ("Form Submitted:");
       let data = {
         ...formData,
         isAdult,
@@ -58,14 +56,18 @@ const ProfileCreation = () => {
         const res = await dispatch(
           updateUserProfile({ userId: id, profileData: data })
         ).unwrap();
-         (res);
+        res;
         if (res.success) {
           navigate("/");
         }
       }
     }
   };
-
+  useEffect(() => {
+    if (user && user.profiles.length) {
+      navigate("/");
+    }
+  }, [user]);
   return (
     <div className="relative h-screen flex items-center justify-center">
       {/* Background Image with Opacity */}

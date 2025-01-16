@@ -199,7 +199,6 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload.user.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
-        localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(
         updateUserProfile.rejected,

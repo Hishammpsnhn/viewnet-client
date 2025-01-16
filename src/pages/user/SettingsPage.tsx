@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { UseDispatch, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import NewProfile from "../../features/auth/NewProfile";
+import NewProfile from "../../features/user/NewProfile";
 import { updateDefaultProfile } from "../../reducers/authReducers";
 import { useNavigate } from "react-router-dom";
 
