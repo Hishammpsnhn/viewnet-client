@@ -1,12 +1,24 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
 import { Plan } from "../../model/types/user.types";
+import { toast } from "react-toastify";
+import { handleApiError } from "../../utils/ErrorHanlder";
 
 export interface PlansResponse {
   success: boolean;
+  plan: Plan;
+}
+export interface GetPlansResponse {
+  success: boolean;
   plans: Plan[];
 }
-export const GetPlans_API = async (): Promise<PlansResponse> => {
+export interface PaymentResponse {
+  success: boolean;
+  clientSecret: string;
+  message?: string;
+}
+//plans
+export const GetPlans_API = async (): Promise<GetPlansResponse> => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -52,7 +64,7 @@ export const CreatePlans_API = async (
   }
 };
 export const UpdatePlans_API = async (
-  planId:string,
+  planId: string,
   planData: Plan
 ): Promise<PlansResponse> => {
   try {
@@ -60,8 +72,7 @@ export const UpdatePlans_API = async (
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
-    accessToken;
-    const { data } = await axios.post(
+    const { data } = await axios.put(
       `${gateWayUrl}/api/subscription/${planId}`,
       {
         planData,
@@ -79,5 +90,67 @@ export const UpdatePlans_API = async (
     throw new Error(
       error.response?.data?.message || "An unexpected error occurred"
     );
+  }
+};
+
+//payment
+export const Payment_Success_API = async (
+  planId: string,
+  userId: string,
+  paymentIntent: string
+): Promise<any> => {
+  const accessToken = localStorage.getItem("accessToken");
+  console.log("caling api success payment.......");
+  try {
+    if (!accessToken) {
+      throw new Error("Access token is missing");
+    }
+    const { data } = await axios.post(
+      `${gateWayUrl}/api/subscription/payment-success`,
+      {
+        planId,
+        userId,
+        paymentIntent,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch {
+    console.error("Payment failed");
+    throw new Error("Payment failed");
+  }
+};
+export const Payment_API = async (
+  planId: string,
+  userId: string
+): Promise<PaymentResponse> => {
+  const accessToken = localStorage.getItem("accessToken");
+  try {
+    if (!accessToken) {
+      throw new Error("Access token is missing");
+    }
+    const { data } = await axios.post(
+      `${gateWayUrl}/api/subscription/payment`,
+      {
+        planId,
+        userId,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (err: unknown) {
+    console.log(err)
+    handleApiError(err);
+    throw new Error("Payment API request failed");
   }
 };

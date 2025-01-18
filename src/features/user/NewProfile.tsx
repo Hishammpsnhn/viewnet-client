@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { profilePics } from "../../utils/mockData";
-import { editProfile, updateUserProfile } from "../../reducers/authReducers";
+import { editProfile, updateUserProfile } from "../../reducers/userReducer/userThunks";
+import { useNavigate } from "react-router-dom";
 
-// Define the profile data type
 interface Profile {
   _id: string;
   profilePic: string;
@@ -14,11 +14,11 @@ interface Profile {
 
 interface NewProfileProps {
   closeModal: () => void;
-  profileData: Profile | null; // Accept the profile data prop
+  profileData?: Profile | null; 
 }
 
 const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
-  const user = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) =>  state.user);
   const dispatch = useDispatch<AppDispatch>();
   const [isAdult, setIsAdult] = useState(profileData?.isAdult || false);
   const [username, setUsername] = useState(profileData?.username || "");
@@ -27,6 +27,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
   );
   const [availableProfile, setAvailableProfile] = useState<string[] | []>([]);
   const [validateError, setValidError] = useState<string | null>(null);
+  const navigate = useNavigate()
 
   const handleCheckboxChange = () => {
     setIsAdult(!isAdult);
@@ -62,7 +63,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
           })
         );
       } else {
-        const res = await dispatch(
+        await dispatch(
           updateUserProfile({
             userId: user.user?._id,
             profileData: {
@@ -72,6 +73,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
             },
           })
         ).unwrap();
+        navigate('/')
       }
     }
     closeModal();
@@ -89,7 +91,6 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
       setAvailableProfile(availableProfiles);
     }
   }, [user.user?.profiles]);
-  console.log(profileData);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-100 flex justify-center items-center">

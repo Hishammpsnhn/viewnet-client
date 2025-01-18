@@ -6,17 +6,17 @@ import EmptyLayout from "../layouts/EmptyLayout";
 import Settings from "../pages/user/SettingsPage";
 import SecondaryLayout from "../layouts/SecondaryLayout";
 import { useEffect, useState } from "react";
-import { getME } from "../reducers/authReducers";
+import { getME } from "../reducers/userReducer/userThunks";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import ProtectedRoute from "./Protected/ProtectedRoute";
 import PlansPage from "../pages/user/PlansPage";
 import ProfileEditPage from "../pages/user/ProfileEditPage";
-
+import PaymentSuccessPage from '../pages/user/PaymentSuccesPage'
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const AppRoutes = () => {
   }, [user]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="bg-black">Loading...</div>;
   }
   return (
     <Routes>
@@ -78,6 +78,14 @@ const AppRoutes = () => {
         element={
           <SecondaryLayout>
             <PlansPage isAdmin={false} />
+          </SecondaryLayout>
+        }
+      />
+      <Route
+        path="/payment-success"
+        element={
+          <SecondaryLayout>
+            <PaymentSuccessPage />
           </SecondaryLayout>
         }
       />

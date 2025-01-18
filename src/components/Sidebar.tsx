@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../store";
 import { MdAdminPanelSettings } from "react-icons/md";
 const Sidebar = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) =>  state.user);
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/settings");
@@ -24,7 +24,7 @@ const Sidebar = () => {
 
         {/* Icons Centered Vertically */}
         <div className="flex flex-col items-center justify-center flex-grow space-y-12">
-          {user && user.Admin && (
+          {user && user.isAdmin && (
             <div
               className="relative group flex items-center"
               onClick={() => {

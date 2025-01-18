@@ -4,11 +4,11 @@ import { useTenantLoginValidator } from "../../hooks/useValidate";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateUserProfile } from "../../reducers/authReducers.ts";
+import { updateUserProfile } from "../../reducers/userReducer/userThunks.ts";
 import { profilePics } from "../../utils/mockData.ts";
 
 const ProfileCreation = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) =>  state.user);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -147,11 +147,8 @@ const ProfileCreation = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Adult Status
-            </label>
-            <p className="text-sm text-gray-500">
-              {isAdult ? "You are an adult." : "You are not an adult."}
+            <p className="text-sm text-red-700">
+              {!isAdult && "You are not an adult."}
             </p>
           </div>
 

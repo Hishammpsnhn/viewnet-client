@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import SecondaryLayout from "../layouts/SecondaryLayout";
 import { useEffect } from "react";
-import { getME } from "../reducers/authReducers";
+import { getME } from "../reducers/userReducer/userThunks";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import AdminProtectedRoute from "./Protected/AdminProtectedRoute";

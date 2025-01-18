@@ -6,8 +6,10 @@ import {
   FaCogs,
   FaShoppingCart,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -16,49 +18,44 @@ const AdminSidebar = () => {
         <div className="border-b-2 border-gray-700 mb-8"></div>
         <ul className="flex flex-col space-y-4 ">
           <li>
-            <a
-              href="#"
-              className="flex items-center py-3 px-4 hover:border hover:border-secondary  hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center py-3 px-4 hover:border w-full hover:border-secondary  hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
             >
               <FaTachometerAlt className="mr-3" />
               Dashboard
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
+            <button
+              onClick={() => navigate("/plans")}
+              className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold w-full"
             >
               <FaUsers className="mr-3" />
               Users
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-             className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
+            <button
+              className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43] w-full  rounded-lg font-semibold"
             >
               <FaShoppingCart className="mr-3" />
               Orders
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-             className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
-            >
+            <button className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold w-full">
               <FaBox className="mr-3" />
               Products
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-               className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
+            <button
+              className="flex items-center w-full py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
             >
               <FaCogs className="mr-3" />
               Settings
-            </a>
+            </button>
           </li>
         </ul>
         <div className="border-b-2 border-gray-700  mt-auto"></div>

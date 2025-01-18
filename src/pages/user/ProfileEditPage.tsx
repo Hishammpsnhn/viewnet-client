@@ -12,7 +12,7 @@ interface Profile {
 }
 
 const ProfileEditPage = () => {
-  const { user, selectedProfile } = useSelector((state: RootState) => state.auth);
+  const { user, selectedProfile } = useSelector((state: RootState) =>  state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
@@ -28,7 +28,7 @@ const ProfileEditPage = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center ">
         <div className="flex gap-6">
           {user?.profiles?.map((item: Profile, index) => (
             <div

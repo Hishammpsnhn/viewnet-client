@@ -1,17 +1,16 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GETMe_API, login_API, OtpVerify_API } from "../api/user/userApi";
-import { UserType } from "../model/types/user.types";
-import { ProfileCreate_API, updateProfile_API } from "../api/user/profileApis";
+
+import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {  UserType } from "../../model/types/user.types";
+import { getME, loginUser, verifyOtp ,editProfile,updateDefaultProfile,updateUserProfile} from "./userThunks";
 
 interface UserState {
   loading: boolean;
   error: string | null;
   user: UserType | null;
   isAuthenticated: boolean;
-  selectedProfile: any;
+  selectedProfile:any;
 }
 
-// Initial state
 const initialState: UserState = {
   loading: false,
   error: null,
@@ -20,109 +19,6 @@ const initialState: UserState = {
   selectedProfile: null,
 };
 
-// Thunk to login user
-export const loginUser = createAsyncThunk(
-  "user/login",
-  async (email: string, { rejectWithValue }) => {
-    try {
-      return login_API(email);
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-
-// Thunk to verify OTP
-export const verifyOtp = createAsyncThunk(
-  "user/verifyotp",
-  async (
-    { otp, email }: { otp: string; email: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      return OtpVerify_API(otp, email);
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-export const getME = createAsyncThunk(
-  "user/me",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await GETMe_API(); // Ensure GETMe_API returns the data
-      return data; // Return the data if successful
-    } catch (error: any) {
-      // Handle the error, use rejectWithValue to send the error message
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-
-interface ProfileData {
-  id?: string;
-  username: string;
-  isAdult: boolean;
-  profilePic: string;
-}
-// Thunk to update user profile
-export const editProfile = createAsyncThunk(
-  "user/EditProfile",
-  async (
-    { userId, profileData }: { userId: string; profileData: ProfileData },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await updateProfile_API(userId, profileData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-export const updateUserProfile = createAsyncThunk(
-  "user/updateProfile",
-  async (
-    { userId, profileData }: { userId: string; profileData: ProfileData },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await ProfileCreate_API(userId, profileData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-
-export const updateDefaultProfile = createAsyncThunk(
-  "user/updateDefaultProfile",
-  async (
-    { userId, defaultProfile }: { userId: string; defaultProfile: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await updateProfile_API(userId, defaultProfile);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
-    }
-  }
-);
-
-// Create the slice
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -225,6 +121,9 @@ const userSlice = createSlice({
           if (updatedProfileIndex !== -1) {
             state.user.profiles[updatedProfileIndex] = action.payload.user;
           }
+          if(state.selectedProfile._id === action.payload.user.id){
+            state.selectedProfile = action.payload.user;
+          }
         }
 
         // Update local storage
@@ -241,6 +140,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateDefaultProfile.fulfilled, (state, action) => {
+        console.log(action.payload)
         action.payload;
         state.loading = false;
         state.user = action.payload.user;

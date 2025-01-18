@@ -4,10 +4,10 @@ import { RootState } from "../../store";
 
 const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) =>  state.user
   );
 
-  return isAuthenticated && user?.Admin ? (
+  return isAuthenticated && user?.isAdmin ? (
     children
   ) : (
     <Navigate to="/" replace />

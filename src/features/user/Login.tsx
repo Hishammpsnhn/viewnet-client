@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { otpValidator, useLoginValidator } from "../../hooks/useValidate.ts";
-import { getME, loginUser, verifyOtp } from "../../reducers/authReducers.ts";
+import { getME, loginUser, verifyOtp } from "../../reducers/userReducer/userThunks.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate } from "react-router-dom";

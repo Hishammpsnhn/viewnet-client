@@ -133,7 +133,7 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
               <input
                 type="text"
                 name="features"
-                value={formData.features.join(", ")} // Join the array into a comma-separated string
+                value={formData.features.join(", ")}
                 onChange={handleInputChange}
                 placeholder="Enter features (comma separated)"
                 className="w-full p-2 mt-1 border border-secondary bg-black text-white rounded-md"

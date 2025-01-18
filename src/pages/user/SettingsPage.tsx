@@ -3,11 +3,11 @@ import { FaPlus } from "react-icons/fa";
 import { UseDispatch, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import NewProfile from "../../features/user/NewProfile";
-import { updateDefaultProfile } from "../../reducers/authReducers";
+import { getME, updateDefaultProfile } from "../../reducers/userReducer/userThunks";
 import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
-  const user = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -38,21 +38,22 @@ const Settings = () => {
     <div className=" px-10 py-5">
       <div>
         <h2 className="text-2xl font-semibold mb-5">Settings</h2>
-        <div className="flex justify-between mb-5">
+        <div className="flex justify-between mb-5 align-center">
           <h2>
             Subscribe to enjoy View
             <br />
             Net
           </h2>
           <button
-            className="px-3 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md opacity-90 hover:opacity-100"
+            className="px-3 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md my-auto opacity-90 hover:opacity-100"
             onClick={() => navigate("/plans")}
           >
             Subscribe
           </button>
         </div>
-        <div className="flex flex-col">
-          <div className="flex gap-4 items-center">
+        <div className="bg-gray-600 w-full h-0.5 mt-4 mb-8"></div>
+        <div className="flex justify-between">
+          <div className="flex gap-4 items-center ">
             {user.user?.profiles.map((item, index) => (
               <img
                 key={item._id}
@@ -78,6 +79,12 @@ const Settings = () => {
               <FaPlus size={24} className="text-gray-500" />
             </button>
           </div>
+          <button
+            className="px-5 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md my-auto opacity-90 hover:opacity-100"
+            onClick={() => navigate("/editProfile")}
+          >
+            Edit
+          </button>
         </div>
       </div>
 

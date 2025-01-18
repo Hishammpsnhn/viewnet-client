@@ -7,19 +7,19 @@ import { RootState } from "./store";
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  const user = useSelector((state:RootState) => state.auth.user);
+  const user = useSelector((state:RootState) =>  state.user.user);
 
   useEffect(() => {
-    if (user?.Admin) {
+    if (user?.isAdmin) {
       setIsAdmin(true);
     }
   }, [user]);
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
         {isAdmin ? <AdminRoutes /> : <UserRoutes />}
-      </Suspense>
+      {/* </Suspense> */}
     </BrowserRouter>
   );
 };
