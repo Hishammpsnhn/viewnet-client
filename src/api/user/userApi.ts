@@ -1,6 +1,7 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
 import cookie from "js-cookie";
+import { handleApiError } from "../../utils/ErrorHanlder";
 
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
@@ -77,6 +78,7 @@ export const OtpVerify_API = async (otp: string, email: string) => {
     localStorage.setItem("refreshToken", data.refreshToken);
     return data;
   } catch (error) {
+    handleApiError(error);
     console.error("Error:", error);
   }
 };

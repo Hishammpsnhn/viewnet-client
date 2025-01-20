@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Payment_Success_API } from "../../api/Sub-Plan/Plans";
@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
 const PaymentSuccessPage = () => {
-  const { user } = useSelector((state:RootState) => state.user);
+  const { user } = useSelector((state: RootState) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -23,17 +23,19 @@ const PaymentSuccessPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const apiCallFlag = useRef(false); 
+
   useEffect(() => {
     const verifyPaymentStatus = async () => {
       console.log("verifyPaymentStatus called");
-      console.log(planId,user,paymentIntent)
+      console.log(planId, user, paymentIntent);
       try {
         if (!planId || !user || !paymentIntent) {
           return;
         }
-        const response = await Payment_Success_API(planId, user._id,paymentIntent);
+        const response = await Payment_Success_API(planId, user._id, paymentIntent);
 
-        if ( response.data.status === "succeeded") {
+        if (response.data.status === "succeeded") {
           setPaymentStatus("Payment Successful");
         } else {
           setPaymentStatus("Payment Failed");
@@ -46,12 +48,13 @@ const PaymentSuccessPage = () => {
       }
     };
 
-    if (paymentIntent && paymentIntentClientSecret) {
+    if (!apiCallFlag.current && paymentIntent && paymentIntentClientSecret) {
+      apiCallFlag.current = true; 
       verifyPaymentStatus();
     }
 
-    console.log(paymentIntent,paymentIntentClientSecret,paymentIntent)
-  }, [paymentIntent, paymentIntentClientSecret]);
+    console.log(paymentIntent, paymentIntentClientSecret, paymentIntent);
+  }, [planId, user, paymentIntent, paymentIntentClientSecret]);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -82,7 +82,7 @@ export const HomePage = () => {
         </div>
       </div>
       {/* ToastContainer should be placed here */}
-      <ToastContainer  />
+      <ToastContainer theme="dark"  />
     </div>
   );
 };

@@ -49,10 +49,11 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-        state.selectedProfile = action.payload.user.profiles.find(
+        state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
         localStorage.setItem("token", action.payload.accessToken);
@@ -74,7 +75,6 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
-        action.payload;
         //localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(getME.rejected, (state, action: PayloadAction<any>) => {
