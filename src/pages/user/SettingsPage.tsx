@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { UseDispatch, useDispatch, useSelector } from "react-redux";
+import { FaPlus, FaSignOutAlt } from "react-icons/fa"; // Import logout icon
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import NewProfile from "../../features/user/NewProfile";
-import { getME, updateDefaultProfile } from "../../reducers/userReducer/userThunks";
+import {
+  getME,
+  updateDefaultProfile,
+} from "../../reducers/userReducer/userThunks";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../reducers/userReducer/userReducers";
+import { Logout_API } from "../../api/user/userApi";
+// import { logout } from "../../reducers/userReducer/userActions"; // Assuming you have a logout action
 
 const Settings = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -14,7 +20,6 @@ const Settings = () => {
   const [selectedProfile, setSelectedProfile] = useState(
     user.user?.defaultProfile
   );
-  console.log(selectedProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -28,6 +33,14 @@ const Settings = () => {
     }
   };
 
+  const handleLogout = async () => {
+    const res = await Logout_API();
+    if (res.success) {
+      dispatch(logout());
+      navigate("/");
+    }
+  };
+
   useEffect(() => {
     if (!selectedProfile && user.user?.defaultProfile) {
       setSelectedProfile(user.user.defaultProfile);
@@ -35,7 +48,7 @@ const Settings = () => {
   }, [user.user?.defaultProfile, selectedProfile]);
 
   return (
-    <div className=" px-10 py-5">
+    <div className="px-10 py-5 bg-gradient-to-b  to-primary from-gray-900">
       <div>
         <h2 className="text-2xl font-semibold mb-5">Settings</h2>
         <div className="flex justify-between mb-5 align-center">
@@ -53,7 +66,7 @@ const Settings = () => {
         </div>
         <div className="bg-gray-600 w-full h-0.5 mt-4 mb-8"></div>
         <div className="flex justify-between">
-          <div className="flex gap-4 items-center ">
+          <div className="flex gap-4 items-center">
             {user.user?.profiles.map((item, index) => (
               <img
                 key={item._id}
@@ -88,7 +101,15 @@ const Settings = () => {
         </div>
       </div>
 
-      {/* Conditionally render the NewProfile modal */}
+      {/* Logout button */}
+      <div className="mt-6 flex justify-end absolute bottom-10 right-10">
+        <button
+          onClick={handleLogout}
+          className=" text-red-900 font-semibold rounded-md flex items-center gap-2 opacity-90 hover:opacity-100"
+        >
+          <FaSignOutAlt size={30} />
+        </button>
+      </div>
       {isModalOpen && <NewProfile closeModal={closeModal} />}
     </div>
   );

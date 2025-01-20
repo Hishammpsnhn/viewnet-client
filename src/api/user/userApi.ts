@@ -64,18 +64,34 @@ export const login_API = async (email: string) => {
 };
 export const OtpVerify_API = async (otp: string, email: string) => {
   try {
-    otp;
     const { data } = await axios.post(
       `${gateWayUrl}/api/user/otpVerify`,
       {
         otp,
         email,
+        deviceId: navigator.userAgent,
       },
       { withCredentials: true }
     );
-    data;
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("refreshToken", data.refreshToken);
+    return data;
+  } catch (error) {
+    handleApiError(error);
+    console.error("Error:", error);
+  }
+};
+export const Logout_API = async () => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+  try {
+    const { data } = await axios.get(`${gateWayUrl}/api/user/logout/${refreshToken}`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
     return data;
   } catch (error) {
     handleApiError(error);

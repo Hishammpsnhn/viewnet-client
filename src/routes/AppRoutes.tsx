@@ -12,7 +12,11 @@ import { AppDispatch, RootState } from "../store";
 import ProtectedRoute from "./Protected/ProtectedRoute";
 import PlansPage from "../pages/user/PlansPage";
 import ProfileEditPage from "../pages/user/ProfileEditPage";
-import PaymentSuccessPage from '../pages/user/PaymentSuccesPage'
+import PaymentSuccessPage from "../pages/user/PaymentSuccesPage";
+import SearchPage from "../pages/user/SearchPage";
+import MovieDetailPage from "../pages/user/MovieDetailPage";
+import Details from "../components/Details";
+import Related from "../components/Related";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,7 +35,7 @@ const AppRoutes = () => {
   }, [user]);
 
   if (loading) {
-    return <div className="bg-black">Loading...</div>;
+    return <div className="bg-black h-[100vh] text-white">Loading...</div>;
   }
   return (
     <Routes>
@@ -57,8 +61,8 @@ const AppRoutes = () => {
         path="/settings"
         element={
           <ProtectedRoute>
-            <SecondaryLayout>
-              <Settings />
+            <SecondaryLayout gradient={true} >
+              <Settings  />
             </SecondaryLayout>
           </ProtectedRoute>
         }
@@ -76,7 +80,7 @@ const AppRoutes = () => {
       <Route
         path="/plans"
         element={
-          <SecondaryLayout>
+          <SecondaryLayout gradient={true}>
             <PlansPage isAdmin={false} />
           </SecondaryLayout>
         }
@@ -89,6 +93,25 @@ const AppRoutes = () => {
           </SecondaryLayout>
         }
       />
+      <Route
+        path="/search"
+        element={
+          <SecondaryLayout search={true} gradient={true}>
+            <SearchPage />
+          </SecondaryLayout>
+        }
+      />
+      <Route
+        path="/movie-details"
+        element={
+          <MainLayout >
+            <MovieDetailPage />
+          </MainLayout>
+        }
+      >
+        <Route path="more" element={<Details />} />
+        <Route path="related" element={<Related />} />
+      </Route>
     </Routes>
   );
 };

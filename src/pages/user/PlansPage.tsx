@@ -92,7 +92,7 @@ console.log(plans)
   return (
     <div
       className={`min-h-screen py-8 px-4 ${
-        isAdmin ? "bg-black" : "bg-primary"
+        isAdmin ? "bg-black" : "bg-gradient-to-b from-gray-900 to-primary"
       }`}
     >
       <h1 className="text-3xl font-bold text-center text-gray-700 mb-8">

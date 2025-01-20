@@ -4,7 +4,7 @@ import IMG2 from "../assets/images/the-last-king-vikings.webp";
 import IMG3 from "../assets/images/stranger-things-pictures-7fj1jv6tvf3izh0t.webp";
 
 const Carousel = () => {
-  const [activeIndex, setActiveIndex] = useState(0); // Default active item (first item)
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const images = [
     {
@@ -70,7 +70,7 @@ const Carousel = () => {
             {images[activeIndex].title}
           </h2>
           <p className="text-lg">{images[activeIndex].description}</p>
-          <button className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:bg-blue-600">
+          <button className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100">
             {images[activeIndex].buttonText}
           </button>
         </div>

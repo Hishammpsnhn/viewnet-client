@@ -26,7 +26,8 @@ const userSlice = createSlice({
     logout(state) {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
   },
   extraReducers: (builder) => {
@@ -56,7 +57,6 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
-        localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(verifyOtp.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -75,7 +75,6 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
-        //localStorage.setItem("token", action.payload.accessToken);
       })
       .addCase(getME.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -126,8 +125,6 @@ const userSlice = createSlice({
           }
         }
 
-        // Update local storage
-        localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(editProfile.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -147,7 +144,6 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload.user.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
-        localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(
         updateDefaultProfile.rejected,

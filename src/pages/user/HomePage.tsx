@@ -1,10 +1,64 @@
+import React, { useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { QRScanner_API } from "../../api/user/qrLogin";
-import Carousel from "../../components/Carousel";
 import MovieCard from "../../components/card/MovieCard";
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import VideoBanner from "../../components/VideoBanner";
+
+const ScrollableSection = ({ title }: { title: string }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div className="ml-16 relative mb-12">
+      <h1 className="text-2xl font-bold pb-6">{title}</h1>
+      <div className="relative">
+        <button
+          onClick={scrollLeft}
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
+        >
+          <IoIosArrowBack />
+        </button>
+
+        <div
+          ref={scrollContainerRef}
+          className="flex space-x-4 overflow-x-auto scrollbar-hidden"
+        >
+          {[...Array(10)].map((_, index) => (
+            <MovieCard key={index} />
+          ))}
+        </div>
+
+        {/* Right Scroll Button */}
+        <button
+          onClick={scrollRight}
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
+        >
+          <IoIosArrowForward />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export const HomePage = () => {
   const location = useLocation();
@@ -20,25 +74,14 @@ export const HomePage = () => {
   async function qrCalling(token: string) {
     const loadingToast = toast.loading("Scanning QR code...");
     try {
-      let res = await QRScanner_API(token);
-      if (res) {
-        toast.update(loadingToast, {
-          render: "Login successfully!",
-          type: "success",
-          isLoading: false,
-          autoClose: 3000,
-          className: "bg-black",
-        });
-        //window.location.replace("/");
-      } else {
-        toast.update(loadingToast, {
-          render: "Failed to scan QR code.",
-          type: "error",
-          isLoading: false,
-          autoClose: 3000,
-          className: "bg-black",
-        });
-      }
+      const res = await QRScanner_API(token);
+      toast.update(loadingToast, {
+        render: res ? "Login successfully!" : "Failed to scan QR code.",
+        type: res ? "success" : "error",
+        isLoading: false,
+        autoClose: 3000,
+        className: "bg-black",
+      });
     } catch (error) {
       toast.update(loadingToast, {
         render: "An error occurred while scanning the QR code.",
@@ -51,38 +94,20 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="">
-      {/* Carousel Section */}
-      <div className="mb-6">
-        <Carousel />
+    <div className="overflow-hidden">
+    <div className="relative mb-6">
+      <VideoBanner />
+      <div className="absolute top-[70vh] w-full z-10">
+        <ScrollableSection title="Recommended for You" />
       </div>
-
-      {/* Horizontal Scroll Section */}
-      <div className="ml-16 overflow-x-auto scrollbar-hidden">
-        <h1 className="text-2xl font-bold pb-6">Recommended</h1>
-        <div className="flex space-x-12 w-max scrollbar-hidden">
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-          <MovieCard />
-        </div>
-      </div>
-      {/* ToastContainer should be placed here */}
-      <ToastContainer theme="dark"  />
     </div>
+
+    <div className="mt-[21vh]">
+      <ScrollableSection title="Trending Now" />
+      <ScrollableSection title="Top Picks" />
+    </div>
+
+    <ToastContainer />
+  </div>
   );
 };
