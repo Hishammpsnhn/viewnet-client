@@ -149,7 +149,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       const randomNumber = Math.floor(Math.random() * 1000000).toString();
       setRandom(randomNumber);
       QRSave_API(randomNumber);
-      console.log(`http://172.16.1.83:5173/?token=${randomNumber}`);
+      console.log(`http://localhost:5173/?token=${randomNumber}`);
 
       const validateQRCode = async () => {
         ("Checking QR...");
@@ -207,7 +207,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                 <div className="flex justify-center flex-1 mb-4 md:mb-0">
                   <div className="text-center">
                     <QRCodeSVG
-                      value={`http://172.16.1.83:5173/?token=${random}`}
+                      value={`http://localhost:5173/?token=${random}`}
                       size={150}
                     />
                     <h6 className="font-semibold text-gray-100 p-1">
