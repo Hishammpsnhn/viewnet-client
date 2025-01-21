@@ -1,5 +1,7 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
+import { toast } from "react-toastify";
+import { handleApiError } from "../../utils/ErrorHanlder.tsx";
 
 interface ProfileData {
   username: string;
@@ -12,16 +14,24 @@ interface ProfileCreateResponse {
   user: any;
 }
 
+const handleError = (error: any) => {
+  if (error.response?.status === 403) {
+    window.location.href = "/";
+  } else {
+    console.error("Error:", error);
+    handleApiError(error);
+  }
+};
+
 export const ProfileCreate_API = async (
   userId: string,
   profileData: ProfileData
-): Promise<ProfileCreateResponse> => {
+): Promise<any> => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
-    accessToken;
     const { data } = await axios.post<ProfileCreateResponse>(
       `${gateWayUrl}/api/user/profile`,
       {
@@ -37,10 +47,7 @@ export const ProfileCreate_API = async (
     );
     return data;
   } catch (error: any) {
-    console.error("Error creating profile:", error);
-    throw new Error(
-      error.response?.data?.message || "An unexpected error occurred"
-    );
+    handleError(error);
   }
 };
 
@@ -53,7 +60,6 @@ export const updateProfile_API = async (
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
-    accessToken;
     const { data } = await axios.patch<any>(
       `${gateWayUrl}/api/user/profile/${userId}`,
       {
@@ -68,12 +74,10 @@ export const updateProfile_API = async (
     );
     return data;
   } catch (error: any) {
-    console.error("Error creating profile:", error);
-    throw new Error(
-      error.response?.data?.message || "An unexpected error occurred"
-    );
+    handleError(error);
   }
 };
+
 export const editProfile_API = async (
   userId: string,
   defaultProfile: any
@@ -83,7 +87,6 @@ export const editProfile_API = async (
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
-    accessToken;
     const { data } = await axios.put<any>(
       `${gateWayUrl}/api/user/profile/${userId}`,
       {
@@ -98,9 +101,6 @@ export const editProfile_API = async (
     );
     return data;
   } catch (error: any) {
-    console.error("Error creating profile:", error);
-    throw new Error(
-      error.response?.data?.message || "An unexpected error occurred"
-    );
+    handleError(error);
   }
 };

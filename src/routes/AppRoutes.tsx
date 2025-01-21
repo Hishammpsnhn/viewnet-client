@@ -17,6 +17,7 @@ import SearchPage from "../pages/user/SearchPage";
 import MovieDetailPage from "../pages/user/MovieDetailPage";
 import Details from "../components/Details";
 import Related from "../components/Related";
+import HistoryPage from "../pages/user/HistoryPage";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,6 +62,7 @@ const AppRoutes = () => {
     );
   }
   return (
+    
     <Routes>
       <Route
         path="/"
@@ -96,6 +98,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <SecondaryLayout>
               <ProfileEditPage />
+            </SecondaryLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <SecondaryLayout>
+              <HistoryPage />
             </SecondaryLayout>
           </ProtectedRoute>
         }

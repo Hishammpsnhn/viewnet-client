@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import image from "../../assets/images/ragnar-lodbrok-digital-art-vikings-sword-wallpaper-preview.webp";
 
 const MovieCard = () => {
+  const navigate = useNavigate()
   const movie = {
     id: 1,
     title: "Inception",
@@ -12,7 +14,7 @@ const MovieCard = () => {
   };
 
   return (
-    <div className="relative min-w-[10rem] md:min-w-[18rem] max-w-sm rounded-lg overflow-hidden shadow-lg bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
+    <div className="relative min-w-[10rem] md:min-w-[18rem] max-w-sm rounded-lg overflow-hidden shadow-lg cursor-pointer bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group" onClick={()=>navigate('/movie-details/more')}>
       {/* Movie Image */}
       <div className="relative">
         <img

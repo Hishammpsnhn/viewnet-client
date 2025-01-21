@@ -2,26 +2,49 @@ import React, { useEffect, useState } from "react";
 import {
   GETAllUsers_API,
   GETUserPlanDetails_API,
+  UpdateUser_API,
 } from "../../api/user/userApi";
-import PlanDetailModal from "../../components/PlanDetailModal"; // Import the PlanDetailModal component
+import PlanDetailModal from "../../components/PlanDetailModal";
 import { Subscription } from "../../model/types/user.types";
 import { toast, ToastContainer } from "react-toastify";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 interface User {
   _id: string;
   email: string;
-  isBlocked: boolean;
+  isBlock: boolean;
   profilesCount: number;
   sessionsCount: number;
 }
 
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserPlan, setSelectedUserPlan] = useState<Subscription | null>(
     null
   );
 
-  console.log(selectedUserPlan);
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  const handleConfirmAction = async () => {
+    if (selectedUser) {
+      const data = await UpdateUser_API(selectedUser._id, {
+        isBlock: !selectedUser.isBlock,
+      });
+      if (data.success) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u._id === data.user._id ? { ...u, isBlock: data.user.isBlock } : u
+          )
+        );
+        toast.success("User updated successfully.");
+      }
+    }
+    setOpen(false); 
+  };
 
   const handlePlanDetails = async (userId: string) => {
     const data = await GETUserPlanDetails_API(userId);
@@ -37,6 +60,11 @@ const UsersPage = () => {
 
   const closeModal = () => {
     setSelectedUserPlan(null);
+  };
+
+  const handleUpdateUser = (user: User) => {
+    setSelectedUser(user); 
+    setOpen(true); 
   };
 
   useEffect(() => {
@@ -97,13 +125,14 @@ const UsersPage = () => {
                 </td>
                 <td className="border border-secondary px-4 py-2">
                   <button
+                    onClick={() => handleUpdateUser(user)}
                     className={`px-4 py-2 rounded-md ${
-                      user.isBlocked
+                      user.isBlock
                         ? "bg-red-500 text-white hover:bg-red-600"
                         : "bg-green-500 text-white hover:bg-green-600"
                     }`}
                   >
-                    {user.isBlocked ? "Unblock" : "Block"}
+                    {user.isBlock ? "Unblock" : "Block"}
                   </button>
                 </td>
               </tr>
@@ -112,15 +141,21 @@ const UsersPage = () => {
         </table>
       </div>
 
+      <ConfirmDialog
+        open={open}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmAction}
+        message={"Are you sure you want to change the user's status?"}
+      />
+
       {/* Modal */}
       {selectedUserPlan && (
         <PlanDetailModal
-          // isOpen={planDetailModal}
           planDetails={selectedUserPlan}
           closeModal={closeModal}
         />
       )}
-      <ToastContainer theme="dark"/>
+      <ToastContainer theme="dark" />
     </div>
   );
 };

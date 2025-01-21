@@ -1,8 +1,6 @@
 import { FaSearch, FaCog, FaHome } from "react-icons/fa";
-import { MdAdminPanelSettings } from "react-icons/md";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../store";
+import { FaHistory } from "react-icons/fa";
 
 type SidebarItemProps = {
   icon: React.ReactNode;
@@ -31,13 +29,16 @@ const Sidebar = () => {
     { icon: <FaHome />, label: "Home", onClick: () => navigate("/") },
     { icon: <FaSearch />, label: "Search", onClick: () => navigate("/search") },
     {
+      icon: <FaHistory />,
+      label: "History",
+      onClick: () => navigate("/history"),
+    },
+    {
       icon: <FaCog />,
       label: "Settings",
       onClick: () => navigate("/settings"),
     },
   ];
-
-
 
   return (
     <div className="flex relative">

@@ -43,8 +43,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       if (resultAction.payload) {
         setOtpVisible(true);
         setResendCountdown(29);
-      } else {
-        toast.error("something went wrong");
       }
     }
   };

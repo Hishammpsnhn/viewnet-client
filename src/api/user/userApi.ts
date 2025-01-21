@@ -4,6 +4,7 @@ import cookie from "js-cookie";
 import { handleApiError } from "../../utils/ErrorHanlder";
 import { GetUserPlanDetailsResponse } from "../../model/types/user.types";
 
+
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
@@ -61,6 +62,7 @@ export const login_API = async (email: string) => {
     return data;
   } catch (error) {
     console.error("Error:", error);
+    handleApiError(error);
   }
 };
 export const OtpVerify_API = async (otp: string, email: string) => {
@@ -117,10 +119,31 @@ export const GETAllUsers_API = async (): Promise<any | null> => {
     handleApiError(error);
   }
 };
+export const UpdateUser_API = async (id: string, newData: any) => {
+  const accessToken = localStorage.getItem("accessToken");
+  try {
+    const { data } = await axios.patch(
+      `${gateWayUrl}/api/user/${id}`,
+      {
+        newData,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error: any) {
+    console.log(error);
+    handleApiError(error);
+  }
+};
 
 export const GETUserPlanDetails_API = async (
   userId: string
-): Promise<any| undefined> => {
+): Promise<any | undefined> => {
   const accessToken = localStorage.getItem("accessToken");
   try {
     const { data } = await axios.get(

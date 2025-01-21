@@ -26,7 +26,7 @@ const MovieDetailPage = () => {
             className={({ isActive }) =>
               isActive
                 ? 'text-secondary underline font-semibold border-b-2 border-primary'
-                : 'text-gray-500  hover:text-green-600'
+                : 'text-gray-500  hover:text-gray-600'
             }
           >
             Related
@@ -35,7 +35,7 @@ const MovieDetailPage = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4 mx-14">
+      <div className="mt-4 ml-16">
         <Outlet />
       </div>
     </div>

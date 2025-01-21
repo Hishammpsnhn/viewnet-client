@@ -107,7 +107,7 @@ export const HomePage = () => {
       <ScrollableSection title="Top Picks" />
     </div>
 
-    <ToastContainer />
+    <ToastContainer theme="dark"/>
   </div>
   );
 };
