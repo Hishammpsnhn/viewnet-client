@@ -9,6 +9,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import MovieUploadPage from "../pages/admin/MovieUploadPage";
 import SeriesUploadPage from "../pages/admin/SeriesUploadPage";
 import PlansPage from "../pages/user/PlansPage";
+import UsersPage from "../pages/admin/UsersPage";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,6 +54,16 @@ const AppRoutes = () => {
           <AdminProtectedRoute>
             <AdminLayout>
               <PlansPage isAdmin={true}/>
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <UsersPage/>
             </AdminLayout>
           </AdminProtectedRoute>
         }

@@ -87,7 +87,21 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
               className="w-full p-2 border border-secondary bg-black rounded-md h-32"
             />
           </div>
-
+          <div className="mb-4">
+            <label
+              htmlFor="releaseDate"
+              className="block text-sm font-medium mb-2"
+            >
+              Release Date and Time
+            </label>
+            <input
+              type="datetime-local"
+              id="releaseDate"
+              //value={releaseDate}
+              //onChange={handleReleaseDateChange}
+              className="w-full p-2 border border-secondary rounded-md bg-black text-white"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Thumbnail</label>
             <div className="flex items-center">
@@ -221,7 +235,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
       {/* Upload Button */}
       <button
         onClick={handleUpload}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-md self-center"
+        className="mt-6 px-6 py-3 bg-secondary text-black w-full rounded-md self-center"
       >
         Upload Series
       </button>

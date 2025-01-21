@@ -28,7 +28,7 @@ const AdminSidebar = () => {
           </li>
           <li>
             <button
-              onClick={() => navigate("/plans")}
+              onClick={() => navigate("/users")}
               className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold w-full"
             >
               <FaUsers className="mr-3" />
@@ -37,10 +37,11 @@ const AdminSidebar = () => {
           </li>
           <li>
             <button
+              onClick={() => navigate("/plans")}
               className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43] w-full  rounded-lg font-semibold"
             >
               <FaShoppingCart className="mr-3" />
-              Orders
+              Plans
             </button>
           </li>
           <li>
@@ -50,9 +51,7 @@ const AdminSidebar = () => {
             </button>
           </li>
           <li>
-            <button
-              className="flex items-center w-full py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold"
-            >
+            <button className="flex items-center w-full py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold">
               <FaCogs className="mr-3" />
               Settings
             </button>

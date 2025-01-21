@@ -29,8 +29,8 @@ const ScrollableSection = ({ title }: { title: string }) => {
   };
 
   return (
-    <div className="ml-16 relative mb-12">
-      <h1 className="text-2xl font-bold pb-6">{title}</h1>
+    <div className="ml-16 relative mb-10">
+      <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">{title}</h1>
       <div className="relative">
         <button
           onClick={scrollLeft}
@@ -97,12 +97,12 @@ export const HomePage = () => {
     <div className="overflow-hidden">
     <div className="relative mb-6">
       <VideoBanner />
-      <div className="absolute top-[70vh] w-full z-10">
+      <div className="absolute top-[60vh] md:top-[70vh] w-full z-10">
         <ScrollableSection title="Recommended for You" />
       </div>
     </div>
 
-    <div className="mt-[21vh]">
+    <div className="mt-[0vh] md:mt-[25vh]">
       <ScrollableSection title="Trending Now" />
       <ScrollableSection title="Top Picks" />
     </div>

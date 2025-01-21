@@ -25,3 +25,34 @@ export interface Plan {
   isActive: boolean;
   features: string[] ;
 }
+
+
+//respose api
+
+interface UserPlan {
+  id: string;
+  userId: string;
+  plan: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  sessionLimit: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GetUserPlanDetailsResponse {
+  message: boolean;
+  userPlan: UserPlan;
+}
+export interface Subscription {
+  id: string;
+  userId: string;
+  plan: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  sessionLimit: number;
+  createdAt: string;
+  updatedAt: string;
+}

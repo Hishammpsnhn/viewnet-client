@@ -16,7 +16,7 @@ const task: Task[] = [
   {
     title: "Upload And Publish Series",
     desc: "Upload Series",
-    navigate: "/upload/movie",
+    navigate: "/upload/series",
   },
   {
     title: "Start Live Streaming",

@@ -72,6 +72,19 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
           </div>
 
           <div className="mb-4">
+            <label htmlFor="releaseDate" className="block text-sm font-medium mb-2">
+              Release Date and Time
+            </label>
+            <input
+              type="datetime-local"
+              id="releaseDate"
+             // value={releaseDate}
+             // onChange={handleReleaseDateChange}
+              className="w-full p-2 border border-secondary rounded-md bg-black text-white"
+            />
+          </div>
+
+          <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Thumbnail</label>
             <div className="flex items-center">
               <input
@@ -210,9 +223,9 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
       <div className="flex justify-center">
         <button
           onClick={handleSubmit}
-          className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark"
+          className="bg-secondary text-black w-full px-6 py-2 rounded-md hover:bg-primary-dark"
         >
-          Submit
+          Upload
         </button>
       </div>
     </div>
