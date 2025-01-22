@@ -82,7 +82,7 @@ const CheckoutPage = ({
         type="submit"
         className="mt-4 bg-secondary text-black font-semibold w-full p-2 rounded"
       >
-        {!loading ? `Pay $${amount}` : "Processing..."}
+        {!loading ? `Pay ₹${amount}` : "Processing..."}
       </button>
     </form>
   );

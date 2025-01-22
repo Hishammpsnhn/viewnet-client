@@ -31,6 +31,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   const [validateOtp, setValidateOtp] = useState<string | null>(null);
   const [resendCountdown, setResendCountdown] = useState(30);
   const [loading, setLoading] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     setIsOpen(login);
@@ -99,10 +100,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
 
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setOtpLoading(true);
     setValidateOtp(null);
     const validation = otpValidator(otp);
     if (validation) {
       setValidateOtp(validation);
+      setOtpLoading(false);
       return;
     }
     try {
@@ -123,6 +126,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       }
     } catch (error) {
       console.error("Error during OTP verification:", error);
+    } finally {
+      setOtpLoading(false);
     }
   };
   const handleOtpBackspace = (index: number) => {
@@ -171,7 +176,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         const data = JSON.parse(event.data);
         console.log("Parsed data:", data);
         if (data.success) {
-          eventSource.close(); 
+          eventSource.close();
           closeModal();
           toast.success("Successfully logged in", {
             theme: "dark",
@@ -211,7 +216,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       };
 
       return () => {
-        eventSource.close(); 
+        eventSource.close();
       };
     }
   }, [isOpen, otpVisible]);
@@ -359,10 +364,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
 
                   <button
                     type="submit"
-                    className="px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100"
+                    disabled={otpLoading}
+                    className="px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100 flex items-center justify-center"
                   >
                     {" "}
-                    Verify OTP
+                    {otpLoading ? <LoadingSpinner /> : "Verify OTP"}
                   </button>
                 </form>
               </div>

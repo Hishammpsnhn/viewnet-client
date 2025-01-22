@@ -11,7 +11,7 @@ const ProfileCreation = () => {
   const { user } = useSelector((state: RootState) =>  state.user);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-
+const [loading,setLoading] = useState(false)
   const [selectedPic, setSelectedPic] = useState(
     Math.floor(profilePics.length / 2)
   );
@@ -42,10 +42,12 @@ const ProfileCreation = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
+    setLoading(true)
     const validate = useTenantLoginValidator(formData);
-    validate;
+    
     if (validate) {
       setValidationError(validate);
+      setLoading(false)
     } else {
       let data = {
         ...formData,
@@ -61,6 +63,7 @@ const ProfileCreation = () => {
           navigate("/");
         }
       }
+      setLoading(false)
     }
   };
   useEffect(() => {
@@ -70,15 +73,12 @@ const ProfileCreation = () => {
   }, [user]);
   return (
     <div className="relative h-screen flex items-center justify-center">
-      {/* Background Image with Opacity */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${bgImg})` }}
       ></div>
 
-      {/* Main Content */}
       <div className="relative bg-opacity-90 p-6 rounded-lg shadow-lg text-white">
-        {/* Profile Heading */}
         <h2 className="text-3xl font-semibold text-center text-white mb-8">
           Create Your Profile
         </h2>
@@ -148,7 +148,7 @@ const ProfileCreation = () => {
 
           <div className="mb-4">
             <p className="text-sm text-red-700">
-              {!isAdult && "You are not an adult."}
+              {!isAdult && formData.dob && "You are not an adult."}
             </p>
           </div>
 

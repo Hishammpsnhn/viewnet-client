@@ -70,7 +70,7 @@ const PaymentSuccessPage = () => {
         <>
           <p className="text-lg text-gray-700 mb-6">
             Thank you for your payment. We have successfully received your
-            payment of <span className="font-semibold">${amount}</span>.
+            payment of <span className="font-semibold">₹{amount}</span>.
           </p>
           <div className="bg-black border text-white shadow-md rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold text-gray-400 mb-4">
@@ -78,7 +78,7 @@ const PaymentSuccessPage = () => {
             </h2>
             <div className="text-gray-500">
               <p className="mb-2">
-                <span className="font-medium">Amount Paid:</span> ${amount}
+                <span className="font-medium">Amount Paid:</span> ₹{amount}
               </p>
               <p className="mb-2">
                 <span className="font-medium">Transaction ID:</span>{" "}
