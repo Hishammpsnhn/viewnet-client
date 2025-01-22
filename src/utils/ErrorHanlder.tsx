@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"; // Import AxiosError to type the error
+import { AxiosError } from "axios"; 
 import { toast } from "react-toastify";
 
 export const handleApiError = (err: unknown): void => {

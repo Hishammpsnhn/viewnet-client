@@ -15,7 +15,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children,gradient }) => {
         <div className=" fixed top-0 left-0 h-full z-10">
           <Sidebar />
         </div>
-        <main className="flex-grow overflow-y-auto">{children}</main>
+        <main className="flex-grow overflow-y-auto scrollbar-hidden">{children}</main>
       </div>
     </div>
   );

@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { otpValidator, useLoginValidator } from "../../hooks/useValidate.ts";
-import { getME, loginUser, verifyOtp } from "../../reducers/userReducer/userThunks.ts";
+import {
+  getME,
+  loginUser,
+  verifyOtp,
+} from "../../reducers/userReducer/userThunks.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { QRSave_API, QRValidate_API } from "../../api/user/qrLogin.ts";
+import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 
 interface LoginModalProps {
   login: boolean;
@@ -25,6 +30,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   const [random, setRandom] = useState<string | null>(null);
   const [validateOtp, setValidateOtp] = useState<string | null>(null);
   const [resendCountdown, setResendCountdown] = useState(30);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setIsOpen(login);
@@ -38,12 +44,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
     if (validate) {
       setEmailError(validate);
     } else {
+      setLoading(true);
       const resultAction = await dispatch(loginUser(email));
 
       if (resultAction.payload) {
         setOtpVisible(true);
         setResendCountdown(29);
       }
+      setLoading(false);
     }
   };
 
@@ -151,12 +159,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       QRSave_API(randomNumber);
       console.log(`http://localhost:5173/?token=${randomNumber}`);
 
-      const validateQRCode = async () => {
-        ("Checking QR...");
-        const data = await QRValidate_API(randomNumber);
-        data;
+      // Initialize SSE
+      const eventSource = new EventSource(
+        `http://localhost:4000/api/user/qr/${randomNumber}`
+      );
+      eventSource.onopen = () => {
+        console.log("SSE connection opened");
+      };
+      eventSource.addEventListener("validated", (event) => {
+        console.log("alidated event received:", event);
+        const data = JSON.parse(event.data);
+        console.log("Parsed data:", data);
         if (data.success) {
-          clearInterval(intervalId);
+          eventSource.close(); 
           closeModal();
           toast.success("Successfully logged in", {
             theme: "dark",
@@ -164,15 +179,71 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
           localStorage.setItem("accessToken", data.accessToken);
           localStorage.setItem("refreshToken", data.refreshToken);
           dispatch(getME());
-          console.log("Validation complete. Interval stopped.");
+          console.log("Validation complete. SSE connection closed.");
         }
+      });
+
+      eventSource.addEventListener("ping", (event) => {
+        console.log("Ping event received:", event);
+      });
+
+      // eventSource.onmessage = (event) => {
+      //   console.log(event)
+      //   const data = JSON.parse(event.data);
+      //   console.log(data)
+
+      //   if (data.success) {
+      //     eventSource.close(); // Close the connection
+      //     closeModal();
+      //     toast.success("Successfully logged in", {
+      //       theme: "dark",
+      //     });
+      //     localStorage.setItem("accessToken", data.accessToken);
+      //     localStorage.setItem("refreshToken", data.refreshToken);
+      //     dispatch(getME());
+      //     console.log("Validation complete. SSE connection closed.");
+      //   }
+      // };
+
+      eventSource.onerror = (error) => {
+        console.error("SSE error:", error);
+        eventSource.close();
       };
 
-      const intervalId = setInterval(validateQRCode, 7000);
-
-      return () => clearInterval(intervalId);
+      return () => {
+        eventSource.close(); 
+      };
     }
   }, [isOpen, otpVisible]);
+  // useEffect(() => {
+  //   if (isOpen && !otpVisible) {
+  //     const randomNumber = Math.floor(Math.random() * 1000000).toString();
+  //     setRandom(randomNumber);
+  //     QRSave_API(randomNumber);
+  //     console.log(`http://localhost:5173/?token=${randomNumber}`);
+
+  //     const validateQRCode = async () => {
+  //       ("Checking QR...");
+  //       const data = await QRValidate_API(randomNumber);
+  //       data;
+  //       if (data.success) {
+  //         clearInterval(intervalId);
+  //         closeModal();
+  //         toast.success("Successfully logged in", {
+  //           theme: "dark",
+  //         });
+  //         localStorage.setItem("accessToken", data.accessToken);
+  //         localStorage.setItem("refreshToken", data.refreshToken);
+  //         dispatch(getME());
+  //         console.log("Validation complete. Interval stopped.");
+  //       }
+  //     };
+
+  //     const intervalId = setInterval(validateQRCode, 7000);
+
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [isOpen, otpVisible]);
 
   useEffect(() => {
     if (resendCountdown > 0) {
@@ -244,10 +315,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                     and agree to the Privacy Policy & Terms of Use
                   </p>
                   <button
+                    disabled={loading}
                     type="submit"
-                    className="px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100"
+                    className={`px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100 flex justify-center items-center`}
                   >
-                    Submit
+                    {loading ? <LoadingSpinner /> : "Submit"}
                   </button>
                 </form>
               </div>
@@ -276,7 +348,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                     ))}
                   </div>
                   {!resendCountdown ? (
-                    <button type="button" onClick={handleResendOtp}>Resend OTP</button>
+                    <button type="button" onClick={handleResendOtp}>
+                      Resend OTP
+                    </button>
                   ) : (
                     <p className="w-full text-start text-sm text-gray-400">
                       Resend OTP in 00:{resendCountdown}

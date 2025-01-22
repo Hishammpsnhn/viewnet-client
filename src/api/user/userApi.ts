@@ -3,29 +3,10 @@ import { gateWayUrl } from "../baseUrls";
 import cookie from "js-cookie";
 import { handleApiError } from "../../utils/ErrorHanlder";
 import { GetUserPlanDetailsResponse } from "../../model/types/user.types";
+import { refreshAccessToken } from "../../utils/RefreshToken";
 
 
-const refreshAccessToken = async () => {
-  const refreshToken = localStorage.getItem("refreshToken");
 
-  if (!refreshToken) {
-    console.error("No refresh token available");
-    return null;
-  }
-
-  try {
-    const response = await axios.post(`${gateWayUrl}/api/user/refresh-Token`, {
-      refreshToken,
-    });
-    const { accessToken } = response.data;
-    console.log("access token created by refresth", accessToken);
-    localStorage.setItem("accessToken", accessToken);
-    return accessToken;
-  } catch (error) {
-    console.error("Failed to refresh token", error);
-    return null;
-  }
-};
 
 export const GETMe_API = async (): Promise<any | null> => {
   const accessToken = localStorage.getItem("accessToken");

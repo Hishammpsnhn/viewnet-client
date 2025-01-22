@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import NewProfile from "../../features/user/NewProfile";
 
-// Define the profile type
 interface Profile {
   _id: string;
   profilePic: string;
@@ -34,7 +33,7 @@ const ProfileEditPage = () => {
             <div
               key={item._id || index}
               className="relative group w-24 h-24 cursor-pointer"
-              onClick={() => handleOpenModal(item)} // Pass profile data
+              onClick={() => handleOpenModal(item)} 
             >
               <img
                 src={item.profilePic}
@@ -55,11 +54,10 @@ const ProfileEditPage = () => {
         </div>
       </div>
 
-      {/* Render NewProfile Modal */}
       {isModalOpen && (
         <NewProfile
           closeModal={handleCloseModal}
-          profileData={currentProfile} // Pass current profile data
+          profileData={currentProfile}
         />
       )}
     </>

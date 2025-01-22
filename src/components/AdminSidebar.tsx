@@ -7,9 +7,21 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Logout_API } from "../api/user/userApi";
+import { logout } from "../reducers/userReducer/userReducers";
+
+import { useDispatch } from "react-redux";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    const res = await Logout_API();
+    if (res.success) {
+      dispatch(logout());
+      window.location.reload()
+    }
+  };
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -58,7 +70,10 @@ const AdminSidebar = () => {
           </li>
         </ul>
         <div className="border-b-2 border-gray-700  mt-auto"></div>
-        <button className="bg-secondary px-5 py-3 rounded-xl mt-auto">
+        <button
+          className="bg-secondary px-5 py-3 rounded-xl mt-auto"
+          onClick={handleLogout}
+        >
           LOGOUT
         </button>
       </div>

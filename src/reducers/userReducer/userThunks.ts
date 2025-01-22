@@ -58,6 +58,7 @@ export const loginUser = createAsyncThunk(
       { rejectWithValue }
     ) => {
       try {
+        console.log("data",profileData)
         const response = await editProfile_API(userId, profileData);
         return response;
       } catch (error: any) {
@@ -74,6 +75,7 @@ export const loginUser = createAsyncThunk(
       { rejectWithValue }
     ) => {
       try {
+       
         const response = await ProfileCreate_API(userId, profileData);
         return response;
       } catch (error: any) {

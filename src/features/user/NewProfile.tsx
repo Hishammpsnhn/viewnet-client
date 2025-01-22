@@ -18,6 +18,7 @@ interface NewProfileProps {
 }
 
 const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
+  console.log(profileData?._id);
   const user = useSelector((state: RootState) =>  state.user);
   const dispatch = useDispatch<AppDispatch>();
   const [isAdult, setIsAdult] = useState(profileData?.isAdult || false);
@@ -36,7 +37,7 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
-
+  console.log(profileData?._id,profileData?.isAdult,profileData?.profilePic,profileData?.username)
   const handleSubmit = async () => {
     setValidError(null);
     if (!selectedProfile) {
@@ -48,14 +49,14 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
       setValidError("Please provide a valid name. ");
       return;
     }
-
+    console.log(profileData)
     if (user.user) {
       if (profileData) {
         dispatch(
           editProfile({
             userId: user.user?._id,
             profileData: {
-              id:profileData?._id,
+              id:profileData._id ,
               isAdult: isAdult,
               profilePic: selectedProfile,
               username: username,

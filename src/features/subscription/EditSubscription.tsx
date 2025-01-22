@@ -33,7 +33,7 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
       ...prevData,
       [name]:
         name === "features"
-          ? value.split(",").map((item: string) => item.trim()) // Split the input into an array of strings
+          ? value.split(",").map((item: string) => item.trim()) 
           : value,
     }));
   };

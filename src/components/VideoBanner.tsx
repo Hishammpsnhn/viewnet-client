@@ -3,9 +3,9 @@ import backgroundVideo from "../assets/Avathar.mp4";
 
 const VideoBanner = () => {
   return (
-    <div className=" w-full h-[90vh]">
+    <div className=" w-full h-[90vh] ">
       <video
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover opacity-80"
         src={backgroundVideo}
         autoPlay
         loop

@@ -17,15 +17,15 @@ export default {
       opacity: '0',
     },
     '30%': {
-      transform: 'translateX(5px)', // Slight move to the right
+      transform: 'translateX(5px)', 
       opacity: '0.4',
     },
     '60%': {
-      transform: 'translateX(10px)', // A bit more movement
+      transform: 'translateX(10px)', 
       opacity: '0.7',
     },
     '100%': {
-      transform: 'translateX(15px)', // Final position
+      transform: 'translateX(15px)', 
       opacity: '1',
     },
   },

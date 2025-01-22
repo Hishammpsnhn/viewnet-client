@@ -6,6 +6,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import PaymentModal from "../../features/subscription/PaymentModal";
 import { Payment_API } from "../../api/Sub-Plan/Plans";
 import { toast, ToastContainer } from "react-toastify";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface SubCardProps {
   planId: string;
@@ -67,12 +68,12 @@ const SubCard: React.FC<SubCardProps> = ({
 
       <h2 className="text-3xl font-bold text-white mb-4">{name}</h2>
       <div className="flex items-center justify-between mb-6">
-        <span className="text-4xl font-semibold text-yellow-400">${price}</span>
-        {discount && (
+        <span className="text-4xl font-semibold text-yellow-400">₹ {price} </span>
+        {/* {discount && (
           <span className="bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full">
             {discount}% OFF
           </span>
-        )}
+        )} */}
       </div>
       <ul className="space-y-3 mb-6">
         {features.map((feature, index) => (
@@ -93,11 +94,13 @@ const SubCard: React.FC<SubCardProps> = ({
         ))}
       </ul>
       <button
-        onClick={handlePayment}
-        className="w-full bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition duration-300 text-xl"
-      >
-        {loading ? "loading..." : "Purchase Subscription"}
-      </button>
+  disabled={loading}
+  onClick={handlePayment}
+  className="w-full bg-secondary text-black p-2 rounded-lg hover:bg-primary-dark transition duration-300 text-xl font-semibold flex items-center justify-center"
+>
+  {loading ? <LoadingSpinner /> : "BUY"}
+</button>
+
       {isModalOpen && (
         <PaymentModal
           clientSecret={clientSecret}

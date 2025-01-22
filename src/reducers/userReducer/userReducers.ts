@@ -111,16 +111,15 @@ const userSlice = createSlice({
         state.loading = false;
         console.log(action.payload);
 
-        // Update the user profiles in the state
         if (state.user) {
           const updatedProfileIndex = state.user.profiles.findIndex(
-            (profile: any) => profile._id === action.payload.user.id
+            (profile: any) => profile._id === action.payload.user._id
           );
           console.log(updatedProfileIndex);
           if (updatedProfileIndex !== -1) {
             state.user.profiles[updatedProfileIndex] = action.payload.user;
           }
-          if(state.selectedProfile._id === action.payload.user.id){
+          if(state.selectedProfile._id === action.payload.user._id){
             state.selectedProfile = action.payload.user;
           }
         }
