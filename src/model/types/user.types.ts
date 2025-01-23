@@ -24,6 +24,9 @@ export interface Plan {
   duration: number;
   isActive: boolean;
   features: string[] ;
+  live:boolean,
+  uhd:boolean,
+  ads:boolean,
 }
 
 

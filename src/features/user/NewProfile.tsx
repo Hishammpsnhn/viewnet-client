@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { profilePics } from "../../utils/mockData";
-import { editProfile, updateUserProfile } from "../../reducers/userReducer/userThunks";
+import {
+  editProfile,
+  updateUserProfile,
+} from "../../reducers/userReducer/userThunks";
 import { useNavigate } from "react-router-dom";
-
+import { newSecondProfileCreation } from "../../utils/Validation";
+import * as Yup from "yup";
 interface Profile {
   _id: string;
   profilePic: string;
@@ -14,12 +18,12 @@ interface Profile {
 
 interface NewProfileProps {
   closeModal: () => void;
-  profileData?: Profile | null; 
+  profileData?: Profile | null;
 }
 
 const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
   console.log(profileData?._id);
-  const user = useSelector((state: RootState) =>  state.user);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const [isAdult, setIsAdult] = useState(profileData?.isAdult || false);
   const [username, setUsername] = useState(profileData?.username || "");
@@ -27,9 +31,11 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
     profileData?.profilePic || null
   );
   const [availableProfile, setAvailableProfile] = useState<string[] | []>([]);
-  const [validateError, setValidError] = useState<string | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const handleCheckboxChange = () => {
     setIsAdult(!isAdult);
   };
@@ -37,47 +43,56 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
-  console.log(profileData?._id,profileData?.isAdult,profileData?.profilePic,profileData?.username)
-  const handleSubmit = async () => {
-    setValidError(null);
-    if (!selectedProfile) {
-      setValidError("Please select a profile. ");
-      return;
-    }
 
-    if (username.length < 3) {
-      setValidError("Please provide a valid name. ");
-      return;
-    }
-    console.log(profileData)
-    if (user.user) {
-      if (profileData) {
-        dispatch(
-          editProfile({
-            userId: user.user?._id,
-            profileData: {
-              id:profileData._id ,
-              isAdult: isAdult,
-              profilePic: selectedProfile,
-              username: username,
-            },
-          })
-        );
-      } else {
-        await dispatch(
-          updateUserProfile({
-            userId: user.user?._id,
-            profileData: {
-              isAdult: isAdult,
-              profilePic: selectedProfile,
-              username: username,
-            },
-          })
-        ).unwrap();
-        navigate('/')
+  const handleSubmit = async () => {
+    try {
+      await newSecondProfileCreation.validate(
+        {
+          profile: selectedProfile,
+          username,
+        },
+        { abortEarly: false }
+      );
+      if (user.user && selectedProfile) {
+        if (profileData) {
+          dispatch(
+            editProfile({
+              userId: user.user?._id,
+              profileData: {
+                id: profileData._id,
+                isAdult: isAdult,
+                profilePic: selectedProfile,
+                username: username,
+              },
+            })
+          );
+        } else {
+          await dispatch(
+            updateUserProfile({
+              userId: user.user?._id,
+              profileData: {
+                isAdult: isAdult,
+                profilePic: selectedProfile,
+                username: username,
+              },
+            })
+          ).unwrap();
+          navigate("/");
+        }
+      }
+      closeModal();
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Yup.ValidationError) {
+        console.log("Yup validation error:", error);
+        const errors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) errors[err.path] = err.message;
+        });
+        console.log(errors);
+        setValidationErrors(errors);
       }
     }
-    closeModal();
   };
 
   useEffect(() => {
@@ -109,8 +124,10 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
         )}
 
         <div className="flex flex-col items-center">
-          {validateError && (
-            <p className="text-sm text-red-700 mb-2 w-full">{validateError}</p>
+          {validationErrors.profile && (
+            <p className="text-sm text-red-700 mb-2 w-full">
+              {validationErrors.profile}
+            </p>
           )}
           <div className="flex gap-4 h-[15vh]">
             {availableProfile.map((item, index) => (
@@ -132,6 +149,11 @@ const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
         </div>
 
         <div className="mb-4">
+          {validationErrors.username && (
+            <p className="text-sm text-red-700 mb-2 w-full">
+              {validationErrors.username}
+            </p>
+          )}
           <input
             type="text"
             id="username"

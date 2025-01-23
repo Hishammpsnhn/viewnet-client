@@ -24,6 +24,9 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
     duration: subscriptionData?.duration || 0,
     features: subscriptionData?.features || [],
     isActive: subscriptionData?.isActive || true,
+    live: subscriptionData?.live || false,
+    uhd: subscriptionData?.uhd || false,
+    ads: subscriptionData?.ads || false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,19 +36,22 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
       ...prevData,
       [name]:
         name === "features"
-          ? value.split(",").map((item: string) => item.trim()) 
+          ? value.split(",").map((item: string) => item.trim())
           : value,
     }));
   };
 
-  const handleCheckboxChange = () => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    console.log(name, checked);
     setFormData((prevData) => ({
       ...prevData,
-      isActive: !prevData.isActive,
+      [name]: checked,
     }));
   };
   const handleSubmit = () => {
-    onSubmit(formData); 
+    console.log(formData);
+    onSubmit(formData);
   };
 
   return (
@@ -140,7 +146,51 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
               />
             </div>
           </div>
-
+          <div className="w-full">
+            <label className="inline-flex items-center cursor-pointer ">
+              <input
+                type="checkbox"
+                checked={formData.ads}
+                onChange={handleCheckboxChange}
+                name="ads"
+                className="sr-only peer"
+              />
+              <div className="relative w-11 h-6 bg-black peer-focus:outline-none peer-focus:ring-4   rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white  after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-secondary"></div>
+              <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                Ads Free
+              </span>
+            </label>
+          </div>
+          <div className="w-full">
+            <label className="inline-flex items-center cursor-pointer ">
+              <input
+                type="checkbox"
+                checked={formData.uhd}
+                onChange={handleCheckboxChange}
+                name="uhd"
+                className="sr-only peer"
+              />
+              <div className="relative w-11 h-6 bg-black peer-focus:outline-none peer-focus:ring-4   rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white  after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-secondary"></div>
+              <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                4K Access
+              </span>
+            </label>
+          </div>
+          <div className="w-full">
+            <label className="inline-flex items-center cursor-pointer ">
+              <input
+                type="checkbox"
+                name="live"
+                checked={formData.live}
+                onChange={handleCheckboxChange}
+                className="sr-only peer"
+              />
+              <div className="relative w-11 h-6 bg-black peer-focus:outline-none peer-focus:ring-4   rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white  after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-secondary"></div>
+              <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                Live Streaming Available
+              </span>
+            </label>
+          </div>
           <div className="flex items-center justify-between mb-3 w-full">
             <div>
               <label htmlFor="isActive" className="text-sm text-white">
@@ -151,6 +201,7 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
               <input
                 type="checkbox"
                 id="isActive"
+                name="isActive"
                 checked={formData.isActive}
                 onChange={handleCheckboxChange}
                 className="mr-2"

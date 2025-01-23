@@ -5,9 +5,6 @@ import { handleApiError } from "../../utils/ErrorHanlder";
 import { GetUserPlanDetailsResponse } from "../../model/types/user.types";
 import { refreshAccessToken } from "../../utils/RefreshToken";
 
-
-
-
 export const GETMe_API = async (): Promise<any | null> => {
   const accessToken = localStorage.getItem("accessToken");
   try {
@@ -85,13 +82,22 @@ export const Logout_API = async () => {
     console.error("Error:", error);
   }
 };
-export const GETAllUsers_API = async (): Promise<any | null> => {
+export const GETAllUsers_API = async (
+  page: number,
+  limit: number = 5,
+  search:string
+): Promise<any | null> => {
   const accessToken = localStorage.getItem("accessToken");
   try {
     const { data } = await axios.get(`${gateWayUrl}/api/user/users`, {
       withCredentials: true,
       headers: {
         Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        page,
+        limit,
+        search,
       },
     });
     return data;
@@ -100,6 +106,25 @@ export const GETAllUsers_API = async (): Promise<any | null> => {
     handleApiError(error);
   }
 };
+export const UserBySearch_API = async (query: string): Promise<any | null> => {
+  const accessToken = localStorage.getItem("accessToken");
+  try {
+    const { data } = await axios.get(`${gateWayUrl}/api/user/users/query`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        query,
+      },
+    });
+    return data;
+  } catch (error: any) {
+    console.log(error);
+    handleApiError(error);
+  }
+};
+
 export const UpdateUser_API = async (id: string, newData: any) => {
   const accessToken = localStorage.getItem("accessToken");
   try {

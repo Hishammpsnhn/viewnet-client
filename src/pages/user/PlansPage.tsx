@@ -129,6 +129,10 @@ console.log(plans)
             discount={10}
             features={plan.features}
             onEdit={() => handleEditClick(plan)}
+            ads={plan.ads}
+            live={plan.live}
+            uhd={plan.uhd}
+            sessionLimit={plan.sessionLimit}
           />
         ))}
       </div>

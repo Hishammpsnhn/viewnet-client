@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { QRSave_API, QRValidate_API } from "../../api/user/qrLogin.ts";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import { emailVerify } from "../../utils/Validation.tsx";
+import * as Yup from "yup";
 
 interface LoginModalProps {
   login: boolean;
@@ -26,12 +28,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
   const [otpVisible, setOtpVisible] = useState(false);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [random, setRandom] = useState<string | null>(null);
   const [validateOtp, setValidateOtp] = useState<string | null>(null);
   const [resendCountdown, setResendCountdown] = useState(30);
   const [loading, setLoading] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     setIsOpen(login);
@@ -39,12 +43,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setEmailError(null);
-    const validate = useLoginValidator({ email });
+    try {
+      await emailVerify.validate({ email }, { abortEarly: false });
 
-    if (validate) {
-      setEmailError(validate);
-    } else {
       setLoading(true);
       const resultAction = await dispatch(loginUser(email));
 
@@ -53,27 +54,49 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         setResendCountdown(29);
       }
       setLoading(false);
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) errors[err.path] = err.message;
+        });
+        setValidationErrors(errors);
+      }
     }
   };
 
   const handleResendOtp = async () => {
-    setEmailError(null);
     setValidateOtp(null);
     setOtp(new Array(4).fill(""));
-
-    const validate = useLoginValidator({ email });
-
-    if (validate) {
-      setEmailError(validate);
-    } else {
+    try {
+      await emailVerify.validate({ email }, { abortEarly: false });
       const resultAction = await dispatch(loginUser(email));
-
       if (resultAction.payload) {
         setResendCountdown(29);
       } else {
         toast.error("something went wrong");
       }
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) errors[err.path] = err.message;
+        });
+        setValidationErrors(errors);
+      }
     }
+
+    // if (validate) {
+    //   setEmailError(validate);
+    // } else {
+    //   const resultAction = await dispatch(loginUser(email));
+
+    //   if (resultAction.payload) {
+    //     setResendCountdown(29);
+    //   } else {
+    //     toast.error("something went wrong");
+    //   }
+    // }
   };
 
   const handleOtpChange = (
@@ -151,7 +174,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
     setIsOpen(false);
     setOtpVisible(false);
     setEmail("");
-    setEmailError(null);
     setRandom(null);
     setValidateOtp(null);
     setOtp(new Array(4).fill(""));
@@ -309,11 +331,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     className={`p-3 text-md border ${
-                      emailError ? "border-red-500" : "border-secondary"
+                      validationErrors.email
+                        ? "border-red-500"
+                        : "border-secondary"
                     } bg-black rounded-md w-full`}
                   />
-                  {emailError && (
-                    <p className="text-red-500 text-xs mt-1">{emailError}</p>
+                  {validationErrors.email && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {validationErrors.email}
+                    </p>
                   )}
                   <p className="text-gray-600 text-[10px]">
                     By proceeding you confirm that you are above 18 years of age
@@ -352,6 +378,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                       />
                     ))}
                   </div>
+
                   {!resendCountdown ? (
                     <button type="button" onClick={handleResendOtp}>
                       Resend OTP
