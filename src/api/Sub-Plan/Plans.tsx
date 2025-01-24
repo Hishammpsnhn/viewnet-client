@@ -4,6 +4,15 @@ import { Plan } from "../../model/types/user.types";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../utils/ErrorHanlder";
 
+const handleError = (error: any) => {
+  if (error.response?.status === 403) {
+    window.location.href = "/";
+  } else {
+    console.error("Error:", error);
+    handleApiError(error);
+  }
+};
+
 export interface PlansResponse {
   success: boolean;
   plan: Plan;
@@ -36,7 +45,7 @@ export const GetPlans_API = async (): Promise<GetPlansResponse> => {
 };
 export const CreatePlans_API = async (
   planData: Plan
-): Promise<PlansResponse> => {
+) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -58,15 +67,13 @@ export const CreatePlans_API = async (
     return data;
   } catch (error: any) {
     console.error("Error creating profile:", error);
-    throw new Error(
-      error.response?.data?.message || "An unexpected error occurred"
-    );
+    handleError(error)
   }
 };
 export const UpdatePlans_API = async (
   planId: string,
   planData: Plan
-): Promise<PlansResponse> => {
+)=> {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -87,9 +94,7 @@ export const UpdatePlans_API = async (
     return data;
   } catch (error: any) {
     console.error("Error creating profile:", error);
-    throw new Error(
-      error.response?.data?.message || "An unexpected error occurred"
-    );
+    handleError(error)
   }
 };
 

@@ -9,7 +9,9 @@ import { Subscription } from "../../model/types/user.types";
 import { toast, ToastContainer } from "react-toastify";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import GenericTable from "../../components/GenericTable";
-
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+import LoadingSpinner from "../../components/LoadingSpinner";
 interface User {
   _id: string;
   email: string;
@@ -26,8 +28,9 @@ const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [searchQuery,setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
   const [selectedUserPlan, setSelectedUserPlan] = useState<Subscription | null>(
     null
   );
@@ -68,19 +71,26 @@ const UsersPage = () => {
     setSelectedUser(user);
     setOpen(true);
   };
- 
+
   useEffect(() => {
     const fetchUsers = async () => {
-      if(searchQuery != ""){
-        setPage(1)
+      if (searchQuery != "") {
+        setPage(1);
       }
-      const users = await GETAllUsers_API(page,5,searchQuery);
-      if (users.success) {
-        setUsers(users.users);
+      setLoading(true);
+      try {
+        const users = await GETAllUsers_API(page, 5, searchQuery);
+        if (users.success) {
+          setUsers(users.users);
+        }
+      } catch (error) {
+        toast.error("Error fetching users");
+      } finally {
+        setLoading(false);
       }
     };
     fetchUsers();
-  }, [page,searchQuery]);
+  }, [page, searchQuery]);
 
   const columns: Column<User>[] = [
     { header: "ID", accessor: "_id" },
@@ -123,15 +133,34 @@ const UsersPage = () => {
           type="text"
           placeholder="Search..."
           className="bg-black border-secondary p-2 text-lg my-5 border rounded-md"
-         value={searchQuery}
-         onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
-
       </div>
-      <GenericTable<User> data={users} columns={columns} />
-      <div className="flex justify-between">
-        <button disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>Prev</button>
-        <button disabled={users.length < 5} onClick={() => setPage((prev) => prev + 1)}>next</button>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <GenericTable<User> data={users} columns={columns} />
+      )}
+      <div className="flex justify-end mt-5">
+        <button
+          disabled={page <= 1}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={`bg-slate-400 p-2 rounded-sm mr-3 ${
+            page <= 1 && "opacity-60"
+          }`}
+        >
+          <IoIosArrowBack />{" "}
+        </button>
+        <button
+          disabled={users.length < 5}
+          onClick={() => setPage((prev) => prev + 1)}
+          className={`bg-slate-400 p-2 rounded-sm  ${
+            users.length < 5 && "opacity-60"
+          }`}
+        >
+          <IoIosArrowForward />
+        </button>
       </div>
 
       <ConfirmDialog

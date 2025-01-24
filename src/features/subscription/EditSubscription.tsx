@@ -6,14 +6,14 @@ interface EditSubscriptionProps {
   closeModal: () => void;
   subscriptionData: Plan | null;
   onSubmit: (subscriptionData: any) => void;
-  validateError: string | null;
+  validationErrors: any;
 }
 
 const EditSubscription: React.FC<EditSubscriptionProps> = ({
   closeModal,
   subscriptionData,
   onSubmit,
-  validateError,
+  validationErrors,
 }) => {
   const [formData, setFormData] = useState<Plan>({
     id: subscriptionData?.id || "",
@@ -22,7 +22,6 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
     price: subscriptionData?.price || 0,
     sessionLimit: subscriptionData?.sessionLimit || 0,
     duration: subscriptionData?.duration || 0,
-    features: subscriptionData?.features || [],
     isActive: subscriptionData?.isActive || true,
     live: subscriptionData?.live || false,
     uhd: subscriptionData?.uhd || false,
@@ -34,10 +33,7 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
 
     setFormData((prevData) => ({
       ...prevData,
-      [name]:
-        name === "features"
-          ? value.split(",").map((item: string) => item.trim())
-          : value,
+      [name]: value,
     }));
   };
 
@@ -69,11 +65,12 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
         </h2>
 
         <div className="flex flex-col items-center">
-          {validateError && (
-            <p className="text-sm text-red-700 mb-2 w-full">{validateError}</p>
-          )}
-
           <div className="mb-4 w-full">
+            {validationErrors.name && (
+              <p className="text-sm text-red-700 mb-2 w-full">
+                {validationErrors.name}
+              </p>
+            )}
             <input
               type="text"
               name="name"
@@ -85,6 +82,11 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
           </div>
 
           <div className="mb-4 w-full">
+            {validationErrors.description && (
+              <p className="text-sm text-red-700 mb-2 w-full">
+                {validationErrors.description}
+              </p>
+            )}
             <input
               type="text"
               name="description"
@@ -98,6 +100,11 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
           <div className="flex flex-wrap gap-4 w-full mb-4">
             <div className="w-full md:w-[48%]">
               <label className="text-white">Price</label>
+              {validationErrors.price && (
+                <p className="text-sm text-red-700 mb-2 w-full">
+                  {validationErrors.price}
+                </p>
+              )}
               <input
                 type="number"
                 name="price"
@@ -110,6 +117,11 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
 
             <div className="w-full md:w-[48%]">
               <label className="text-white">Device Limit</label>
+              {validationErrors.sessionLimit && (
+                <p className="text-sm text-red-700 mb-2 w-full">
+                  {validationErrors.sessionLimit}
+                </p>
+              )}
               <input
                 type="number"
                 name="sessionLimit"
@@ -124,24 +136,17 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
           <div className="flex flex-wrap gap-4 w-full mb-4">
             <div className="w-full md:w-[48%]">
               <label className="text-white">Duration (In Days)</label>
+              {validationErrors.duration && (
+                <p className="text-sm text-red-700 mb-2 w-full">
+                  {validationErrors.duration}
+                </p>
+              )}
               <input
                 type="number"
                 name="duration"
                 value={formData.duration}
                 onChange={handleInputChange}
                 placeholder="Enter duration (in days)"
-                className="w-full p-2 mt-1 border border-secondary bg-black text-white rounded-md"
-              />
-            </div>
-
-            <div className="w-full md:w-[48%]">
-              <label className="text-white">Features</label>
-              <input
-                type="text"
-                name="features"
-                value={formData.features.join(", ")}
-                onChange={handleInputChange}
-                placeholder="Enter features (comma separated)"
                 className="w-full p-2 mt-1 border border-secondary bg-black text-white rounded-md"
               />
             </div>

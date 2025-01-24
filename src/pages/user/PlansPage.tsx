@@ -9,14 +9,17 @@ import {
 import { Plan } from "../../model/types/user.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { subscriptionPlan } from "../../utils/Validation";
+import * as Yup from "yup";
 
 const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [plans, setPlans] = useState<Plan[] | []>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [validateError, setValidError] = useState<string | null>(null);
-  const { user } = useSelector((state: RootState) =>  state.user);
-
+  const { user } = useSelector((state: RootState) => state.user);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const handleAddClick = () => {
     setIsModalOpen(true);
   };
@@ -28,50 +31,41 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPlan(null);
+    setValidationErrors({})
   };
-  const hanldeClick = async (formData: Plan) => {
+  const handleSubmit = async (formData: Plan) => {
+    setValidationErrors({})
 
-    setValidError(null);
-
-    // Validation checks
-    if (!formData.name || formData.name.length < 3) {
-      setValidError("Please provide a valid subscription name.");
-      return;
-    }
-
-    if (formData.price <= 0) {
-      setValidError("Price must be greater than 0.");
-      return;
-    }
-
-    if (formData.sessionLimit <= 0) {
-      setValidError("Session limit must be greater than 0.");
-      return;
-    }
-
-    if (formData.duration <= 0) {
-      setValidError("Duration must be greater than 0.");
-      return;
-    }
-    if (selectedPlan) {
-      const updatedPlan = await UpdatePlans_API(formData.id, formData);
-      if (updatedPlan.success) {
-        setPlans((prevPlans) =>
-          prevPlans.map((plan) =>
-            plan.id === formData.id ? { ...plan, ...updatedPlan.plan } : plan
-          )
-        );
+    try {
+      await subscriptionPlan.validate(formData, { abortEarly: false });
+      if (selectedPlan) {
+        const updatedPlan = await UpdatePlans_API(formData.id, formData);
+        if (updatedPlan.success) {
+          closeModal();
+          setPlans((prevPlans) =>
+            prevPlans.map((plan) =>
+              plan.id === formData.id ? { ...plan, ...updatedPlan.plan } : plan
+            )
+          );
+        }
+      } else {
+        const res = await CreatePlans_API(formData);
+        console.log(res);
+        if (res.success) {
+          closeModal();
+          setPlans((prevPlans) => [...prevPlans, res.plan]);
+        }
+        console.log(formData);
       }
-    } else {
-      const res = await CreatePlans_API(formData);
-      console.log(res);
-      if (res.success) {
-        setPlans((prevPlans) => [...prevPlans, res.plan]);
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) errors[err.path] = err.message;
+        });
+        setValidationErrors(errors);
       }
-      console.log(formData);
     }
-
-    closeModal();
   };
   useEffect(() => {
     const fetchPlans = async () => {
@@ -88,7 +82,7 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
 
     fetchPlans();
   }, []);
-console.log(plans)
+  console.log(plans);
   return (
     <div
       className={`min-h-screen py-8 px-4 ${
@@ -111,15 +105,16 @@ console.log(plans)
 
       {isModalOpen && (
         <SubscriptionModal
-          onSubmit={hanldeClick}
+          onSubmit={handleSubmit}
           subscriptionData={selectedPlan}
           closeModal={closeModal}
-          validateError={validateError}
+          //validateError={validateError}
+          validationErrors={validationErrors}
         />
       )}
 
       <div className="flex flex-wrap justify-center gap-8">
-        {plans.map((plan) => (
+        {plans?.map((plan) => (
           <SubCard
             key={plan.id}
             planId={plan.id}
@@ -127,7 +122,6 @@ console.log(plans)
             name={plan.name}
             price={plan.price.toString()}
             discount={10}
-            features={plan.features}
             onEdit={() => handleEditClick(plan)}
             ads={plan.ads}
             live={plan.live}

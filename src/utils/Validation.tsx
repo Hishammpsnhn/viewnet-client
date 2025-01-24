@@ -32,5 +32,29 @@ export const emailVerify = Yup.object({
   email: Yup.string()
     .email("Invalid email format")
     .required("Email is required"),
- 
+});
+export const subscriptionPlan = Yup.object({
+  name: Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+    .max(50, "Name cannot exceed 50 characters")
+    .matches(
+      /^[a-zA-Z0-9\s]+$/,
+      "Name can only contain letters, numbers, and spaces"
+    ),
+  description: Yup.string().required("Description is required"),
+  price: Yup.number()
+    .required("Price is required")
+    .positive("Price must be a positive number")
+    .max(10000, "Price cannot exceed 10,000"),
+  sessionLimit: Yup.number()
+    .required("Session limit is required")
+    .integer("Session limit must be a whole number")
+    .positive("Session limit must be a positive number")
+    .max(100, "Session limit cannot exceed 100"),
+  duration: Yup.number()
+    .required("Duration is required")
+    .integer("Duration must be a whole number")
+    .positive("Duration must be a positive number")
+    .max(365, "Duration cannot exceed 365 days"),
 });

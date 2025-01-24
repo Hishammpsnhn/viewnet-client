@@ -23,7 +23,6 @@ export interface Plan {
   sessionLimit: number;
   duration: number;
   isActive: boolean;
-  features: string[] ;
   live:boolean,
   uhd:boolean,
   ads:boolean,
