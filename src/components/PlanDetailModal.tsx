@@ -34,7 +34,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Plan Details
         </h2>
-        <h2 className="text-xl text-red-800 font-semibold mb-4 text-center">{daysLeft} Left</h2>
+        <h2 className="text-xl text-red-800 font-semibold mb-4 text-center">{daysLeft} Days Left</h2>
 
         <div className="mb-4">
           <div className="flex justify-between mb-2">

@@ -18,6 +18,7 @@ import MovieDetailPage from "../pages/user/MovieDetailPage";
 import Details from "../components/Details";
 import Related from "../components/Related";
 import HistoryPage from "../pages/user/HistoryPage";
+import MyPlanPage from "../pages/user/MyplansPage";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -117,6 +118,14 @@ const AppRoutes = () => {
         element={
           <SecondaryLayout gradient={true}>
             <PlansPage isAdmin={false} />
+          </SecondaryLayout>
+        }
+      />
+      <Route
+        path="/settings/my-plans"
+        element={
+          <SecondaryLayout gradient={true}>
+            <MyPlanPage  />
           </SecondaryLayout>
         }
       />

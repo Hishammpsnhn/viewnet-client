@@ -9,7 +9,9 @@ import {
 } from "../../reducers/userReducer/userThunks";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../reducers/userReducer/userReducers";
-import { Logout_API } from "../../api/user/userApi";
+import { GETUserPlanDetails_API, Logout_API } from "../../api/user/userApi";
+import { UserPlan } from "../../model/types/plan.types";
+import PlanDetails from "../../components/subscription/PlanDetails";
 // import { logout } from "../../reducers/userReducer/userActions"; // Assuming you have a logout action
 
 const Settings = () => {
@@ -20,6 +22,7 @@ const Settings = () => {
   const [selectedProfile, setSelectedProfile] = useState(
     user.user?.defaultProfile
   );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -48,7 +51,7 @@ const Settings = () => {
   }, [user.user?.defaultProfile, selectedProfile]);
 
   return (
-    <div className="px-10 py-5 bg-gradient-to-b  to-primary from-gray-900">
+    <div className="px-10 py-5 bg-gradient-to-b  to-primary from-gray-900" >
       <div>
         <h2 className="text-2xl font-semibold mb-5">Settings</h2>
         <div className="flex justify-between mb-5 align-center">
@@ -98,6 +101,10 @@ const Settings = () => {
           >
             Edit
           </button>
+        </div>
+        <div className="flex justify-between mt-10">
+          <p className="font-medium capitalize">my plans</p>
+          <button className="bg-black border border-secondary px-4 py-1 rounded-lg" onClick={()=> navigate('/settings/my-plans')} >Check</button>
         </div>
       </div>
 

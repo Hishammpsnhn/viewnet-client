@@ -12,6 +12,7 @@ import GenericTable from "../../components/GenericTable";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { UserPlan } from "../../model/types/plan.types";
 interface User {
   _id: string;
   email: string;
@@ -31,7 +32,7 @@ const UsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedUserPlan, setSelectedUserPlan] = useState<Subscription | null>(
+  const [selectedUserPlan, setSelectedUserPlan] = useState<UserPlan | null>(
     null
   );
 
@@ -56,9 +57,9 @@ const UsersPage = () => {
 
   const handlePlanDetails = async (userId: string) => {
     const data = await GETUserPlanDetails_API(userId);
-    if (data.success) {
-      if (data.userPlan) {
-        setSelectedUserPlan(data.userPlan);
+    if ( data && data.success) {
+      if (data.userPlan.length) {
+        setSelectedUserPlan(data.userPlan[0]);
       } else {
         toast.error("User does not have a subscription.");
       }

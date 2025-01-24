@@ -10,63 +10,17 @@ const PaymentSuccessPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Extract the query parameters
   const queryParams = new URLSearchParams(location.search);
   const amount = queryParams.get("amount");
-  const planId = queryParams.get("plan_id");
   const paymentIntent = queryParams.get("payment_intent");
-  const paymentIntentClientSecret = queryParams.get(
-    "payment_intent_client_secret"
-  );
+  
 
-  const [paymentStatus, setPaymentStatus] = useState<string | null>("Payment Successful");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const apiCallFlag = useRef(false); 
-
-  useEffect(() => {
-    const verifyPaymentStatus = async () => {
-      console.log("verifyPaymentStatus called");
-      console.log(planId, user, paymentIntent);
-      try {
-        if (!planId || !user || !paymentIntent) {
-          return;
-        }
-        const response = await Payment_Success_API(planId, user._id, paymentIntent);
-
-        if (response.data.status === "succeeded") {
-          setPaymentStatus("Payment Successful");
-        } else {
-          setPaymentStatus("Payment Failed");
-        }
-      } catch (err) {
-        console.error("Error verifying payment:", err);
-        setError("Failed to verify payment status.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!apiCallFlag.current && paymentIntent && paymentIntentClientSecret) {
-      apiCallFlag.current = true; 
-      verifyPaymentStatus();
-    }
-
-    console.log(paymentIntent, paymentIntentClientSecret, paymentIntent);
-  }, [planId, user, paymentIntent, paymentIntentClientSecret]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary p-4">
       <h1 className="text-3xl font-bold text-green-600 mb-4">
-        Payment{" "}
-        {paymentStatus === "Payment Successful" ? "Successful" : "Failed"}! 🎉
+        Payment Successful! 🎉
       </h1>
-      {paymentStatus === "Payment Successful" ? (
         <>
           <p className="text-lg text-gray-700 mb-6">
             Thank you for your payment. We have successfully received your
@@ -91,11 +45,7 @@ const PaymentSuccessPage = () => {
             </div>
           </div>
         </>
-      ) : (
-        <p className="text-lg text-red-500 mb-6">
-          {error || "Payment failed. Please try again."}
-        </p>
-      )}
+
       <button
         className="mt-6 px-6 py-2 bg-secondary font-medium rounded hover:opacity-90 text-black transition duration-200"
         onClick={() => navigate("/")}

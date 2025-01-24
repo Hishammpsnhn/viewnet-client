@@ -1,7 +1,6 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
 import { Plan } from "../../model/types/user.types";
-import { toast } from "react-toastify";
 import { handleApiError } from "../../utils/ErrorHanlder";
 
 const handleError = (error: any) => {
@@ -33,7 +32,6 @@ export const GetPlans_API = async (): Promise<GetPlansResponse> => {
     if (!accessToken) {
       throw new Error("Access token is missing");
     }
-    accessToken;
     const { data } = await axios.get(`${gateWayUrl}/api/subscription`);
     return data;
   } catch (error: any) {
@@ -43,9 +41,7 @@ export const GetPlans_API = async (): Promise<GetPlansResponse> => {
     );
   }
 };
-export const CreatePlans_API = async (
-  planData: Plan
-) => {
+export const CreatePlans_API = async (planData: Plan) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -67,13 +63,10 @@ export const CreatePlans_API = async (
     return data;
   } catch (error: any) {
     console.error("Error creating profile:", error);
-    handleError(error)
+    handleError(error);
   }
 };
-export const UpdatePlans_API = async (
-  planId: string,
-  planData: Plan
-)=> {
+export const UpdatePlans_API = async (planId: string, planData: Plan) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -94,9 +87,10 @@ export const UpdatePlans_API = async (
     return data;
   } catch (error: any) {
     console.error("Error creating profile:", error);
-    handleError(error)
+    handleError(error);
   }
 };
+
 
 //payment
 export const Payment_Success_API = async (
@@ -154,7 +148,7 @@ export const Payment_API = async (
     );
     return data;
   } catch (err: unknown) {
-    console.log(err)
+    console.log(err);
     handleApiError(err);
     throw new Error("Payment API request failed");
   }

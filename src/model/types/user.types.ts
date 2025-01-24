@@ -58,3 +58,4 @@ export interface Subscription {
   createdAt: string;
   updatedAt: string;
 }
+

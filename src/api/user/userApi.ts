@@ -1,9 +1,13 @@
 import axios from "axios";
 import { gateWayUrl } from "../baseUrls";
-import cookie from "js-cookie";
 import { handleApiError } from "../../utils/ErrorHanlder";
-import { GetUserPlanDetailsResponse } from "../../model/types/user.types";
 import { refreshAccessToken } from "../../utils/RefreshToken";
+import { UserPlan } from "../../model/types/plan.types";
+
+interface GetUserPlanDetailsResponse {
+  success: boolean;
+  userPlan: UserPlan[];
+}
 
 export const GETMe_API = async (): Promise<any | null> => {
   const accessToken = localStorage.getItem("accessToken");
@@ -149,7 +153,7 @@ export const UpdateUser_API = async (id: string, newData: any) => {
 
 export const GETUserPlanDetails_API = async (
   userId: string
-): Promise<any | undefined> => {
+):Promise<GetUserPlanDetailsResponse | undefined> => {
   const accessToken = localStorage.getItem("accessToken");
   try {
     const { data } = await axios.get(
