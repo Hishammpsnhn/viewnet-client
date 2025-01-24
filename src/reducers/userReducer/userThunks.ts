@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GETMe_API, login_API, OtpVerify_API } from "../../api/user/userApi";
-import { editProfile_API, ProfileCreate_API, updateProfile_API } from "../../api/user/profileApis";
+import { GETMe_API, login_API, OtpVerify_API } from "../../api/userApi";
+import { editProfile_API, ProfileCreate_API, updateProfile_API } from "../../api/profileApis";
 
 export const loginUser = createAsyncThunk(
     "user/login",

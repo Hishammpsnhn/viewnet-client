@@ -4,7 +4,7 @@ import { RootState } from "../../store";
 import { MdEdit } from "react-icons/md";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentModal from "../../features/subscription/PaymentModal";
-import { Payment_API } from "../../api/Sub-Plan/Plans";
+import { Payment_API } from "../../api/PlansApi";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner";
 

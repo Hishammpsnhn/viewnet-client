@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CreatePlans_API, UpdatePlans_API } from "../../api/Sub-Plan/Plans";
+import { CreatePlans_API, UpdatePlans_API } from "../../api/PlansApi";
 import { Plan } from "../../model/types/user.types";
 
 interface EditSubscriptionProps {

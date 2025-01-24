@@ -3,7 +3,7 @@ import {
   GETAllUsers_API,
   GETUserPlanDetails_API,
   UpdateUser_API,
-} from "../../api/user/userApi";
+} from "../../api/userApi";
 import PlanDetailModal from "../../components/PlanDetailModal";
 import { Subscription } from "../../model/types/user.types";
 import { toast, ToastContainer } from "react-toastify";

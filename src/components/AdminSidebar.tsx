@@ -7,7 +7,7 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Logout_API } from "../api/user/userApi";
+import { Logout_API } from "../api/userApi";
 import { logout } from "../reducers/userReducer/userReducers";
 
 import { useDispatch } from "react-redux";

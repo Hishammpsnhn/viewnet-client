@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store.ts";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { QRSave_API, QRValidate_API } from "../../api/user/qrLogin.ts";
+import { QRSave_API, QRValidate_API } from "../../api/qrLogin.ts";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import { emailVerify } from "../../utils/Validation.tsx";
 import * as Yup from "yup";

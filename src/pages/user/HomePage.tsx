@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { QRScanner_API } from "../../api/user/qrLogin";
+import { QRScanner_API } from "../../api/qrLogin";
 import MovieCard from "../../components/card/MovieCard";
 import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";

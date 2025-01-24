@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UserPlan } from "../../model/types/plan.types";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-import { GETUserPlanDetails_API } from "../../api/user/userApi";
+import { GETUserPlanDetails_API } from "../../api/userApi";
 import PlanDetails from "../../components/subscription/PlanDetails";
 
 const MyPlanPage = () => {

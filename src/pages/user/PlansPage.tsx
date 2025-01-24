@@ -5,7 +5,7 @@ import {
   CreatePlans_API,
   GetPlans_API,
   UpdatePlans_API,
-} from "../../api/Sub-Plan/Plans";
+} from "../../api/PlansApi";
 import { Plan } from "../../model/types/user.types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";

@@ -19,6 +19,7 @@ import Details from "../components/Details";
 import Related from "../components/Related";
 import HistoryPage from "../pages/user/HistoryPage";
 import MyPlanPage from "../pages/user/MyplansPage";
+import BlockedPage from "../pages/user/BlockPage";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -118,6 +119,14 @@ const AppRoutes = () => {
         element={
           <SecondaryLayout gradient={true}>
             <PlansPage isAdmin={false} />
+          </SecondaryLayout>
+        }
+      />
+      <Route
+        path="/blocked"
+        element={
+          <SecondaryLayout gradient={true}>
+            <BlockedPage/>
           </SecondaryLayout>
         }
       />

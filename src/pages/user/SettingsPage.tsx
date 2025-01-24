@@ -3,16 +3,10 @@ import { FaPlus, FaSignOutAlt } from "react-icons/fa"; // Import logout icon
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import NewProfile from "../../features/user/NewProfile";
-import {
-  getME,
-  updateDefaultProfile,
-} from "../../reducers/userReducer/userThunks";
+import { updateDefaultProfile } from "../../reducers/userReducer/userThunks";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../reducers/userReducer/userReducers";
-import { GETUserPlanDetails_API, Logout_API } from "../../api/user/userApi";
-import { UserPlan } from "../../model/types/plan.types";
-import PlanDetails from "../../components/subscription/PlanDetails";
-// import { logout } from "../../reducers/userReducer/userActions"; // Assuming you have a logout action
+import { Logout_API } from "../../api/userApi";
 
 const Settings = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -51,7 +45,7 @@ const Settings = () => {
   }, [user.user?.defaultProfile, selectedProfile]);
 
   return (
-    <div className="px-10 py-5 bg-gradient-to-b  to-primary from-gray-900" >
+    <div className="px-10 py-5 bg-gradient-to-b  to-primary from-gray-900">
       <div>
         <h2 className="text-2xl font-semibold mb-5">Settings</h2>
         <div className="flex justify-between mb-5 align-center">
@@ -104,7 +98,12 @@ const Settings = () => {
         </div>
         <div className="flex justify-between mt-10">
           <p className="font-medium capitalize">my plans</p>
-          <button className="bg-black border border-secondary px-4 py-1 rounded-lg" onClick={()=> navigate('/settings/my-plans')} >Check</button>
+          <button
+            className="bg-black border border-secondary px-4 py-1 rounded-lg"
+            onClick={() => navigate("/settings/my-plans")}
+          >
+            Check
+          </button>
         </div>
       </div>
 
