@@ -10,7 +10,7 @@ export const refreshAccessToken = async () => {
     }
   
     try {
-      const response = await axios.post(`${gateWayUrl}/api/user/refresh-Token`, {
+      const response = await axios.post(`${gateWayUrl}/api/user/public/refresh-Token`, {
         refreshToken,
       });
       const { accessToken } = response.data;

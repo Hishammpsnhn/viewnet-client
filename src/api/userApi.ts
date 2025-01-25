@@ -19,7 +19,7 @@ export const GETMe_API = async () => {
 };
 export const login_API = async (email: string) => {
   try {
-    const { data } = await apiClient.post(`/user/login`, {
+    const { data } = await apiClient.post(`/user/public/login`, {
       email,
     });
     return data;
@@ -29,7 +29,7 @@ export const login_API = async (email: string) => {
 };
 export const OtpVerify_API = async (otp: string, email: string) => {
   try {
-    const { data } = await apiClient.post(`/user/otpVerify`, {
+    const { data } = await apiClient.post(`/user/public/otpVerify`, {
       otp,
       email,
       deviceId: navigator.userAgent,
@@ -37,7 +37,9 @@ export const OtpVerify_API = async (otp: string, email: string) => {
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("refreshToken", data.refreshToken);
     return data;
-  } catch (error) {}
+  } catch (error) {
+    handleError(error, "Failed to fetch API");
+  }
 };
 export const Logout_API = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
@@ -55,7 +57,7 @@ export const GETAllUsers_API = async (
   search: string
 ): Promise<any | null> => {
   try {
-    const { data } = await apiClient.get(`/user/users`, {
+    const { data } = await apiClient.get(`/user/admin/users`, {
       params: {
         page,
         limit,
@@ -67,22 +69,10 @@ export const GETAllUsers_API = async (
     handleError(error, "Failed to fetch API");
   }
 };
-export const UserBySearch_API = async (query: string): Promise<any | null> => {
-  try {
-    const { data } = await apiClient.get(`/user/users/query`, {
-      params: {
-        query,
-      },
-    });
-    return data;
-  } catch (error: any) {
-    handleError(error, "Failed to fetch API");
-  }
-};
 
 export const UpdateUser_API = async (id: string, newData: any) => {
   try {
-    const { data } = await apiClient.patch(`/user/${id}`, {
+    const { data } = await apiClient.patch(`/user/admin/${id}`, {
       newData,
     });
     return data;
@@ -92,9 +82,8 @@ export const UpdateUser_API = async (id: string, newData: any) => {
 };
 
 export const GETUserPlanDetails_API = async (userId: string) => {
-  const accessToken = localStorage.getItem("accessToken");
   try {
-    const { data } = await apiClient.get(`/subscription/${userId}`);
+    const { data } = await apiClient.get(`/subscription/${userId}/plans`);
     return data;
   } catch (error: any) {
     handleError(error, "Failed to fetch API");

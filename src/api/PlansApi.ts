@@ -21,7 +21,7 @@ import { Plan } from "../model/types/user.types";
 // Plans APIs
 export const GetPlans_API = async () => {
   try {
-    const { data } = await apiClient.get("/subscription");
+    const { data } = await apiClient.get("/subscription/public");
     return data;
   } catch (error) {
     handleError(error, "Failed to fetch plans");
@@ -30,7 +30,7 @@ export const GetPlans_API = async () => {
 
 export const CreatePlans_API = async (planData: Plan) => {
   try {
-    const { data } = await apiClient.post("/subscription", planData);
+    const { data } = await apiClient.post("/subscription/admin", planData);
     return data;
   } catch (error) {
     handleError(error, "Failed to create plan");
@@ -39,7 +39,7 @@ export const CreatePlans_API = async (planData: Plan) => {
 
 export const UpdatePlans_API = async (planId: string, planData: Plan) => {
   try {
-    const { data } = await apiClient.put(`/subscription/${planId}`, planData);
+    const { data } = await apiClient.put(`/subscription/admin/${planId}`, planData);
     return data;
   } catch (error) {
     handleError(error, "Failed to update plan");

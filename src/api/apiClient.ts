@@ -7,7 +7,6 @@ const apiClient = axios.create({
   baseURL: `${gateWayUrl}/api`,
   withCredentials: true,
 });
-let isRedirecting = false;
 // Request Interceptor
 apiClient.interceptors.request.use(
   (config) => {
@@ -35,15 +34,15 @@ apiClient.interceptors.response.use(
     const { status, config } = error.response;
 
     if (status === 403) {
+     
       
-      if (!sessionStorage.getItem("isRedirecting")) {
         sessionStorage.setItem("isRedirecting", "true"); 
         localStorage.removeItem("accessToken"); 
         localStorage.removeItem("refreshToken");
        
         window.location.href = "/blocked";
         return;
-      }
+      
     }
 
     if (status === 401 && !config._retry) {

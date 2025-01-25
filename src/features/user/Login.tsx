@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { otpValidator, useLoginValidator } from "../../hooks/useValidate.ts";
 import {
   getME,
@@ -188,7 +188,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
 
       // Initialize SSE
       const eventSource = new EventSource(
-        `http://localhost:4000/api/user/qr/${randomNumber}`
+        `http://localhost:4000/api/user/public/qr/${randomNumber}`
       );
       eventSource.onopen = () => {
         console.log("SSE connection opened");
@@ -401,6 +401,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
               </div>
             )}
           </div>
+          <ToastContainer theme="dark"/>
         </div>
       )}
     </>
