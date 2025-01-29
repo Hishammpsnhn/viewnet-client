@@ -58,3 +58,38 @@ export const subscriptionPlan = Yup.object({
     .positive("Duration must be a positive number")
     .max(365, "Duration cannot exceed 365 days"),
 });
+
+// upload
+
+export const movieUpload = Yup.object({
+  title: Yup.string()
+    .trim()
+    .min(3, "Name must be at least 3 characters long")
+    .required("Title is required"),
+  description: Yup.string()
+    .trim()
+    .min(3, "Description must be at least 3 characters long")
+    .required("Description is required"),
+  genre: Yup.string().required("Genre is required"),
+  releaseDateTime: Yup.string()
+    .test(
+      "is-valid-date",
+      "Date and time must be valid",
+      (value: string | undefined) => {
+        if (!value) return false;
+        const date = new Date(value);
+        return !isNaN(date.getTime());
+      }
+    )
+    .test(
+      "is-future",
+      "Release date must be in the future",
+      (value: string | undefined) => {
+        if (!value) return false;
+        const date = new Date(value);
+        return date > new Date();
+      }
+    )
+    .required("Date and time are required"),
+ 
+});

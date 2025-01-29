@@ -10,6 +10,7 @@ import MovieUploadPage from "../pages/admin/MovieUploadPage";
 import SeriesUploadPage from "../pages/admin/SeriesUploadPage";
 import PlansPage from "../pages/user/PlansPage";
 import UsersPage from "../pages/admin/UsersPage";
+import UploadDetailsPage from "../pages/admin/UploadDetailsPage";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +65,16 @@ const AppRoutes = () => {
           <AdminProtectedRoute>
             <AdminLayout>
               <UsersPage/>
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/uploads/details"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <UploadDetailsPage/>
             </AdminLayout>
           </AdminProtectedRoute>
         }

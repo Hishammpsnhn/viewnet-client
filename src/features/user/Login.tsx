@@ -214,23 +214,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         console.log("Ping event received:", event);
       });
 
-      // eventSource.onmessage = (event) => {
-      //   console.log(event)
-      //   const data = JSON.parse(event.data);
-      //   console.log(data)
-
-      //   if (data.success) {
-      //     eventSource.close(); // Close the connection
-      //     closeModal();
-      //     toast.success("Successfully logged in", {
-      //       theme: "dark",
-      //     });
-      //     localStorage.setItem("accessToken", data.accessToken);
-      //     localStorage.setItem("refreshToken", data.refreshToken);
-      //     dispatch(getME());
-      //     console.log("Validation complete. SSE connection closed.");
-      //   }
-      // };
+      
 
       eventSource.onerror = (error) => {
         console.error("SSE error:", error);
@@ -242,35 +226,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       };
     }
   }, [isOpen, otpVisible]);
-  // useEffect(() => {
-  //   if (isOpen && !otpVisible) {
-  //     const randomNumber = Math.floor(Math.random() * 1000000).toString();
-  //     setRandom(randomNumber);
-  //     QRSave_API(randomNumber);
-  //     console.log(`http://localhost:5173/?token=${randomNumber}`);
-
-  //     const validateQRCode = async () => {
-  //       ("Checking QR...");
-  //       const data = await QRValidate_API(randomNumber);
-  //       data;
-  //       if (data.success) {
-  //         clearInterval(intervalId);
-  //         closeModal();
-  //         toast.success("Successfully logged in", {
-  //           theme: "dark",
-  //         });
-  //         localStorage.setItem("accessToken", data.accessToken);
-  //         localStorage.setItem("refreshToken", data.refreshToken);
-  //         dispatch(getME());
-  //         console.log("Validation complete. Interval stopped.");
-  //       }
-  //     };
-
-  //     const intervalId = setInterval(validateQRCode, 7000);
-
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, [isOpen, otpVisible]);
+  
+  
 
   useEffect(() => {
     if (resendCountdown > 0) {

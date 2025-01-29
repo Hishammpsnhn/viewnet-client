@@ -1,0 +1,89 @@
+import { MetaData, MovieFormData } from "../model/types/movie.types";
+import apiClient, { handleError } from "./apiClient";
+
+interface PresignedUrlResponse {
+  success: boolean;
+  signedUrls: {
+    movieSignedUrl: { url: string; fileName: string };
+    thumbnailSignedUrl: { url: string; fileName: string };
+  };
+  data: MetaData;
+}
+interface GetAllMetadataResponse {
+  success: boolean;
+  data: MetaData[];
+}
+interface GetMetadataResponse {
+  success: boolean;
+  data: MetaData;
+}
+interface UpdateThumbnailResponse{
+  success: boolean;
+  signedUrl: {url: string; fileName: string }
+  data:MetaData,
+  message?: string;
+}
+
+export const UploadMetadataAndGenerateSingedURL_API = async (
+  formData: MovieFormData
+): Promise<PresignedUrlResponse> => {
+  try {
+    const { data } = await apiClient.post<PresignedUrlResponse>(
+      "/uploading/generate-presigned-url",
+      formData
+    );
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to generate presigned URL");
+    throw error;
+  }
+};
+export const UpdataMetadata_API = async (
+  id: string,
+  formData: Partial<MetaData>
+): Promise<PresignedUrlResponse> => {
+  try {
+    const { data } = await apiClient.put<PresignedUrlResponse>(
+      `/uploading/${id}`,
+      formData
+    );
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to generate presigned URL");
+    throw error;
+  }
+};
+export const GetAllMetadata_API = async (): Promise<GetAllMetadataResponse> => {
+  try {
+    const { data } = await apiClient.get(`/uploading`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to generate presigned URL");
+    throw error;
+  }
+};
+export const GetMetadata_API = async (
+  id: string
+): Promise<GetMetadataResponse> => {
+  try {
+    const { data } = await apiClient.get(`uploading/${id}`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to generate presigned URL");
+    throw error;
+  }
+};
+export const updateThumbnail_API = async (movieMetadata: MetaData,newThumbnail:File) :Promise<UpdateThumbnailResponse>=> {
+  const {data} = await apiClient.post(
+    `/uploading/${movieMetadata._id}/update-thumbnail`,
+    {
+      title: movieMetadata.title,
+      thumbnailContentType: newThumbnail.type,
+    }
+  );
+  return data
+};
