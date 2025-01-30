@@ -46,7 +46,10 @@ const UploadDetailsPage = () => {
             <div
               key={movie._id}
               className={`flex items-center justify-between bg-gray-900 p-4 rounded-lg shadow-sm ${
-                movie.transcoding?.status === "processing" && "opacity-70"
+                movie.transcoding?.status === "pending" ||
+                movie.transcoding?.status === "processing"
+                  ? "opacity-70"
+                  : ""
               }`}
             >
               {movie.thumbnailUrl && (
@@ -76,10 +79,11 @@ const UploadDetailsPage = () => {
                 </p>
 
                 {/* Transcoding Status */}
-                {movie.transcoding?.status === "processing" && (
+                {(movie.transcoding?.status === "pending" ||
+                  movie.transcoding?.status === "processing") && (
                   <div className="text-sm text-yellow-400 mt-2">
                     <span className="animate-pulse">
-                      Transcoding in progress...
+                      Transcoding is {movie.transcoding.status} ...
                     </span>
                   </div>
                 )}

@@ -39,7 +39,7 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ planData }) => {
         <div className="flex flex-col">
           <span className="text-xs text-gray-400">End Date</span>
           <span className="text-sm text-gray-200">
-            {new Date(endDate).toLocaleDateString()}
+            {new Date(endDate).toLocaleDateString("en-GB")}
           </span>
         </div>
 
@@ -65,7 +65,6 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ planData }) => {
         {/* Ads */}
         {ads && (
           <div className="flex flex-col">
-           
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${
                 ads ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
@@ -84,13 +83,13 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ planData }) => {
                 live ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
               }`}
             >
-             Live Streaming
+              Live Streaming
             </span>
           </div>
         )}
 
         {/* UHD */}
-        {uhd  && (
+        {uhd && (
           <div className="flex flex-col">
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${

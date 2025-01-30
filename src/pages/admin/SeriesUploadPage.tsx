@@ -1,5 +1,10 @@
 import React, { useState, ChangeEvent } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { CreateSeries_API } from "../../api/seriesApi";
+import { ISeries } from "../../model/types/series.types";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface SeriesUploadPageProps {}
 
@@ -15,9 +20,11 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
   const [genre, setGenre] = useState<string>("");
   const [audience, setAudience] = useState<"kids" | "adults">("kids");
   const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const navigate = useNavigate()
 
   const handleThumbnailUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      console.log(e.target.files[0])
       setThumbnail(e.target.files[0]);
     }
   };
@@ -41,23 +48,53 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
   const removeEpisode = (index: number) => {
     setEpisodes(episodes.filter((_, i) => i !== index));
   };
-
-  const handleUpload = () => {
-    if (!title || !desc || !thumbnail || !genre || episodes.length === 0) {
+  const uploadFileToS3Thumbnail = async (
+    url: string,
+    file: File,
+    id:string,
+  ): Promise<void> => {
+    try {
+      console.log("uplaoding")
+      const uploadResponse = await axios.put(url, file, {
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+      });
+      console.log(uploadResponse);
+      if (uploadResponse.status === 200) {
+        navigate(`/series/${id}`)
+        
+      } else {
+        console.log("Failed to upload file");
+      }
+    } catch (error) {
+      console.error("Error uploading file to S3:", error);
+      toast.error("Failed to upload file");
+    }
+  };
+  const handleUpload = async () => {
+    if (!title || !desc || !thumbnail || !genre) {
       alert("Please fill in all required fields and add at least one episode.");
       return;
     }
 
-    const formData = {
+    const formData: ISeries = {
       title,
       description: desc,
       genre,
       audience,
-      thumbnail: thumbnail ? thumbnail.name : null,
-      episodes,
+      rating: 0,
+      releaseDate: new Date(),
+      seasons: [],
     };
-
-    console.log("Form Data Submitted:", formData);
+    const res = await CreateSeries_API(formData);
+    console.log("Form Data Submitted:", res);
+    if (res.success) {
+      console.log(res.thumbnailSignedUrl,thumbnail)
+      if (res.thumbnailSignedUrl && thumbnail ) {
+        uploadFileToS3Thumbnail(res.thumbnailSignedUrl.url, thumbnail,res.data._id);
+      }
+    }
   };
 
   return (
@@ -170,7 +207,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-1/2">
+        {/* <div className="w-1/2">
           <h2 className="text-2xl font-bold mb-6">Episodes</h2>
           {episodes.map((episode, index) => (
             <div key={index} className="mb-6">
@@ -229,7 +266,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
           >
             Add Episode
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Upload Button */}

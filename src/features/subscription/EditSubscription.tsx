@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { CreatePlans_API, UpdatePlans_API } from "../../api/PlansApi";
 import { Plan } from "../../model/types/user.types";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 interface EditSubscriptionProps {
   closeModal: () => void;
   subscriptionData: Plan | null;
+  loading: boolean;
   onSubmit: (subscriptionData: any) => void;
   validationErrors: any;
 }
@@ -13,6 +15,7 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
   closeModal,
   subscriptionData,
   onSubmit,
+  loading,
   validationErrors,
 }) => {
   const [formData, setFormData] = useState<Plan>({
@@ -215,10 +218,17 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
           </div>
 
           <button
-            className="w-full py-2 bg-secondary text-black rounded-md opacity-80 hover:opacity-85"
+            className="w-full py-2 bg-secondary text-black rounded-md opacity-80 hover:opacity-85 disabled:opacity-50 flex justify-center items-center"
+            disabled={loading}
             onClick={handleSubmit}
           >
-            {subscriptionData ? "Update Subscription" : "Add Subscription"}
+            {loading ? (
+              <LoadingSpinner />
+            ) : subscriptionData ? (
+              "Update Subscription"
+            ) : (
+              "Add Subscription"
+            )}
           </button>
         </div>
       </div>

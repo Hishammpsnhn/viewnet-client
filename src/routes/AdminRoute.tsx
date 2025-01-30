@@ -11,6 +11,7 @@ import SeriesUploadPage from "../pages/admin/SeriesUploadPage";
 import PlansPage from "../pages/user/PlansPage";
 import UsersPage from "../pages/admin/UsersPage";
 import UploadDetailsPage from "../pages/admin/UploadDetailsPage";
+import Player from "../pages/common/Player";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,6 +76,16 @@ const AppRoutes = () => {
           <AdminProtectedRoute>
             <AdminLayout>
               <UploadDetailsPage/>
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/watch"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <Player />
             </AdminLayout>
           </AdminProtectedRoute>
         }

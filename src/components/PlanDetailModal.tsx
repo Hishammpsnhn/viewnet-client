@@ -21,6 +21,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
   const endDateObj = new Date(endDate);
   const timeDiff = endDateObj.getTime() - currentDate.getTime();
   const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-black border border-secondary p-6 rounded-lg shadow-lg w-96 text-gray-300 relative">
@@ -34,7 +35,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Plan Details
         </h2>
-        <h2 className="text-xl text-red-800 font-semibold mb-4 text-center">{daysLeft} Days Left</h2>
+        <h2 className="text-xl text-red-800 font-semibold mb-4 text-center">{daysLeft > 0 ? `${daysLeft} days Left` :"Expired"} </h2>
 
         <div className="mb-4">
           <div className="flex justify-between mb-2">

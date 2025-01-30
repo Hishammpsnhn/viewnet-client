@@ -16,6 +16,7 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [plans, setPlans] = useState<Plan[] | []>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [loading,setLoading] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -35,9 +36,11 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   };
   const handleSubmit = async (formData: Plan) => {
     setValidationErrors({})
+    
 
     try {
       await subscriptionPlan.validate(formData, { abortEarly: false });
+      setLoading(true)
       if (selectedPlan) {
         const updatedPlan = await UpdatePlans_API(formData.id, formData);
         if (updatedPlan.success) {
@@ -65,6 +68,8 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
         });
         setValidationErrors(errors);
       }
+    }finally{
+      setLoading(false)
     }
   };
   useEffect(() => {
@@ -109,6 +114,7 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
           subscriptionData={selectedPlan}
           closeModal={closeModal}
           //validateError={validateError}
+          loading={loading}
           validationErrors={validationErrors}
         />
       )}

@@ -65,6 +65,7 @@ export const GetAllMetadata_API = async (): Promise<GetAllMetadataResponse> => {
     throw error;
   }
 };
+
 export const GetMetadata_API = async (
   id: string
 ): Promise<GetMetadataResponse> => {
@@ -86,4 +87,14 @@ export const updateThumbnail_API = async (movieMetadata: MetaData,newThumbnail:F
     }
   );
   return data
+};
+export const getLatestMovies_API = async (): Promise<GetAllMetadataResponse> => {
+  try {
+    const { data } = await apiClient.get(`/uploading/latest-movies`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to generate presigned URL");
+    throw error;
+  }
 };

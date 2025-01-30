@@ -1,12 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UploadCard from "../../components/admin/uploadCard/UplaodCard";
 import NumberCard from "../../components/admin/NumberCard/NumberCard";
 import HistoryCard from "../../components/movie/HistoryCard";
-interface Task {
-  title: string;
-  desc: string;
-  navigate: string;
-}
+import { MetaData } from "../../model/types/movie.types";
+import { getLatestMovies_API } from "../../api/movieUploadApi";
+import HistoryCardSkeleton from "../../components/movie/HistoryCardSkelition";
 const task: Task[] = [
   {
     title: "Upload And Publish a Movie",
@@ -24,7 +22,32 @@ const task: Task[] = [
     navigate: "/",
   },
 ];
+interface Task {
+  title: string;
+  desc: string;
+  navigate: string;
+}
+
 const AdminDashboard = () => {
+  const [LatestMovies, setLatestMovies] = useState<MetaData[]>([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    async function fetchLatestMovies() {
+      setLoading(true);
+      try {
+        const response = await getLatestMovies_API();
+        if (response.success) {
+          setLatestMovies(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLatestMovies();
+  }, []);
+
   return (
     <div className=" container mx-auto px-16 py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
@@ -48,19 +71,29 @@ const AdminDashboard = () => {
       {/* History Cards Section */}
       <h1 className="text-white text-3xl font-bold mb-5">Trending </h1>
       <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
+        {loading ? (
+         [...Array(5)].map((_, index) => <HistoryCardSkeleton key={index} />)
+        ) : (
+          <>
+            {LatestMovies.map((movie) => (
+              <HistoryCard
+                key={movie._id}
+                description="abc"
+                image={movie.thumbnailUrl}
+                title={movie.title}
+                id={movie._id}
+              />
+            ))}
+          </>
+        )}
       </div>
       <h1 className="text-white text-3xl font-bold  mb-5 mt-10">Trending </h1>
       <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+        {/* <HistoryCard />
         <HistoryCard />
         <HistoryCard />
         <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
+        <HistoryCard /> */}
       </div>
     </div>
   );

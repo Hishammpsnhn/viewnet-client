@@ -1,16 +1,25 @@
 import React from "react";
-import img from "../../assets/images/MV5BZjRkOTJiZDItY2NjNC00YjJlLTlmN2ItYmNmMDUwODEyNGU2XkEyXkFqcGc@.webp";
+import { useNavigate } from "react-router-dom";
 
-const HistoryCard = ({ history }: { history?: boolean }) => {
+interface HistoryCardProps {
+  title: string;
+  image: string;
+  description: string;
+  id:string
+  history?: boolean;
+}
+
+const HistoryCard: React.FC<HistoryCardProps> = ({ title, image, description, history,id }) => {
   const progress = 50;
+  const navigate = useNavigate()
 
   return (
     <div className="min-w-52 border border-gray-500 mx-auto bg-primary shadow-md rounded-lg overflow-hidden">
       <div className="flex items-center p-1">
-        <img src={img} alt="History Card" className="w-12 h-12 object-cover" />
+        <img src={image} alt={title} className="w-12 h-12 object-cover" />
         <div className="ml-3 text-white">
-          <h3 className="text-xs font-semibold">Title</h3>
-          <p className="text-sm">Description</p>
+          <h3 className="text-xs font-semibold">{title}</h3>
+          <p className="text-sm">{description}</p>
         </div>
       </div>
       {history && (
@@ -25,7 +34,7 @@ const HistoryCard = ({ history }: { history?: boolean }) => {
       )}
 
       <div className="p-1">
-        <button className="w-full py-1 bg-secondary text-black font-semibold rounded-lg hover:opacity-100 opacity-90 transition duration-200">
+        <button className="w-full py-1 bg-secondary text-black font-semibold rounded-lg hover:opacity-100 opacity-90 transition duration-200" onClick={()=> navigate(`/watch?v=${id}`)} >
           Watch
         </button>
       </div>
