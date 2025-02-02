@@ -23,6 +23,31 @@ export const getLatestSeries_API = async () => {
     throw error;
   }
 };
+export const fetchMovieCatalog_API = async (id:string) => {
+  try {
+    const { data } = await apiClient.get(`/content/public/movies/${id}`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed");
+    throw error;
+  }
+};
+export const fetchMovieMetadata_API = async (id:string) => {
+  try {
+    const { data } = await apiClient.get(`/content/public/movies/meta/${id}`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed");
+    throw error;
+  }
+};
+
+
+
+
+
 export const getSeriesDetails_API = async (id:string) => {
   try {
     const { data } = await apiClient.get(`/content/public/series/${id}`);

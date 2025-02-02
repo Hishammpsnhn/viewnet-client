@@ -3,8 +3,10 @@ import HistoryCard from "./movie/HistoryCard";
 import { useParams } from "react-router-dom";
 import { getSeriesDetails_API } from "../api/content";
 import { ISeries, ISeriesDetailsResponse } from "../model/types/series.types";
-
-const Details = () => {
+interface DetailsProps {
+  series: boolean;
+}
+const Details = ({ series }: DetailsProps) => {
   const { id } = useParams();
   const [seriesDetails, setSeriesDetails] = useState<ISeriesDetailsResponse>();
 
@@ -21,7 +23,7 @@ const Details = () => {
         console.error("Error fetching series details:", error);
       }
     };
-    fetchSeriesDetails();
+    if (series) fetchSeriesDetails();
   }, []);
   console.log(id);
   console.log(setSeriesDetails);

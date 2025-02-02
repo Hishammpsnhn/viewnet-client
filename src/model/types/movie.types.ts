@@ -28,3 +28,19 @@ export interface MetaData {
     format?: string[];
   };
 }
+
+interface EncodedFiles {
+  encodingStatus: string; 
+  fileUrl: string;         
+  format: string;          
+  resolution: string;     
+  _id: string;             
+}
+
+// Defines the movie data structure
+export interface MovieCatalogData {
+  _id: string;               
+  metadataId: string;        
+  movieName: string;        
+  encodedFiles: EncodedFiles[]; 
+}

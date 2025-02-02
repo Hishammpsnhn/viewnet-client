@@ -15,23 +15,18 @@ import {
   fetchMoviesFailure,
   fetchMoviesStart,
   fetchMoviesSuccess,
-} from "../../reducers/movieReducer";
-import {
   fetchSeriesFailure,
   fetchSeriesStart,
   fetchSeriesSuccess,
-} from "../../reducers/seriesReducer";
+  selectMovie,
+} from "../../reducers/movieReducer";
 
 const ScrollableSection = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, movies } = useSelector(
-    (state: RootState) => state.movies
-  );
-  const series = useSelector((state: RootState) => state.series);
-  //const [loading, setLoading] = useState(false);
-  const [LatestSeries, setLatestSeries] = useState<ISeriesResponse[]>([]);
-  const [LatestMovies, setLatestMovies] = useState<MetaData[]>([]);
+  const { loading, error, movies, selectedMovie, series } =
+    useSelector((state: RootState) => state.movies);
+  //const series = useSelector((state: RootState) => state.series);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -101,15 +96,17 @@ const ScrollableSection = () => {
           ref={scrollContainerRef}
           className="flex space-x-4 overflow-x-auto scrollbar-hidden"
         >
-          {series.series.map((movie, index) => (
-            <MovieCard
-              url={`/series/${movie._id}/more`}
-              title={movie.title}
-              description={movie.description}
-              id={movie._id}
-              image={movie.posterImage}
-              key={index}
-            />
+          {series.map((movie, index) => (
+            <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
+              <MovieCard
+                url={`/series/${movie._id}/more`}
+                title={movie.title}
+                description={movie.description}
+                id={movie._id}
+                image={movie.posterImage}
+                key={index}
+              />
+            </div>
           ))}
         </div>
 
@@ -137,14 +134,16 @@ const ScrollableSection = () => {
           className="flex space-x-4 overflow-x-auto scrollbar-hidden"
         >
           {movies.map((movie, index) => (
-            <MovieCard
-              url={`/movie/${movie._id}details/more`}
-              title={movie.title}
-              description={movie.description}
-              id={movie._id}
-              image={movie.thumbnailUrl}
-              key={index}
-            />
+            <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
+              <MovieCard
+                url={`/movie/${movie._id}/more`}
+                title={movie.title}
+                description={movie.description}
+                id={movie._id}
+                image={movie.thumbnailUrl}
+                key={index}
+              />
+            </div>
           ))}
         </div>
 

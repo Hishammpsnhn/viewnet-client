@@ -1,17 +1,45 @@
-import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import Carousel from "../../components/Carousel";
-import { fetchSeriesDetails_API, getSeriesDetails_API } from "../../api/content";
-
-const MovieDetailPage = () => {
+import { AppDispatch, RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { useEffect } from "react";
+import { selectMovie } from "../../reducers/movieReducer";
+import { fetchMovieMetadata_API } from "../../api/content";
+interface MovieDetailProps {
+  series: boolean;
+}
+const MovieDetailPage = ({ series }: MovieDetailProps) => {
+  const { selectedMovie } = useSelector((state: RootState) => state.movies);
+  const dispatch = useDispatch<AppDispatch>();
 
   const { id } = useParams();
-  
+
+  useEffect(() => {
+    async function fetchMovieMetadata() {
+      if (id) {
+        const res = await fetchMovieMetadata_API(id);
+        if (res.success) {
+          dispatch(selectMovie(res.data));
+        }
+      }
+    }
+     fetchMovieMetadata();
+  }, [id]);
+
+  if (!selectedMovie) {
+    return (
+      <div className="w-full  flex items-center ml-24">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="">
       {/* Carousel Section */}
-      <Carousel />
+
+      <>{selectedMovie && <Carousel selectedMovie={selectedMovie} />}</>
 
       {/* Tab Navigation */}
       <div className="mt-6 mx-14">

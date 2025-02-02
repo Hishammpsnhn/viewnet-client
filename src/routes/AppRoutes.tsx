@@ -21,6 +21,7 @@ import HistoryPage from "../pages/user/HistoryPage";
 import MyPlanPage from "../pages/user/MyplansPage";
 import BlockedPage from "../pages/user/BlockPage";
 import Player from "../pages/common/Player";
+import { UserPlayer } from "../pages/common/UserPlayer";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -119,19 +120,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/series/:id"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout>
-              <MovieDetailPage />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      >
-        <Route path="more" element={<Details />} />
-        <Route path="related" element={<Related />} />
-      </Route>
+
       <Route
         path="/plans"
         element={
@@ -178,11 +167,22 @@ const AppRoutes = () => {
         path="/movie/:id"
         element={
           <MainLayout>
-            <MovieDetailPage />
+            <MovieDetailPage series={false} />
           </MainLayout>
         }
       >
-        <Route path="more" element={<Details />} />
+        <Route path="more" element={<Details series={false} />} />
+        <Route path="related" element={<Related />} />
+      </Route>
+      <Route
+        path="/series/:id"
+        element={
+          <MainLayout>
+            <MovieDetailPage series={true} />
+          </MainLayout>
+        }
+      >
+        <Route path="more" element={<Details series={true} />} />
         <Route path="related" element={<Related />} />
       </Route>
       <Route
@@ -190,7 +190,7 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <SecondaryLayout gradient={true}>
-              <Player />
+              <UserPlayer series={false} />
             </SecondaryLayout>
           </ProtectedRoute>
         }

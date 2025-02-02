@@ -40,6 +40,7 @@ export interface ISeriesResponse {
   releaseDate: Date;
   rating: number;
   posterImage: string 
+  thumbnailUrl: string,
   seasons: string[];
   audience: "kids" | "adults";
 }
