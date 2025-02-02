@@ -5,6 +5,8 @@ import HistoryCard from "../../components/movie/HistoryCard";
 import { MetaData } from "../../model/types/movie.types";
 import { getLatestMovies_API } from "../../api/movieUploadApi";
 import HistoryCardSkeleton from "../../components/movie/HistoryCardSkelition";
+import { ISeriesResponse } from "../../model/types/series.types";
+import { getLatestSeries_API } from "../../api/content";
 const task: Task[] = [
   {
     title: "Upload And Publish a Movie",
@@ -30,6 +32,8 @@ interface Task {
 
 const AdminDashboard = () => {
   const [LatestMovies, setLatestMovies] = useState<MetaData[]>([]);
+  const [LatestSeries, setLatestSeries] = useState<ISeriesResponse[]>([]);
+
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function fetchLatestMovies() {
@@ -38,6 +42,23 @@ const AdminDashboard = () => {
         const response = await getLatestMovies_API();
         if (response.success) {
           setLatestMovies(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLatestMovies();
+  }, []);
+
+  useEffect(() => {
+    async function fetchLatestMovies() {
+      setLoading(true);
+      try {
+        const response = await getLatestSeries_API();
+        if (response.success) {
+          setLatestSeries(response.series);
         }
       } catch (error) {
         console.log(error);
@@ -69,10 +90,10 @@ const AdminDashboard = () => {
       </div>
 
       {/* History Cards Section */}
-      <h1 className="text-white text-3xl font-bold mb-5">Trending </h1>
+      <h1 className="text-white text-3xl font-bold mb-5">Movies </h1>
       <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
         {loading ? (
-         [...Array(5)].map((_, index) => <HistoryCardSkeleton key={index} />)
+          [...Array(5)].map((_, index) => <HistoryCardSkeleton key={index} />)
         ) : (
           <>
             {LatestMovies.map((movie) => (
@@ -87,13 +108,24 @@ const AdminDashboard = () => {
           </>
         )}
       </div>
-      <h1 className="text-white text-3xl font-bold  mb-5 mt-10">Trending </h1>
+      <h1 className="text-white text-3xl font-bold  mb-5 mt-10">series </h1>
       <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        {/* <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard /> */}
+        {loading ? (
+          [...Array(5)].map((_, index) => <HistoryCardSkeleton key={index} />)
+        ) : (
+          <>
+            {LatestSeries.map((movie) => (
+              <HistoryCard
+                key={movie._id}
+                description="abc"
+                image={movie.posterImage}
+                title={movie.title}
+                id={movie._id}
+                seriesManagement={true}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

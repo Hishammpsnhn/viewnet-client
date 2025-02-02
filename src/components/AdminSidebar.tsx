@@ -59,7 +59,7 @@ const AdminSidebar = () => {
           <li>
             <button className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43]  rounded-lg font-semibold w-full" onClick={()=>navigate("/uploads/details")}>
               <FaBox className="mr-3" />
-              Products
+              Movies
             </button>
           </li>
           <li>

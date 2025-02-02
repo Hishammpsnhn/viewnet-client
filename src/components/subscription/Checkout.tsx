@@ -6,6 +6,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { Payment_Success_API } from "../../api/PlansApi";
 
 const CheckoutPage = ({
   planId,
@@ -24,14 +25,14 @@ const CheckoutPage = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("Form submitted"); 
+    console.log("Form submitted");
     e.preventDefault();
-  
+
     if (!stripe || !elements || !user) {
       console.error("Stripe, Elements, or User is missing");
       return;
     }
-  
+
     try {
       // Submit the elements
       const { error: submitError } = await elements.submit();
@@ -41,23 +42,43 @@ const CheckoutPage = ({
         setLoading(false);
         return;
       }
-  
+
+      const paymentIntentResponse = await stripe.retrievePaymentIntent(
+        clientSecret
+      );
+      console.log(
+        "Payment intent response:",
+        paymentIntentResponse.paymentIntent?.status
+      );
+      alert("dk");
+
       // Confirm payment
       const { error } = await stripe.confirmPayment({
         elements,
         clientSecret,
         confirmParams: {
-          return_url: `http://localhost:5173/payment-success?amount=${amount}&plan_id=${planId}`,
+          return_url: `http://localhost:4000/api/subscription/payment-success?user_id=${user._id}&plan_id=${planId}&paymentIntent=${clientSecret}`,
         },
       });
-  
+
       if (error) {
         console.error("Payment confirmation error:", error.message);
         setErrorMessage(error.message);
         setLoading(false);
         return;
       }
-  
+
+      // const paymentIntentResponse = await stripe.retrievePaymentIntent(
+      //   clientSecret
+      // );
+
+      if (
+        paymentIntentResponse.paymentIntent?.id &&
+        paymentIntentResponse.paymentIntent.status === "succeeded"
+      ) {
+        const res = await Payment_Success_API(planId, user._id, clientSecret);
+        console.log(res);
+      }
     } catch (err) {
       console.error("Error in handleSubmit:", err);
       setErrorMessage("An unexpected error occurred. Please try again.");
@@ -65,7 +86,7 @@ const CheckoutPage = ({
       setLoading(false);
     }
   };
-  
+
   if (!clientSecret || !stripe || !elements) {
     return (
       <div className="text-center">

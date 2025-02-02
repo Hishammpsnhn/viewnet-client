@@ -12,7 +12,7 @@ const PaymentSuccessPage = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const amount = queryParams.get("amount");
-  const paymentIntent = queryParams.get("payment_intent");
+  const paymentIntent = queryParams.get("session_id");
   
 
 
@@ -26,7 +26,7 @@ const PaymentSuccessPage = () => {
             Thank you for your payment. We have successfully received your
             payment of <span className="font-semibold">₹{amount}</span>.
           </p>
-          <div className="bg-black border text-white shadow-md rounded-lg p-6 w-full max-w-md">
+          <div className="bg-black border text-white shadow-md rounded-lg p-6 w-fit">
             <h2 className="text-xl font-semibold text-gray-400 mb-4">
               Payment Details
             </h2>

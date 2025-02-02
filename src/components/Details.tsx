@@ -1,34 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HistoryCard from "./movie/HistoryCard";
+import { useParams } from "react-router-dom";
+import { getSeriesDetails_API } from "../api/content";
+import { ISeries, ISeriesDetailsResponse } from "../model/types/series.types";
 
 const Details = () => {
+  const { id } = useParams();
+  const [seriesDetails, setSeriesDetails] = useState<ISeriesDetailsResponse>();
+
+  useEffect(() => {
+    const fetchSeriesDetails = async () => {
+      if (!id) return;
+
+      try {
+        const res = await getSeriesDetails_API(id);
+        if (res.success) {
+          setSeriesDetails(res.series);
+        }
+      } catch (error) {
+        console.error("Error fetching series details:", error);
+      }
+    };
+    fetchSeriesDetails();
+  }, []);
+  console.log(id);
+  console.log(setSeriesDetails);
   return (
     <div className="ml-4">
-      <h2 className="text-xl font-semibold">Season 1</h2>
-      <div className="flex w-full gap-5 overflow-x-scroll scrollbar-hidden p-5">
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-      </div>
-      
-      <h2 className="text-xl font-semibold">Season 2</h2>
-      <div className="flex w-full gap-5 overflow-x-scroll scrollbar-hidden p-5">
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-      </div>
+      {seriesDetails?.seasons.map((season) => (
+        <>
+          <h2 className="text-xl font-semibold">
+            Season {season.seasonNumber}
+          </h2>
+          <div className="flex w-fit gap-2">
+            {season.episodes.map((episode) => (
+              <HistoryCard
+                key={episode._id}
+                // uniqueId={episode.}
+                uniqueKey={episode.key}
+                title={episode.title}
+                transcoding={episode.transcoding}
+                description="somthing desc"
+                image={episode.thumbnailUrl}
+                id={episode._id}
+                seriesWatch={true}
+              />
+            ))}
+            {/* <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard /> */}
+          </div>
+        </>
+      ))}
 
       <h2 className="text-xl font-semibold">Movie Details</h2>
       <p className="mt-2 text-gray-600">

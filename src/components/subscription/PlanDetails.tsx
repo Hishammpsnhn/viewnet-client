@@ -29,7 +29,7 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ planData }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Start Date */}
         <div className="flex flex-col">
-          <span className="text-xs text-gray-400">Start Date</span>
+          <span className="text-xs text-gray-400">Purchase Date</span>
           <span className="text-sm text-gray-200">
             {new Date(startDate).toLocaleDateString()}
           </span>

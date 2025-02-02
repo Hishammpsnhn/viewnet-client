@@ -17,10 +17,10 @@ interface GetMetadataResponse {
   success: boolean;
   data: MetaData;
 }
-interface UpdateThumbnailResponse{
+interface UpdateThumbnailResponse {
   success: boolean;
-  signedUrl: {url: string; fileName: string }
-  data:MetaData,
+  signedUrl: { url: string; fileName: string };
+  data: MetaData;
   message?: string;
 }
 
@@ -78,23 +78,31 @@ export const GetMetadata_API = async (
     throw error;
   }
 };
-export const updateThumbnail_API = async (movieMetadata: MetaData,newThumbnail:File) :Promise<UpdateThumbnailResponse>=> {
-  const {data} = await apiClient.post(
+export const updateThumbnail_API = async (
+  movieMetadata: MetaData,
+  newThumbnail: File
+): Promise<UpdateThumbnailResponse> => {
+  const { data } = await apiClient.post(
     `/uploading/${movieMetadata._id}/update-thumbnail`,
     {
       title: movieMetadata.title,
       thumbnailContentType: newThumbnail.type,
     }
   );
-  return data
+  return data;
 };
-export const getLatestMovies_API = async (): Promise<GetAllMetadataResponse> => {
-  try {
-    const { data } = await apiClient.get(`/uploading/latest-movies`);
-    console.log(data);
-    return data;
-  } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
-    throw error;
-  }
-};
+
+//reciever
+export const getLatestMovies_API =
+  async (): Promise<GetAllMetadataResponse> => {
+    try {
+      const { data } = await apiClient.get(`/uploading/latest-movies`);
+      console.log(data);
+      return data;
+    } catch (error) {
+      handleError(error, "Failed to generate presigned URL");
+      throw error;
+    }
+  };
+
+//reciever

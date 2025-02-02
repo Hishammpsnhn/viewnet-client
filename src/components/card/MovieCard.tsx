@@ -1,38 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import image from "../../assets/images/ragnar-lodbrok-digital-art-vikings-sword-wallpaper-preview.webp";
 
-const MovieCard = () => {
+interface CardTypes{
+  title: string;
+  id:string;
+  description:string,
+  image:string;
+  url:string
+
+}
+const MovieCard = ({title,id,url,description,image}:CardTypes) => {
   const navigate = useNavigate()
-  const movie = {
-    id: 1,
-    title: "Inception",
-    description: "A mind-bending thriller by Christopher Nolan.",
-    image: image,
-    genre: "Sci-Fi",
-    rating: 8.8,
-    releaseDate: "2010-07-16",
-  };
+  
 
   return (
-    <div className="relative min-w-[10rem] md:min-w-[18rem] max-w-sm rounded-lg overflow-hidden shadow-lg cursor-pointer bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group" onClick={()=>navigate('/movie-details/more')}>
+    <div className="relative min-w-[10rem] md:min-w-[18rem] max-w-sm rounded-lg overflow-hidden shadow-lg cursor-pointer bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group" onClick={()=>navigate(url)}>
       {/* Movie Image */}
       <div className="relative">
         <img
           className="w-full h-40 md:h-56 lg:h-64 object-cover"
-          src={movie.image}
-          alt={movie.title}
+          src={image}
+          alt={title}
         />
 
         {/* Title at the Top */}
         <div className="absolute top-0 left-0 w-full text-white p-4">
           <h2 className="font-semibold text-sm md:text-lg truncate">
-            {movie.title}
+            {title}
           </h2>
         </div>
 
         {/* Description Overlay (shown on hover) */}
         <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 text-center">
-          <p className="text-sm text-white">{movie.description}</p>
+          <p className="text-sm text-white">{description}</p>
         </div>
 
         {/* Buttons at the Bottom */}
@@ -47,7 +47,7 @@ const MovieCard = () => {
           </div>
           {/* Genre */}
           <div className="mt-1 font-bold text-xs text-end text-gray-400">
-            {movie.genre}
+            {"genre"}
           </div>
         </div>
       </div>

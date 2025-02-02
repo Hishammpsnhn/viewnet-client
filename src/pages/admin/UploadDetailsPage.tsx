@@ -27,8 +27,7 @@ const UploadDetailsPage = () => {
   };
 
   const handleSaveEdit = (updatedMovie: MetaData): void => {
-    console.log("upated data", updatedMovie);
-    console.log("alredy ", movies);
+   
     setMovies((prevMovies) =>
       prevMovies.map((movie) =>
         movie._id === updatedMovie._id ? updatedMovie : movie

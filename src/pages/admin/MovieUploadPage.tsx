@@ -62,6 +62,7 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     url: string,
     file: File
   ): Promise<void> => {
+    console.log('uploadFileToS3Movie', id, url, file);
     try {
       const uploadResponse = await axios.put(url, file, {
         headers: {

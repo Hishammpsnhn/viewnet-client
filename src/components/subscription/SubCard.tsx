@@ -45,9 +45,12 @@ const SubCard: React.FC<SubCardProps> = ({
     try {
       if (user) {
         const res = await Payment_API(planId, user?._id);
+        console.log(res)
         if (res.success) {
-          setClientSecret(res.clientSecret);
-          setIsModalOpen(true);
+          console.log("Payment sucecs")
+          // setClientSecret(res.clientSecret);
+          // setIsModalOpen(true);
+          window.location.href = res.data.url
         }
       }
     } catch (error) {

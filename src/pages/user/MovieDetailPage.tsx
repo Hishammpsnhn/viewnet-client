@@ -1,8 +1,13 @@
-import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import Carousel from '../../components/Carousel';
+import React, { useEffect, useState } from "react";
+import { NavLink, Outlet, useParams } from "react-router-dom";
+import Carousel from "../../components/Carousel";
+import { fetchSeriesDetails_API, getSeriesDetails_API } from "../../api/content";
 
 const MovieDetailPage = () => {
+
+  const { id } = useParams();
+  
+
   return (
     <div className="">
       {/* Carousel Section */}
@@ -15,8 +20,8 @@ const MovieDetailPage = () => {
             to="more"
             className={({ isActive }) =>
               isActive
-                ? 'text-secondary  underline  font-semibold border-b-2 border-primary'
-                : 'text-gray-500 hover:text-gray-600'
+                ? "text-secondary  underline  font-semibold border-b-2 border-primary"
+                : "text-gray-500 hover:text-gray-600"
             }
           >
             Details
@@ -25,8 +30,8 @@ const MovieDetailPage = () => {
             to="related"
             className={({ isActive }) =>
               isActive
-                ? 'text-secondary underline font-semibold border-b-2 border-primary'
-                : 'text-gray-500  hover:text-gray-600'
+                ? "text-secondary underline font-semibold border-b-2 border-primary"
+                : "text-gray-500  hover:text-gray-600"
             }
           >
             Related

@@ -20,16 +20,23 @@ import Related from "../components/Related";
 import HistoryPage from "../pages/user/HistoryPage";
 import MyPlanPage from "../pages/user/MyplansPage";
 import BlockedPage from "../pages/user/BlockPage";
+import Player from "../pages/common/Player";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getME()).finally(() => {
-      setLoading(false);
-    });
+    if (
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("refreshToken")
+    ) {
+      setLoading(true);
+      dispatch(getME()).finally(() => {
+        setLoading(false);
+      });
+    }
   }, [dispatch]);
   useEffect(() => {
     if (user && !user.profiles.length) {
@@ -113,6 +120,19 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/series/:id"
+        element={
+          <ProtectedRoute>
+            <SecondaryLayout>
+              <MovieDetailPage />
+            </SecondaryLayout>
+          </ProtectedRoute>
+        }
+      >
+        <Route path="more" element={<Details />} />
+        <Route path="related" element={<Related />} />
+      </Route>
+      <Route
         path="/plans"
         element={
           <SecondaryLayout gradient={true}>
@@ -155,7 +175,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/movie-details"
+        path="/movie/:id"
         element={
           <MainLayout>
             <MovieDetailPage />
@@ -165,6 +185,16 @@ const AppRoutes = () => {
         <Route path="more" element={<Details />} />
         <Route path="related" element={<Related />} />
       </Route>
+      <Route
+        path="/watch"
+        element={
+          <ProtectedRoute>
+            <SecondaryLayout gradient={true}>
+              <Player />
+            </SecondaryLayout>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
