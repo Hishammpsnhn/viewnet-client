@@ -24,9 +24,11 @@ import {
 const ScrollableSection = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, movies, selectedMovie, series } =
-    useSelector((state: RootState) => state.movies);
-  //const series = useSelector((state: RootState) => state.series);
+  const { loading, error, movies, selectedMovie, series } = useSelector(
+    (state: RootState) => state.movies
+  );
+
+  const { user } = useSelector((state: RootState) => state.user);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -52,7 +54,7 @@ const ScrollableSection = () => {
       try {
         const response = await getLatestSeries_API();
         if (response.success) {
-          dispatch(fetchSeriesSuccess(response.series));
+          dispatch(fetchSeriesSuccess(response.data));
         } else {
           dispatch(fetchSeriesFailure("Failed to fetch series"));
         }

@@ -5,7 +5,7 @@ import {
   createEpisodeWithSignedUrl_API,
   createSeason_API,
   fetchSeriesDetails_API,
-} from "../../api/content";
+} from "../../api/seriesApi";
 import {
   IEpisode,
   IEpisodeResponse,
@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { toast } from "react-toastify";
+import { createEpisodeCatalog_API } from "../../api/seriesApi";
 
 const SeriesManagement = () => {
   const { seriesId } = useParams();
@@ -117,7 +118,8 @@ const SeriesManagement = () => {
   const uploadFileToS3Movie = async (
     id: string,
     url: string,
-    file: File
+    file: File,
+    key:string,
   ): Promise<void> => {
     console.log("callled s3");
     try {
@@ -137,11 +139,20 @@ const SeriesManagement = () => {
       console.log(uploadResponse);
 
       if (uploadResponse.status === 200) {
+        console.log("File uploaded successfully");
+        const obj ={
+          key,
+          episodeId:id,
+          format:"mp4",
+        }
         // UpdataMetadata_API(id, { uploadStatus: "success" });
         // setUploadProgress({ movie: 0, thumbnail: 0 });
         // navigate("/uploads/details");
+       const res = await createEpisodeCatalog_API(obj)
+       console.log(res)
+
       } else {
-        console.log("Failed to upload file");
+      console.log("Failed to upload file");
         // toast.error("Failed to upload file");
       }
     } catch (error) {
@@ -195,7 +206,8 @@ const SeriesManagement = () => {
       uploadFileToS3Movie(
         res.episode._id,
         res.movieSignedUrl.url,
-        episodeData.videoUrl
+        episodeData.videoUrl,
+        res.key,
       );
       setEpisodeDetails(res.episode);
 

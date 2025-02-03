@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useEffect } from "react";
 import { selectMovie } from "../../reducers/movieReducer";
-import { fetchMovieMetadata_API } from "../../api/content";
+import {
+  fetchMovieMetadata_API,
+  getSeriesDetails_API,
+} from "../../api/content";
 interface MovieDetailProps {
   series: boolean;
 }
@@ -15,16 +18,28 @@ const MovieDetailPage = ({ series }: MovieDetailProps) => {
 
   const { id } = useParams();
 
-  useEffect(() => {
-    async function fetchMovieMetadata() {
-      if (id) {
-        const res = await fetchMovieMetadata_API(id);
-        if (res.success) {
-          dispatch(selectMovie(res.data));
-        }
+  async function fetchMovieMetadata() {
+    if (id) {
+      const res = await fetchMovieMetadata_API(id);
+      if (res.success) {
+        dispatch(selectMovie(res.data));
       }
     }
-     fetchMovieMetadata();
+  }
+  async function fetchSeriesMetadata() {
+    if (id) {
+      const res = await getSeriesDetails_API(id);
+      if (res.success) {
+        dispatch(selectMovie(res.data));
+      }
+    }
+  }
+  useEffect(() => {
+    if (series) {
+      fetchSeriesMetadata();
+    } else {
+      fetchMovieMetadata();
+    }
   }, [id]);
 
   if (!selectedMovie) {

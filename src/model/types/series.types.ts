@@ -75,3 +75,21 @@ export interface IEpisodeRes {
   thumbnailUrl:string;
   _id:string
 }
+
+//catalog
+interface Resolution {
+  resolution: string;
+  fileUrl: string;
+  format: string;
+  _id: string;
+}
+
+export interface EpisodeCatalog {
+  _id: string;
+  episodeId: string;
+  key: string;
+  resolutions: Resolution[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}

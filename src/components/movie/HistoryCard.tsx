@@ -1,7 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../../store";
+import { AppDispatch, RootState } from "../../store";
+import { selectMovie } from "../../reducers/movieReducer";
 
 interface HistoryCardProps {
   title: string;
@@ -26,11 +27,12 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   uniqueKey,
   progress,
   seriesWatch,
-  seriesManagement
+  seriesManagement,
 }) => {
   const track = 50;
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   if (progress && progress[id] && progress[id] >= 100) {
     delete progress[id];
@@ -38,20 +40,26 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   let isUploadingOrTranscoding;
   if (user?.isAdmin && uniqueKey) {
     isUploadingOrTranscoding =
-    (progress && progress[id]) || transcoding !== "completed";
+      (progress && progress[id]) || transcoding !== "completed";
     console.log(isUploadingOrTranscoding);
   }
-  console.log(progress,transcoding,isUploadingOrTranscoding);
+  console.log(progress, transcoding, isUploadingOrTranscoding);
 
   const handleWatch = () => {
-    if(seriesManagement){
+    if (seriesManagement) {
       navigate(`/series/${id}`);
       return;
     }
     if (!seriesWatch) {
-      navigate(`/watch?v=${id}`);
+      if (user?.isAdmin) {
+        navigate(`/watch?v=${id}`, {
+          state: { title,image },
+        });
+      } else {
+        navigate(`/watch?v=${id}`);
+      }
     } else if (user) {
-      navigate(`/watch?v=${uniqueKey}`);
+      navigate(`/watch?series=true&v=${id}`);
     }
   };
 

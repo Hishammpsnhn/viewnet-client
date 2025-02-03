@@ -190,7 +190,7 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <SecondaryLayout gradient={true}>
-              <UserPlayer series={false} />
+              <UserPlayer />
             </SecondaryLayout>
           </ProtectedRoute>
         }

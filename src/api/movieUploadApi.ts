@@ -29,7 +29,7 @@ export const UploadMetadataAndGenerateSingedURL_API = async (
 ): Promise<PresignedUrlResponse> => {
   try {
     const { data } = await apiClient.post<PresignedUrlResponse>(
-      "/uploading/generate-presigned-url",
+      "/uploading/movies/generate-presigned-url",
       formData
     );
     console.log(data);
@@ -45,7 +45,7 @@ export const UpdataMetadata_API = async (
 ): Promise<PresignedUrlResponse> => {
   try {
     const { data } = await apiClient.put<PresignedUrlResponse>(
-      `/uploading/${id}`,
+      `/uploading/movies/${id}`,
       formData
     );
     console.log(data);
@@ -57,7 +57,7 @@ export const UpdataMetadata_API = async (
 };
 export const GetAllMetadata_API = async (): Promise<GetAllMetadataResponse> => {
   try {
-    const { data } = await apiClient.get(`/uploading`);
+    const { data } = await apiClient.get(`/uploading/movies`);
     console.log(data);
     return data;
   } catch (error) {
@@ -70,7 +70,7 @@ export const GetMetadata_API = async (
   id: string
 ): Promise<GetMetadataResponse> => {
   try {
-    const { data } = await apiClient.get(`uploading/${id}`);
+    const { data } = await apiClient.get(`uploading/movies/${id}`);
     console.log(data);
     return data;
   } catch (error) {
@@ -96,7 +96,7 @@ export const updateThumbnail_API = async (
 export const getLatestMovies_API =
   async (): Promise<GetAllMetadataResponse> => {
     try {
-      const { data } = await apiClient.get(`/uploading/latest-movies`);
+      const { data } = await apiClient.get(`/uploading/movies/latest-movies`);
       console.log(data);
       return data;
     } catch (error) {

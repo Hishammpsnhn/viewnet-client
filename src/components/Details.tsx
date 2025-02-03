@@ -17,7 +17,7 @@ const Details = ({ series }: DetailsProps) => {
       try {
         const res = await getSeriesDetails_API(id);
         if (res.success) {
-          setSeriesDetails(res.series);
+          setSeriesDetails(res.data);
         }
       } catch (error) {
         console.error("Error fetching series details:", error);

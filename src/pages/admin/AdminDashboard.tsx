@@ -3,10 +3,11 @@ import UploadCard from "../../components/admin/uploadCard/UplaodCard";
 import NumberCard from "../../components/admin/NumberCard/NumberCard";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { MetaData } from "../../model/types/movie.types";
-import { getLatestMovies_API } from "../../api/movieUploadApi";
+import { GetAllMetadata_API } from "../../api/movieUploadApi";
 import HistoryCardSkeleton from "../../components/movie/HistoryCardSkelition";
 import { ISeriesResponse } from "../../model/types/series.types";
-import { getLatestSeries_API } from "../../api/content";
+import { GetAllSeries_API } from "../../api/seriesApi";
+
 const task: Task[] = [
   {
     title: "Upload And Publish a Movie",
@@ -39,7 +40,7 @@ const AdminDashboard = () => {
     async function fetchLatestMovies() {
       setLoading(true);
       try {
-        const response = await getLatestMovies_API();
+        const response = await GetAllMetadata_API();
         if (response.success) {
           setLatestMovies(response.data);
         }
@@ -56,9 +57,9 @@ const AdminDashboard = () => {
     async function fetchLatestMovies() {
       setLoading(true);
       try {
-        const response = await getLatestSeries_API();
+        const response = await GetAllSeries_API();
         if (response.success) {
-          setLatestSeries(response.series);
+          setLatestSeries(response.data);
         }
       } catch (error) {
         console.log(error);
@@ -103,6 +104,8 @@ const AdminDashboard = () => {
                 image={movie.thumbnailUrl}
                 title={movie.title}
                 id={movie._id}
+                transcoding={movie.transcoding.status}
+                uniqueKey="gf"
               />
             ))}
           </>
