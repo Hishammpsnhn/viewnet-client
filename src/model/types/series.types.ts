@@ -1,7 +1,9 @@
 export interface ISeries {
   title: string;
+  isRelease: boolean;
   description: string;
   genre: string;
+  isBlock:boolean;
   releaseDate: Date;
   rating: number;
   posterImage?: string | null;
@@ -38,6 +40,8 @@ export interface ISeriesResponse {
   description: string;
   genre: string;
   releaseDate: Date;
+  isRelease:boolean;
+  isBlock:boolean;
   rating: number;
   posterImage: string 
   thumbnailUrl: string,
@@ -51,6 +55,7 @@ export interface ISeriesDetailsResponse {
   genre: string;
   releaseDate: Date;
   rating: number;
+  isBlock:boolean;
   posterImage: string 
   seasons: ISeasonRes[];
   audience: "kids" | "adults";

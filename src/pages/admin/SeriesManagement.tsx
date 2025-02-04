@@ -5,6 +5,7 @@ import {
   createEpisodeWithSignedUrl_API,
   createSeason_API,
   fetchSeriesDetails_API,
+  updateSeriesDetails_API,
 } from "../../api/seriesApi";
 import {
   IEpisode,
@@ -16,12 +17,14 @@ import axios from "axios";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { toast } from "react-toastify";
 import { createEpisodeCatalog_API } from "../../api/seriesApi";
+import { UpdataMetadata_API } from "../../api/movieUploadApi";
 
 const SeriesManagement = () => {
   const { seriesId } = useParams();
 
   const [loading, setLoading] = useState(true);
   const [series, setSeries] = useState<ISeries | null>(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<ISeason | null>();
   const [episodeDetails, setEpisodeDetails] = useState<IEpisodeResponse>();
@@ -39,9 +42,9 @@ const SeriesManagement = () => {
     seasonId: "",
     thumbnailUrl: null,
     transcoding: "pending",
-    key:"",
+    key: "",
   });
-
+  console.log(series);
   useEffect(() => {
     async function fetchMovies() {
       try {
@@ -82,7 +85,7 @@ const SeriesManagement = () => {
   };
 
   const handleAddEpisode = (season: ISeason) => {
-    console.log("seoan",season)
+    console.log("seoan", season);
     setIsModalOpen(true);
     setSelectedSeason(season);
   };
@@ -115,11 +118,25 @@ const SeriesManagement = () => {
     }));
   };
 
+  const handleBlockSeries = async () => {
+    if (seriesId) {
+      const res = await updateSeriesDetails_API(seriesId, {
+        isBlock: !series?.isBlock,
+      });
+      if (res.success) {
+        setSeries(
+          (prev) => (prev ? { ...prev, isBlock: !prev.isBlock } : prev) 
+        );
+      }
+      
+    }
+  };
+
   const uploadFileToS3Movie = async (
     id: string,
     url: string,
     file: File,
-    key:string,
+    key: string
   ): Promise<void> => {
     console.log("callled s3");
     try {
@@ -140,19 +157,18 @@ const SeriesManagement = () => {
 
       if (uploadResponse.status === 200) {
         console.log("File uploaded successfully");
-        const obj ={
+        const obj = {
           key,
-          episodeId:id,
-          format:"mp4",
-        }
+          episodeId: id,
+          format: "mp4",
+        };
         // UpdataMetadata_API(id, { uploadStatus: "success" });
         // setUploadProgress({ movie: 0, thumbnail: 0 });
         // navigate("/uploads/details");
-       const res = await createEpisodeCatalog_API(obj)
-       console.log(res)
-
+        const res = await createEpisodeCatalog_API(obj);
+        console.log(res);
       } else {
-      console.log("Failed to upload file");
+        console.log("Failed to upload file");
         // toast.error("Failed to upload file");
       }
     } catch (error) {
@@ -187,7 +203,7 @@ const SeriesManagement = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Episode Data:", episodeData);
-    console.log(selectedSeason)
+    console.log(selectedSeason);
     if (!selectedSeason || !selectedSeason._id) return;
     const obj: IEpisode = {
       description: episodeData.description,
@@ -207,7 +223,7 @@ const SeriesManagement = () => {
         res.episode._id,
         res.movieSignedUrl.url,
         episodeData.videoUrl,
-        res.key,
+        res.key
       );
       setEpisodeDetails(res.episode);
 
@@ -246,12 +262,20 @@ const SeriesManagement = () => {
         <div className="md:w-1/2 text-left flex flex-col h-64">
           <h2 className="text-2xl font-bold text-gray-300">{series?.title}</h2>
           <p className="text-gray-400 mt-2">{series?.description}</p>
-          <div className="mt-auto space-x-4 pt-4">
+          <div className="mt-auto space-x-4 pt-4 flex items-center">
             <button
-              className="px-4 py-2 bg-black border border-secondary text-white rounded-lg shadow-md hover:bg-gray-900 text-xs"
+              className="px-4 py-3 border border-secondary bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40"
               onClick={handleAddSeason}
             >
               ADD NEW SEASON
+            </button>
+            <button
+              className={`px-4 py-3 border ${
+                series?.isBlock ? "border-green-900" : "border-red-900"
+              } bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40`}
+              onClick={handleBlockSeries}
+            >
+              {series?.isBlock ? "RELEASE" : "BLOCK"} SERIES
             </button>
           </div>
         </div>
