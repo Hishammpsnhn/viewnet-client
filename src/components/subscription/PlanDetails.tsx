@@ -31,7 +31,7 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ planData }) => {
         <div className="flex flex-col">
           <span className="text-xs text-gray-400">Purchase Date</span>
           <span className="text-sm text-gray-200">
-            {new Date(startDate).toLocaleDateString()}
+          {new Date(startDate).toLocaleDateString('en-GB')}
           </span>
         </div>
 

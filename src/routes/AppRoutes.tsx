@@ -23,6 +23,7 @@ import BlockedPage from "../pages/user/BlockPage";
 import Player from "../pages/common/Player";
 import { UserPlayer } from "../pages/common/UserPlayer";
 import WatchingPage from "../pages/user/WatchingPage";
+import PremiumUserProtectedRoute from "./Protected/PremiumUserProtectedRoute";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -189,11 +190,11 @@ const AppRoutes = () => {
       <Route
         path="/watch"
         element={
-          <ProtectedRoute>
+          <PremiumUserProtectedRoute>
             <SecondaryLayout gradient={true}>
               <WatchingPage />
             </SecondaryLayout>
-          </ProtectedRoute>
+          </PremiumUserProtectedRoute>
         }
       />
     </Routes>

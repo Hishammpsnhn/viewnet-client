@@ -1,20 +1,29 @@
-
-import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {  UserType } from "../../model/types/user.types";
-import { getME, loginUser, verifyOtp ,editProfile,updateDefaultProfile,updateUserProfile} from "./userThunks";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UserType } from "../../model/types/user.types";
+import {
+  getME,
+  loginUser,
+  verifyOtp,
+  editProfile,
+  updateDefaultProfile,
+  updateUserProfile,
+} from "./userThunks";
+import { UserPlan } from "../../model/types/plan.types";
 
 interface UserState {
   loading: boolean;
   error: string | null;
   user: UserType | null;
   isAuthenticated: boolean;
-  selectedProfile:any;
+  selectedProfile: any;
+  planDetails: UserPlan | null;
 }
 
 const initialState: UserState = {
   loading: false,
   error: null,
   user: JSON.parse(localStorage.getItem("user") || "null"),
+  planDetails: null,
   isAuthenticated: !!localStorage.getItem("accessToken"),
   selectedProfile: null,
 };
@@ -51,7 +60,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
-        console.log(action.payload)
+        console.log(action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
@@ -73,6 +82,9 @@ const userSlice = createSlice({
         action.payload;
         state.loading = false;
         state.user = action.payload?.user;
+        state.planDetails = action.payload?.planDetails
+          ? action.payload.planDetails
+          : null;
         state.isAuthenticated = action.payload?.user ? true : false;
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
@@ -122,11 +134,10 @@ const userSlice = createSlice({
           if (updatedProfileIndex !== -1) {
             state.user.profiles[updatedProfileIndex] = action.payload.user;
           }
-          if(state.selectedProfile._id === action.payload.user._id){
+          if (state.selectedProfile._id === action.payload.user._id) {
             state.selectedProfile = action.payload.user;
           }
         }
-
       })
       .addCase(editProfile.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -139,7 +150,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateDefaultProfile.fulfilled, (state, action) => {
-        console.log(action.payload)
+        console.log(action.payload);
         action.payload;
         state.loading = false;
         state.user = action.payload.user;

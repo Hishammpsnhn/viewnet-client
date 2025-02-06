@@ -1,50 +1,22 @@
 import React, { useState, useEffect } from "react";
-import IMG from "../assets/images/stranger-things-5-expect-header-1024x409.webp";
-import IMG2 from "../assets/images/the-last-king-vikings.webp";
-import IMG3 from "../assets/images/stranger-things-pictures-7fj1jv6tvf3izh0t.webp";
 import { MetaData } from "../model/types/movie.types";
 import { ISeriesResponse } from "../model/types/series.types";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 interface CarouselProp {
   selectedMovie: MetaData | ISeriesResponse | null;
 }
 const Carousel = ({ selectedMovie }: CarouselProp) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const navigate = useNavigate();
+  const { planDetails } = useSelector((state: RootState) => state.user);
+  const [paidUser, setPaidUser] = useState(false);
 
-  const images = [
-    {
-      src: IMG,
-      title: "Ragnar Lodbrok",
-      description: "The legendary Viking king",
-      buttonText: "Watch Now",
-    },
-    {
-      src: IMG2,
-      title: "The Last King",
-      description: "A tale of the last Viking king",
-      buttonText: "Watch Now",
-    },
-    {
-      src: IMG3,
-      title: "The Last King",
-      description: "A tale of the last Viking king",
-      buttonText: "Watch Now",
-    },
-  ];
-
-  // Function to go to the next slide
-  const nextSlide = () => {
-    setActiveIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  // Automatically change slide every 10 seconds
   useEffect(() => {
-    const interval = setInterval(nextSlide, 10000); // Change every 10 seconds
-    return () => clearInterval(interval); // Clean up interval on component unmount
-  }, []);
+    if (planDetails && planDetails.status === "active") {
+      setPaidUser(true);
+    }
+  }, [planDetails]);
+  const navigate = useNavigate();
 
   return (
     <div id="controls-carousel" className="relative w-full">
@@ -68,12 +40,21 @@ const Carousel = ({ selectedMovie }: CarouselProp) => {
             {selectedMovie?.title}
           </h2>
           <p className="text-lg">{selectedMovie?.description}</p>
-          <button
-            className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
-            onClick={() => navigate(`/watch?v=${selectedMovie?._id}`)}
-          >
-            Watch Now
-          </button>
+          {paidUser ? (
+            <button
+              className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
+              onClick={() => navigate(`/watch?v=${selectedMovie?._id}`)}
+            >
+              Watch Now
+            </button>
+          ) : (
+            <button
+              className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
+              onClick={() => navigate(`/plans`)}
+            >
+              Purchase Plan
+            </button>
+          )}
         </div>
       </div>
     </div>

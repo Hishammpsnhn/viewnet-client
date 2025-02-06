@@ -42,6 +42,7 @@ const SubCard: React.FC<SubCardProps> = ({
 
   const handlePayment = async () => {
     setLoading(true);
+
     try {
       if (user) {
         const res = await Payment_API(planId, user?._id);
@@ -52,6 +53,9 @@ const SubCard: React.FC<SubCardProps> = ({
           // setIsModalOpen(true);
           window.location.href = res.data.url
         }
+      }else{
+        toast.error("Please login to make a payment");
+        return;
       }
     } catch (error) {
       console.error("Error fetching payment data:", error);

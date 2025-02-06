@@ -34,7 +34,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   track,
 }) => {
   const navigate = useNavigate();
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user ,planDetails} = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
   if (progress && progress[id] && progress[id] >= 100) {
@@ -68,7 +68,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   };
 
   return (
-    <div className="relative min-w-52 border border-gray-500 mx-auto bg-primary shadow-md rounded-lg overflow-hidden">
+    <div className={`relative min-w-52 border border-gray-500 mx-auto bg-primary shadow-md rounded-lg overflow-hidden ${!planDetails && !user?.isAdmin && 'opacity-60'}`}>
       {/* Overlay for Uploading and Transcoding */}
       {transcoding && isUploadingOrTranscoding && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-60 text-yellow-400 text-sm  ">
@@ -108,7 +108,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
               : "opacity-90 hover:opacity-100"
           }`}
           onClick={handleWatch}
-          disabled={isUploadingOrTranscoding ? true : false}
+          disabled={isUploadingOrTranscoding ? true : false || !user?.isAdmin && !planDetails}
         >
           Watch
         </button>
