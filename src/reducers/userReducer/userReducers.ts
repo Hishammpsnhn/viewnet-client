@@ -14,8 +14,8 @@ interface UserState {
 const initialState: UserState = {
   loading: false,
   error: null,
-  user: null,
-  isAuthenticated: false,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  isAuthenticated: !!localStorage.getItem("accessToken"),
   selectedProfile: null,
 };
 
@@ -28,6 +28,7 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -57,6 +58,7 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(verifyOtp.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -75,6 +77,7 @@ const userSlice = createSlice({
         state.selectedProfile = action.payload?.user?.profiles.find(
           (item: any) => item._id === action.payload.user.defaultProfile
         );
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(getME.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;

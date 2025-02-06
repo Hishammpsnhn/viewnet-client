@@ -1,5 +1,4 @@
 import apiClient, { handleError } from "./apiClient";
-import { refreshAccessToken } from "../utils/RefreshToken";
 import { UserPlan } from "../model/types/plan.types";
 
 interface GetUserPlanDetailsResponse {
@@ -80,6 +79,7 @@ export const UpdateUser_API = async (id: string, newData: any) => {
     handleError(error, "Failed to fetch API");
   }
 };
+
 
 export const GETUserPlanDetails_API = async (userId: string) => {
   try {

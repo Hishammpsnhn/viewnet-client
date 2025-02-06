@@ -3,62 +3,78 @@ import HistoryCard from "./movie/HistoryCard";
 import { useParams } from "react-router-dom";
 import { getSeriesDetails_API } from "../api/content";
 import { ISeries, ISeriesDetailsResponse } from "../model/types/series.types";
+import HistoryCardSkeleton from "./movie/HistoryCardSkelition";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
 interface DetailsProps {
   series: boolean;
 }
 const Details = ({ series }: DetailsProps) => {
   const { id } = useParams();
   const [seriesDetails, setSeriesDetails] = useState<ISeriesDetailsResponse>();
+  const [loading, setLoading] = useState(false);
+  
+  const { selectedProfile } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchSeriesDetails = async () => {
       if (!id) return;
-
+      setLoading(true);
       try {
-        const res = await getSeriesDetails_API(id);
+        const res = await getSeriesDetails_API(id,selectedProfile._id);
         if (res.success) {
           setSeriesDetails(res.data);
         }
       } catch (error) {
         console.error("Error fetching series details:", error);
+      } finally {
+        setLoading(false);
       }
     };
     if (series) fetchSeriesDetails();
-  }, []);
-  console.log(id);
-  console.log(setSeriesDetails);
+  }, [id]);
+
   return (
     <div className="ml-4">
-      {seriesDetails?.seasons.map((season) => (
-        <>
-          <h2 className="text-xl font-semibold">
-            Season {season.seasonNumber}
-          </h2>
-          <div className="flex w-fit gap-2">
-            {season.episodes.map((episode) => (
-              <HistoryCard
-                key={episode._id}
-                // uniqueId={episode.}
-                uniqueKey={episode.key}
-                title={episode.title}
-                transcoding={episode.transcoding}
-                description="somthing desc"
-                image={episode.thumbnailUrl}
-                id={episode._id}
-                seriesWatch={true}
-              />
-            ))}
-            {/* <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard /> */}
-          </div>
-        </>
-      ))}
+      {loading ? (
+        <div className="flex my-10 gap-2">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="flex w-fit gap-2">
+              <HistoryCardSkeleton key={index} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="my-10">
+          {seriesDetails?.seasons.map((season) => (
+            <>
+              <h2 className="text-xl font-semibold mb-1">
+                {season.episodes.length > 0 && (
+                  <>Season {season.seasonNumber}</>
+                )}
+              </h2>
+              <div className="flex w-fit gap-2 mb-4">
+                {season.episodes.map((episode) => (
+                  <HistoryCard
+                    key={episode._id}
+                    // uniqueId={episode.}
+                    uniqueKey={episode.key}
+                    title={episode.title}
+                    transcoding={episode.transcoding}
+                    description="somthing desc"
+                    image={episode.thumbnailUrl}
+                    id={episode._id}
+                    seriesWatch={true}
+                    seasonId={season._id}
+                    track={episode.progress}
+                    history={true}
+                  />
+                ))}
+              </div>
+            </>
+          ))}
+        </div>
+      )}
 
       <h2 className="text-xl font-semibold">Movie Details</h2>
       <p className="mt-2 text-gray-600">

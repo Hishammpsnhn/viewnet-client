@@ -78,6 +78,7 @@ export interface IEpisodeRes {
   videoUrl: File | null;
   transcoding: "pending" | "completed" | "failed" | "processing";
   thumbnailUrl:string;
+  progress?:number;
   _id:string
 }
 

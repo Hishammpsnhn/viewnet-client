@@ -15,6 +15,8 @@ interface HistoryCardProps {
   progress?: Record<string, number>;
   seriesManagement?: boolean;
   seriesWatch?: boolean;
+  seasonId?: string;
+  track?: number;
 }
 
 const HistoryCard: React.FC<HistoryCardProps> = ({
@@ -27,9 +29,10 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   uniqueKey,
   progress,
   seriesWatch,
+  seasonId,
   seriesManagement,
+  track,
 }) => {
-  const track = 50;
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -53,13 +56,14 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
     if (!seriesWatch) {
       if (user?.isAdmin) {
         navigate(`/watch?v=${id}`, {
-          state: { title,image },
+          state: { title, image },
         });
       } else {
         navigate(`/watch?v=${id}`);
       }
     } else if (user) {
-      navigate(`/watch?series=true&v=${id}`);
+      navigate(`/watch?series=true&season=${seasonId}&v=${id}`);
+      dispatch(selectMovie(null));
     }
   };
 
@@ -83,7 +87,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
         </div>
       </div>
 
-      {history && (
+      {history && track ? (
         <div className="p-1">
           <div className="w-full h-1 bg-white rounded-full">
             <div
@@ -92,6 +96,8 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
             ></div>
           </div>
         </div>
+      ) : (
+        <></>
       )}
 
       <div className="p-1">
