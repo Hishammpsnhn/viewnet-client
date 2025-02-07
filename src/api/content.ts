@@ -1,5 +1,3 @@
-import axios from "axios";
-import { IEpisode, ISeason, ISeries } from "../model/types/series.types";
 import apiClient, { handleError } from "./apiClient";
 
 //public
@@ -88,7 +86,10 @@ export const getEpisodeDetails_API = async (
     throw error;
   }
 };
-export const getEpisodeCatalogDetails_API = async (id: string, profileId?:string) => {
+export const getEpisodeCatalogDetails_API = async (
+  id: string,
+  profileId?: string
+) => {
   try {
     const { data } = await apiClient.get(
       `/content/public/series/episode/catalog/${id}`,
@@ -152,3 +153,4 @@ export const HistoryContinue_API = async (
     handleError(error, "Failed to fetch API");
   }
 };
+

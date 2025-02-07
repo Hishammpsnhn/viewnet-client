@@ -13,6 +13,7 @@ import UsersPage from "../pages/admin/UsersPage";
 import UploadDetailsPage from "../pages/admin/UploadDetailsPage";
 import Player from "../pages/common/Player";
 import SeriesManagement from "../pages/admin/SeriesManagement";
+import GenrePage from "../pages/admin/GenrePage";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -87,6 +88,16 @@ const AppRoutes = () => {
           <AdminProtectedRoute>
             <AdminLayout>
               <UploadDetailsPage/>
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/genre"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <GenrePage/>
             </AdminLayout>
           </AdminProtectedRoute>
         }

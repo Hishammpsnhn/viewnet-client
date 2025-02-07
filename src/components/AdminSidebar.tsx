@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Logout_API } from "../api/userApi";
 import { logout } from "../reducers/userReducer/userReducers";
+import { LiaSitemapSolid } from "react-icons/lia";
 
 import { useDispatch } from "react-redux";
 
@@ -54,6 +55,15 @@ const AdminSidebar = () => {
             >
               <FaShoppingCart className="mr-3" />
               Plans
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => navigate("/genre")}
+              className="flex items-center py-3 px-4 hover:border hover:border-secondary hover:bg-gradient-to-br hover:from-[#00b9ad2d] hover:to-[#00b9ad43] w-full  rounded-lg font-semibold"
+            >
+              <LiaSitemapSolid  className="mr-3" />
+              Genre
             </button>
           </li>
           <li>

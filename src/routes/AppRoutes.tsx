@@ -24,6 +24,7 @@ import Player from "../pages/common/Player";
 import { UserPlayer } from "../pages/common/UserPlayer";
 import WatchingPage from "../pages/user/WatchingPage";
 import PremiumUserProtectedRoute from "./Protected/PremiumUserProtectedRoute";
+import WatchLater from "../pages/user/WatchLater";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -145,6 +146,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <SecondaryLayout gradient={true}>
               <MyPlanPage />
+            </SecondaryLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/watch-later"
+        element={
+          <ProtectedRoute>
+            <SecondaryLayout gradient={true}>
+              <WatchLater />
             </SecondaryLayout>
           </ProtectedRoute>
         }

@@ -39,6 +39,7 @@ apiClient.interceptors.response.use(
         sessionStorage.setItem("isRedirecting", "true"); 
         localStorage.removeItem("accessToken"); 
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
        
         window.location.href = "/blocked";
         return;

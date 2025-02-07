@@ -82,7 +82,7 @@ const ScrollableSection = () => {
   }, []);
 
   return (
-    <div className="ml-16 relative mb-10 ">
+    <div className=" relative mb-10 ">
       <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6 ">
         Latest Series
       </h1>
@@ -107,6 +107,7 @@ const ScrollableSection = () => {
                 id={movie._id}
                 image={movie.posterImage}
                 key={index}
+                series={true}
               />
             </div>
           ))}
@@ -144,6 +145,7 @@ const ScrollableSection = () => {
                 id={movie._id}
                 image={movie.thumbnailUrl}
                 key={index}
+                series={false}
               />
             </div>
           ))}
@@ -198,7 +200,7 @@ export const HomePage = () => {
     <div className="">
       <div className="relative mb-6">
         <VideoBanner />
-        <div className="absolute top-[60vh] md:top-[70vh] w-full z-10">
+        <div className="absolute top-[60vh] md:top-[70vh] w-full z-10 ml-16">
           <ScrollableSection />
         </div>
       </div>
