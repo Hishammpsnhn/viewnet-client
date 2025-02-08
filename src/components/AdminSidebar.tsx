@@ -20,6 +20,7 @@ const AdminSidebar = () => {
     const res = await Logout_API();
     if (res.success) {
       dispatch(logout());
+      navigate("/")
       window.location.reload()
     }
   };

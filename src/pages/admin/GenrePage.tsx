@@ -4,12 +4,16 @@ import { Genre } from "../../model/types/genrePage";
 import { GenreItem } from "../../components/genre/GenreItems";
 import { FilterIcon, PlusIcon, SearchIcon } from "../../svg/svg";
 import { createGenre_API, getAllGenre_API } from "../../api/genreApi";
+import { genreValidation } from "../../utils/Validation";
+import * as Yup from "yup";
 
 const GenrePage: React.FC = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   useEffect(() => {
     async function getGenres() {
       try {
@@ -47,7 +51,7 @@ const GenrePage: React.FC = () => {
 
   const handleAddGenre = () => {
     const newGenre: Genre = {
-      id: "", 
+      id: "",
       name: "",
       description: "",
       isActive: true,
@@ -60,7 +64,9 @@ const GenrePage: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-
+      await genreValidation.validate(updatedGenre, { abortEarly: false });
+      
+      console.log(updatedGenre)
       if (!updatedGenre.id) {
         const res = await createGenre_API(updatedGenre);
         if (res.success) {
@@ -71,16 +77,24 @@ const GenrePage: React.FC = () => {
       } else {
         const res = await createGenre_API(updatedGenre);
         if (res.success) {
-          setGenres(genres.map((genre) =>
-            genre.id === updatedGenre.id ? updatedGenre : genre
-          ));
+          setGenres(
+            genres.map((genre) =>
+              genre.id === updatedGenre.id ? updatedGenre : genre
+            )
+          );
         } else {
           setError("Failed to update genre");
         }
       }
       setEditingGenre(null);
-    } catch (err) {
-      setError("Error saving genre");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) errors[err.path] = err.message;
+        });
+        setValidationErrors(errors);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +116,7 @@ const GenrePage: React.FC = () => {
             {error}
           </div>
         )}
-        
+
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Genre Management</h1>
           <button
@@ -154,6 +168,7 @@ const GenrePage: React.FC = () => {
             >
               {editingGenre?.id === genre.id ? (
                 <GenreEditForm
+                  validationErrors={validationErrors}
                   genre={editingGenre}
                   onSave={handleSaveGenre}
                   onCancel={() => setEditingGenre(null)}
@@ -162,17 +177,18 @@ const GenrePage: React.FC = () => {
                 <GenreItem
                   genre={genre}
                   onEdit={setEditingGenre}
-                 // onDelete={handleDeleteGenre}
+                  // onDelete={handleDeleteGenre}
                 />
               )}
             </div>
           ))}
-          
+
           {/* Show form for new genre */}
           {editingGenre && !editingGenre.id && (
             <div className="bg-gray-800 p-4 rounded-lg">
               <GenreEditForm
                 genre={editingGenre}
+                validationErrors={validationErrors}
                 onSave={handleSaveGenre}
                 onCancel={() => setEditingGenre(null)}
               />

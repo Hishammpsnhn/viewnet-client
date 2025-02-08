@@ -1,18 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { MetaData } from "../model/types/movie.types";
+import { MetaData, SearchMeta } from "../model/types/movie.types";
 import { ISeriesResponse } from "../model/types/series.types";
 
 interface MoviesState {
   movies: MetaData[];
   series: ISeriesResponse[];
+  searchMeta: SearchMeta[];
   loading: boolean;
   error: string | null;
-  selectedMovie: MetaData|ISeriesResponse | null;
- // selectedSeries: ISeriesResponse | null;
+  selectedMovie: MetaData | ISeriesResponse | null;
+  // selectedSeries: ISeriesResponse | null;
 }
 const initialState: MoviesState = {
   movies: [],
   series: [],
+  searchMeta: [],
   loading: false,
   error: null,
   selectedMovie: null,
@@ -60,6 +62,15 @@ const MoviesSlice = createSlice({
     // selectSeries: (state, action) => {
     //   state.selectedSeries = action.payload;
     // },
+    fetchSearching: (state) => {
+      state.loading = true;
+    },
+    addSearchingMeta: (state, action) => {
+      state.searchMeta = action.payload;
+    },
+    fetchSearchingFailure: (state) => {
+      state.loading = false;
+    },
     clearSeries: (state) => {
       state.series = [];
       //state.selectedSeries = null;
@@ -77,6 +88,9 @@ export const {
   fetchSeriesSuccess,
   fetchSeriesFailure,
   clearSeries,
+  addSearchingMeta,
+  fetchSearching,
+  fetchSearchingFailure,
   //selectSeries,
   selectMovie,
   clearMovies,

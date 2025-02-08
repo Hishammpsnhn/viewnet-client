@@ -1,9 +1,9 @@
 export interface ISeries {
   title: string;
-  isRelease: boolean;
+  isRelease?: boolean;
   description: string;
   genre: string;
-  isBlock:boolean;
+  isBlock?:boolean;
   releaseDate: Date;
   rating: number;
   posterImage?: string | null;

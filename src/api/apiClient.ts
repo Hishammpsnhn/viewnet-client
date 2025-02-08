@@ -2,6 +2,7 @@ import axios, { AxiosHeaders } from "axios";
 import { gateWayUrl } from "./baseUrls";
 import { handleApiError } from "../utils/ErrorHanlder";
 import { refreshAccessToken } from "../utils/RefreshToken";
+import { toast } from "react-toastify";
 
 const apiClient = axios.create({
   baseURL: `${gateWayUrl}/api`,
@@ -35,7 +36,7 @@ apiClient.interceptors.response.use(
 
     if (status === 403) {
      
-      
+        toast.error('Unauthorized')
         sessionStorage.setItem("isRedirecting", "true"); 
         localStorage.removeItem("accessToken"); 
         localStorage.removeItem("refreshToken");

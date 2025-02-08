@@ -39,7 +39,7 @@ const Player: React.FC = () => {
       if (id && !series) {
         const res = await fetchMovieCatalog_API(id);
         if (res && res.success) {
-          setCatalogs(res.data);
+          setCatalogs(res.data.catalog);
         }
       }
     }
@@ -62,7 +62,7 @@ const Player: React.FC = () => {
   useEffect(() => {
     if (catalogs) {
       console.log(catalogs);
-      const autoResolution = catalogs?.encodedFiles.find(
+      const autoResolution = catalogs?.encodedFiles?.find(
         (item) => item.resolution === "auto"
       );
       const lowResolution = catalogs?.encodedFiles.find(

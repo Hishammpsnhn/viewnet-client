@@ -61,6 +61,7 @@ export const GETAllUsers_API = async (
         page,
         limit,
         search,
+        isBlock :true
       },
     });
     return data;

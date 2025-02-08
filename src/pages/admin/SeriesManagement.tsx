@@ -75,7 +75,7 @@ const SeriesManagement = () => {
         const res = await createSeason_API(seriesId, season);
         if (res.success) {
           setSeries((prev) =>
-            prev ? { ...prev, seasons: [...prev.seasons, season] } : prev
+            prev ? { ...prev, seasons: [...prev.seasons, res.season] } : prev
           );
         }
       }
@@ -86,8 +86,8 @@ const SeriesManagement = () => {
 
   const handleAddEpisode = (season: ISeason) => {
     console.log("seoan", season);
-    setIsModalOpen(true);
     setSelectedSeason(season);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -124,11 +124,10 @@ const SeriesManagement = () => {
         isBlock: !series?.isBlock,
       });
       if (res.success) {
-        setSeries(
-          (prev) => (prev ? { ...prev, isBlock: !prev.isBlock } : prev) 
+        setSeries((prev) =>
+          prev ? { ...prev, isBlock: !prev.isBlock } : prev
         );
       }
-      
     }
   };
 
@@ -260,8 +259,8 @@ const SeriesManagement = () => {
         {loading && <>Loading....</>}
         {!series && !loading && <>Not found</>}
         <div className="md:w-1/2 text-left flex flex-col h-64">
-          <h2 className="text-2xl font-bold text-gray-300">{series?.title}</h2>
-          <p className="text-gray-400 mt-2">{series?.description}</p>
+          <h2 className="text-2xl font-bold text-gray-300 capitalize">{series?.title}</h2>
+          <p className="text-gray-400 mt-2 capitalize">{series?.description}</p>
           <div className="mt-auto space-x-4 pt-4 flex items-center">
             <button
               className="px-4 py-3 border border-secondary bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40"
@@ -329,7 +328,7 @@ const SeriesManagement = () => {
         </div>
       ))}
 
-      {/* Modal */}
+      {/* add episode Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-black border border-secondary p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -370,6 +369,15 @@ const SeriesManagement = () => {
                   className="mt-1 p-2 w-full border rounded-lg bg-black"
                   required
                 />
+                {episodeData.thumbnailUrl && (
+                  <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                    <img
+                      src={URL.createObjectURL(episodeData.thumbnailUrl)}
+                      alt="Thumbnail preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">

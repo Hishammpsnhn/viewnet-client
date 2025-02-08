@@ -44,3 +44,12 @@ export interface MovieCatalogData {
   movieName: string;        
   encodedFiles: EncodedFiles[]; 
 }
+
+export interface SearchMeta {
+  _id: string;
+  title: string;
+  description: string;
+  genre: string;
+  thumbnailUrl: string;
+
+}

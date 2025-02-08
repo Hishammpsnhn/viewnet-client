@@ -54,7 +54,7 @@ const MovieDetailPage = ({ series }: MovieDetailProps) => {
     <div className="">
       {/* Carousel Section */}
 
-      <>{selectedMovie && <Carousel selectedMovie={selectedMovie} />}</>
+      <>{selectedMovie && <Carousel series={series} selectedMovie={selectedMovie} />}</>
 
       {/* Tab Navigation */}
       <div className="mt-6 mx-14">

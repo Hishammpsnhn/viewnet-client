@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import debounce from "lodash.debounce";
 import Login from "../features/user/Login";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { searchMovie_API } from "../api/content";
+import {
+  addSearchingMeta,
+  fetchSearching,
+  fetchSearchingFailure,
+} from "../reducers/movieReducer";
 
 const Header = ({
   search,
@@ -10,10 +17,14 @@ const Header = ({
   search?: boolean;
   gradient?: boolean;
 }) => {
-  const [loginModal, setLoginModal] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
   const { user, selectedProfile } = useSelector(
     (state: RootState) => state.user
   );
+
+  const [loginModal, setLoginModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogin = () => {
     setLoginModal((prev) => !prev);
@@ -21,7 +32,31 @@ const Header = ({
 
   const handleProfileClick = () => {
     console.log("Profile clicked!");
-    // Add functionality to handle profile actions (e.g., change profile, go to profile page)
+  };
+
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      console.log("Searching for:", query);
+      dispatch(fetchSearching());
+      try {
+        const res = await searchMovie_API(query);
+        if (res.success) {
+          dispatch(addSearchingMeta(res.data));
+        }
+      } catch (error) {
+      } finally {
+        dispatch(fetchSearchingFailure());
+      }
+    }, 500),
+    []
+  );
+
+  // Handle input change with debounce
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
   };
 
   return (
@@ -50,7 +85,9 @@ const Header = ({
             <div className="relative hidden md:block w-full">
               <input
                 type="text"
-                placeholder="Search"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
                 className="bg-gray-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-secondary w-full"
               />
               <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white">
@@ -69,7 +106,7 @@ const Header = ({
             </button>
           ) : (
             <img
-              src={selectedProfile?.profilePic || "/default-profile.png"} // Fallback image
+              src={selectedProfile?.profilePic || "/default-profile.png"}
               alt={`Profile`}
               onClick={handleProfileClick}
               className={`rounded-full border-2 object-cover cursor-pointer 

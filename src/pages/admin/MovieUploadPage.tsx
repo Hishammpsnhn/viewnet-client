@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { movieUpload } from "../../utils/Validation";
 import * as Yup from "yup";
@@ -11,6 +11,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { Genre } from "../../model/types/genrePage";
+import { getAllGenre_API } from "../../api/genreApi";
 
 interface MovieUploadPageProps {}
 
@@ -25,6 +27,8 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     movieFile: null as File | null,
     trailerFile: null as File | null,
   });
+  const [genres, setGenres] = useState<Genre[]>([]);
+
   const [uploadProgress, setUploadProgress] = useState<{
     movie: number;
     thumbnail: number;
@@ -62,7 +66,7 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     url: string,
     file: File
   ): Promise<void> => {
-    console.log('uploadFileToS3Movie', id, url, file);
+    console.log("uploadFileToS3Movie", id, url, file);
     try {
       const uploadResponse = await axios.put(url, file, {
         headers: {
@@ -164,6 +168,21 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
       }
     }
   };
+
+  useEffect(() => {
+    async function getGenres() {
+      try {
+        const res = await getAllGenre_API();
+        if (res.success) {
+          setGenres(res.data);
+        } else {
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getGenres();
+  }, []);
   return (
     <div className="flex flex-col space-y-8 p-8">
       {/* Form Fields */}
@@ -266,10 +285,9 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
               className="w-full p-2 border border-secondary bg-black rounded-md"
             >
               <option value="">Select Genre</option>
-              <option value="Action">Action</option>
-              <option value="Comedy">Comedy</option>
-              <option value="Drama">Drama</option>
-              <option value="Horror">Horror</option>
+              {genres.map((genre) => (
+                <option value={genre.id}>{genre.name}</option>
+              ))}
             </select>
           </div>
 

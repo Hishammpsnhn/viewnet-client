@@ -13,6 +13,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { UserPlan } from "../../model/types/plan.types";
+
 interface User {
   _id: string;
   email: string;
@@ -20,21 +21,24 @@ interface User {
   profilesCount: number;
   sessionsCount: number;
 }
+
 interface Column<T> {
   header: string;
   accessor: keyof T | ((item: T) => React.ReactNode);
 }
+
+type FilterStatus = "all" | "blocked" | "active";
 
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [maxPage, setMaxPage] = useState(0);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedUserPlan, setSelectedUserPlan] = useState<UserPlan | null>(
-    null
-  );
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+  const [selectedUserPlan, setSelectedUserPlan] = useState<UserPlan | null>(null);
 
   const handleCloseDialog = () => setOpen(false);
 
@@ -57,7 +61,7 @@ const UsersPage = () => {
 
   const handlePlanDetails = async (userId: string) => {
     const data = await GETUserPlanDetails_API(userId);
-    if ( data && data.success) {
+    if (data && data.success) {
       if (data.userPlan.length) {
         setSelectedUserPlan(data.userPlan[0]);
       } else {
@@ -73,16 +77,28 @@ const UsersPage = () => {
     setOpen(true);
   };
 
+  const handleFilterChange = (status: FilterStatus) => {
+    setFilterStatus(status);
+    setPage(1); // Reset to first page when filter changes
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
-      if (searchQuery != "") {
+      if (searchQuery !== "") {
         setPage(1);
       }
       setLoading(true);
       try {
         const users = await GETAllUsers_API(page, 5, searchQuery);
         if (users.success) {
-          setUsers(users.users);
+          const filteredUsers = users.users.data.filter((user: User) => {
+            if (filterStatus === "all") return true;
+            if (filterStatus === "blocked") return user.isBlock;
+            if (filterStatus === "active") return !user.isBlock;
+            return true;
+          });
+          setUsers(filteredUsers);
+          setMaxPage(users.users.totalPages);
         }
       } catch (error) {
         toast.error("Error fetching users");
@@ -91,7 +107,7 @@ const UsersPage = () => {
       }
     };
     fetchUsers();
-  }, [page, searchQuery]);
+  }, [page, searchQuery, filterStatus]);
 
   const columns: Column<User>[] = [
     { header: "ID", accessor: "_id" },
@@ -129,20 +145,35 @@ const UsersPage = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Users Management</h1>
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="bg-black border-secondary p-2 text-lg my-5 border rounded-md"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <div className="flex gap-4 mb-4">
+        <div className="search-container flex-1">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-black border-secondary p-2 text-lg my-5 border rounded-md w-full"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="filter-container flex items-center">
+          <select
+            value={filterStatus}
+            onChange={(e) => handleFilterChange(e.target.value as FilterStatus)}
+            className="bg-black border-secondary p-2 text-lg my-5 border rounded-md"
+          >
+            <option value="all">All Users</option>
+            <option value="active">Active Users</option>
+            <option value="blocked">Blocked Users</option>
+          </select>
+        </div>
       </div>
+
       {loading ? (
         <LoadingSpinner />
       ) : (
         <GenericTable<User> data={users} columns={columns} />
       )}
+      
       <div className="flex justify-end mt-5">
         <button
           disabled={page <= 1}
@@ -151,12 +182,12 @@ const UsersPage = () => {
             page <= 1 && "opacity-60"
           }`}
         >
-          <IoIosArrowBack />{" "}
+          <IoIosArrowBack />
         </button>
         <button
-          disabled={users.length < 5}
+          disabled={page === maxPage}
           onClick={() => setPage((prev) => prev + 1)}
-          className={`bg-slate-400 p-2 rounded-sm  ${
+          className={`bg-slate-400 p-2 rounded-sm ${
             users.length < 5 && "opacity-60"
           }`}
         >

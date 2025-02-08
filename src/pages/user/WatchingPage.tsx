@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { UserPlayer } from "../common/UserPlayer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { MetaData } from "../../model/types/movie.types";
+import { RecommendedMovie_API } from "../../api/content";
 
 const WatchingPage = () => {
-    const { selectedMovie } = useSelector((state: RootState) => state.movies);
-  const similarVideos = [
-    { id: 1, title: "Similar Movie 1", thumbnail: "/api/placeholder/280/157" },
-    { id: 2, title: "Similar Movie 2", thumbnail: "/api/placeholder/280/157" },
-    { id: 3, title: "Similar Movie 3", thumbnail: "/api/placeholder/280/157" },
-    { id: 4, title: "Similar Movie 4", thumbnail: "/api/placeholder/280/157" },
-    { id: 5, title: "Similar Movie 5", thumbnail: "/api/placeholder/280/157" },
-    { id: 6, title: "Similar Movie 6", thumbnail: "/api/placeholder/280/157" },
-  ];
+  const { selectedMovie } = useSelector((state: RootState) => state.movies);
+  const { user } = useSelector((state: RootState) => state.user);
+  const [similar, setSimilar] = useState<MetaData[]>([]);
+
+  const fetchRecommandation = async () => {
+    try {
+      if (!user?.defaultProfile) return;
+      const response = await RecommendedMovie_API(user?.defaultProfile);
+      if (response.success) {
+        setSimilar(response.data);
+      }
+    } catch (error: any) {}
+  };
+  useEffect(() => {
+    fetchRecommandation();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -35,18 +44,23 @@ const WatchingPage = () => {
           <div className="lg:w-1/3">
             <h2 className="text-xl font-bold mb-4">Similar Videos</h2>
             <div className="flex flex-col gap-4">
-              {similarVideos.map((video) => (
-                <div 
-                  key={video.id}
+              {similar.map((video) => (
+                <div
+                  key={video._id}
                   className="flex gap-3 bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors duration-200 cursor-pointer"
                 >
                   <img
-                    src={video.thumbnail}
+                    src={video.thumbnailUrl}
                     alt={video.title}
                     className="w-40 h-24 object-cover"
                   />
                   <div className="p-2">
                     <h3 className="font-semibold text-sm">{video.title}</h3>
+                    <h3 className="font-semibold text-xs text-gray-400">
+                      {video.description.length > 35
+                        ? video.description.substring(0, 35) + "..."
+                        : video.description}
+                    </h3>
                   </div>
                 </div>
               ))}

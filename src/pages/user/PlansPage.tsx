@@ -11,12 +11,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { subscriptionPlan } from "../../utils/Validation";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [plans, setPlans] = useState<Plan[] | []>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -32,15 +33,23 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPlan(null);
-    setValidationErrors({})
+    setValidationErrors({});
   };
   const handleSubmit = async (formData: Plan) => {
-    setValidationErrors({})
-    
+    setValidationErrors({});
+
+    plans.map((plan) => {
+      if (plan.name === formData.name) {
+        toast.error("Name already Exists");
+      }
+      if (plan.price === formData.price) {
+        toast.error("Price already Exists");
+      }
+    });
 
     try {
       await subscriptionPlan.validate(formData, { abortEarly: false });
-      setLoading(true)
+      setLoading(true);
       if (selectedPlan) {
         const updatedPlan = await UpdatePlans_API(formData.id, formData);
         if (updatedPlan.success) {
@@ -68,8 +77,8 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
         });
         setValidationErrors(errors);
       }
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {

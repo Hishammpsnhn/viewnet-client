@@ -1,7 +1,8 @@
 import apiClient, { handleError } from "./apiClient";
 
 //public
-export const getLatestMovies_API = async () => {
+export const getLatestMovies_API = async (page:number) => {
+  console.log("page",page)
   try {
     const { data } = await apiClient.get(`/content/public/movies`);
     console.log(data);
@@ -11,7 +12,9 @@ export const getLatestMovies_API = async () => {
     throw error;
   }
 };
-export const getLatestSeries_API = async () => {
+export const getLatestSeries_API = async (page:number) => {
+  console.log("page",page)
+
   try {
     const { data } = await apiClient.get(`/content/public/series`);
     console.log(data);
@@ -154,3 +157,31 @@ export const HistoryContinue_API = async (
   }
 };
 
+//recommended
+export const RecommendedMovie_API = async (profileId: string) => {
+  try {
+    const { data } = await apiClient.get(
+      `content/public/movies/recommended/${profileId}`
+    );
+    return data;
+  } catch (error: any) {
+    handleError(error, "Failed to fetch API");
+  }
+};
+
+//search
+export const searchMovie_API = async (q: string) => {
+  try {
+    const { data } = await apiClient.get(
+      `content/public/movies/query`,{
+        params:{
+          q
+        }
+      }
+    );
+    return data;
+  } catch (error: any) {
+    handleError(error, "Failed to fetch API");
+  }
+};
+// http://localhost:4000/api/content/public/movies/recommended/:id

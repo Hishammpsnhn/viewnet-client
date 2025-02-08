@@ -1,11 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import image from "../../assets/images/ragnar-lodbrok-digital-art-vikings-sword-wallpaper-preview.webp";
-import {
-  addWatchLaterMovies_API,
-  addWatchLaterSeries_API,
-} from "../../api/watchLaterApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { addWatchLaterMovies_API, addWatchLaterSeries_API } from "../../api/watchLaterApi";
 
 interface CardTypes {
   title: string;
@@ -28,7 +24,7 @@ const MovieCard = ({
   const { selectedProfile } = useSelector((state: RootState) => state.user);
 
   const handleWatchLater = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card's onClick from firing
+    e.stopPropagation();
     navigate('/watch-later');
     if (selectedProfile) {
       if (series) {
@@ -40,21 +36,25 @@ const MovieCard = ({
   };
 
   return (
-    <div
-      className="relative min-w-[10rem] md:min-w-[18rem] max-w-sm rounded-lg overflow-hidden shadow-lg cursor-pointer bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+    <div 
+      className="relative w-72 h-96 rounded-lg overflow-hidden shadow-lg cursor-pointer bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
       onClick={() => navigate(url)}
     >
-      {/* Movie Image */}
-      <div className="relative">
-        <img
-          className="w-full h-48 md:h-64 lg:h-72 object-cover"
-          src={image}
-          alt={title}
-        />
+      {/* Movie Image Container */}
+      <div className="relative h-full w-full">
+        <div className="absolute inset-0">
+          <img
+            className="h-full w-full object-cover"
+            src={image}
+            alt={title}
+          />
+        </div>
 
         {/* Title at the Top */}
         <div className="absolute top-0 left-0 w-full p-4 bg-gradient-to-b from-black/60 to-transparent">
-          <h2 className="font-bold text-lg md:text-xl text-white truncate">{title}</h2>
+          <h2 className="font-bold text-xl text-white truncate">
+            {title}
+          </h2>
         </div>
 
         {/* Description Overlay (shown on hover) */}

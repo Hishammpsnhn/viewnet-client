@@ -6,8 +6,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 interface CarouselProp {
   selectedMovie: MetaData | ISeriesResponse | null;
+  series: boolean;
 }
-const Carousel = ({ selectedMovie }: CarouselProp) => {
+const Carousel = ({ selectedMovie, series }: CarouselProp) => {
   const { planDetails } = useSelector((state: RootState) => state.user);
   const [paidUser, setPaidUser] = useState(false);
 
@@ -40,20 +41,26 @@ const Carousel = ({ selectedMovie }: CarouselProp) => {
             {selectedMovie?.title}
           </h2>
           <p className="text-lg">{selectedMovie?.description}</p>
-          {paidUser ? (
-            <button
-              className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
-              onClick={() => navigate(`/watch?v=${selectedMovie?._id}`)}
-            >
-              Watch Now
-            </button>
+          {series ? (
+            <></>
           ) : (
-            <button
-              className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
-              onClick={() => navigate(`/plans`)}
-            >
-              Purchase Plan
-            </button>
+            <>
+              {paidUser ? (
+                <button
+                  className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
+                  onClick={() => navigate(`/watch?v=${selectedMovie?._id}`)}
+                >
+                  Watch Now
+                </button>
+              ) : (
+                <button
+                  className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
+                  onClick={() => navigate(`/plans`)}
+                >
+                  Purchase Plan
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

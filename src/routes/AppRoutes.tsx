@@ -41,7 +41,7 @@ const AppRoutes = () => {
         setLoading(false);
       });
     }
-  }, [dispatch]);
+  }, []);
   useEffect(() => {
     if (user && !user.profiles.length) {
       navigate(`/profile/${user._id}`);
