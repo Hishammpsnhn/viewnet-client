@@ -1,8 +1,8 @@
 import apiClient, { handleError } from "./apiClient";
 
 //public
-export const getLatestMovies_API = async (page:number) => {
-  console.log("page",page)
+export const getLatestMovies_API = async (page: number) => {
+  console.log("page", page);
   try {
     const { data } = await apiClient.get(`/content/public/movies`);
     console.log(data);
@@ -12,8 +12,8 @@ export const getLatestMovies_API = async (page:number) => {
     throw error;
   }
 };
-export const getLatestSeries_API = async (page:number) => {
-  console.log("page",page)
+export const getLatestSeries_API = async (page: number) => {
+  console.log("page", page);
 
   try {
     const { data } = await apiClient.get(`/content/public/series`);
@@ -122,6 +122,16 @@ export const GETUserWatchHistory_API = async (profileId: string) => {
     handleError(error, "Failed to fetch API");
   }
 };
+export const ClearUserWatchHistory_API = async (profileId: string) => {
+  try {
+    const { data } = await apiClient.delete(
+      `content/public/history/${profileId}`
+    );
+    return data;
+  } catch (error: any) {
+    handleError(error, "Failed to fetch API");
+  }
+};
 export const WatchHistoryUpdate_API = async (
   profileId: string,
   videoCatalogId: string,
@@ -172,13 +182,11 @@ export const RecommendedMovie_API = async (profileId: string) => {
 //search
 export const searchMovie_API = async (q: string) => {
   try {
-    const { data } = await apiClient.get(
-      `content/public/movies/query`,{
-        params:{
-          q
-        }
-      }
-    );
+    const { data } = await apiClient.get(`content/public/movies/query`, {
+      params: {
+        q,
+      },
+    });
     return data;
   } catch (error: any) {
     handleError(error, "Failed to fetch API");
