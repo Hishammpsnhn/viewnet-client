@@ -14,6 +14,10 @@ import UploadDetailsPage from "../pages/admin/UploadDetailsPage";
 import Player from "../pages/common/Player";
 import SeriesManagement from "../pages/admin/SeriesManagement";
 import GenrePage from "../pages/admin/GenrePage";
+import PaymentPage from "../pages/admin/PaymentsPage";
+import NotFoundPage from "../pages/common/NotFoundPage";
+import LivePage from "../pages/admin/LivePage";
+import LivePlayerPage from "../pages/admin/LivePlayerPage";
 
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,7 +61,7 @@ const AppRoutes = () => {
         element={
           <AdminProtectedRoute>
             <AdminLayout>
-              <PlansPage isAdmin={true}/>
+              <PlansPage isAdmin={true} />
             </AdminLayout>
           </AdminProtectedRoute>
         }
@@ -67,7 +71,7 @@ const AppRoutes = () => {
         element={
           <AdminProtectedRoute>
             <AdminLayout>
-             <SeriesManagement/>
+              <SeriesManagement />
             </AdminLayout>
           </AdminProtectedRoute>
         }
@@ -77,7 +81,7 @@ const AppRoutes = () => {
         element={
           <AdminProtectedRoute>
             <AdminLayout>
-              <UsersPage/>
+              <UsersPage />
             </AdminLayout>
           </AdminProtectedRoute>
         }
@@ -87,7 +91,7 @@ const AppRoutes = () => {
         element={
           <AdminProtectedRoute>
             <AdminLayout>
-              <UploadDetailsPage/>
+              <UploadDetailsPage />
             </AdminLayout>
           </AdminProtectedRoute>
         }
@@ -97,7 +101,7 @@ const AppRoutes = () => {
         element={
           <AdminProtectedRoute>
             <AdminLayout>
-              <GenrePage/>
+              <GenrePage />
             </AdminLayout>
           </AdminProtectedRoute>
         }
@@ -110,6 +114,44 @@ const AppRoutes = () => {
               <Player />
             </AdminLayout>
           </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/payment-history"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <PaymentPage />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/live"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <LivePage />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/live"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <LivePlayerPage admin={true} />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <AdminLayout>
+            <NotFoundPage />
+          </AdminLayout>
         }
       />
     </Routes>

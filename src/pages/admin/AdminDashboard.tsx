@@ -22,7 +22,7 @@ const task: Task[] = [
   {
     title: "Start Live Streaming",
     desc: "Go To Live",
-    navigate: "/",
+    navigate: "/dashboard/live",
   },
 ];
 interface Task {

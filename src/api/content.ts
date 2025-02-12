@@ -13,7 +13,7 @@ export const getLatestMovies_API = async (page: number) => {
   }
 };
 export const getLatestSeries_API = async (page: number) => {
-  console.log("page", page);
+ 
 
   try {
     const { data } = await apiClient.get(`/content/public/series`);

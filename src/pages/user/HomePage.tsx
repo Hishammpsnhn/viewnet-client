@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { QRScanner_API } from "../../api/qrLogin";
 import MovieCard from "../../components/card/MovieCard";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import VideoBanner from "../../components/VideoBanner";
@@ -24,6 +24,15 @@ import {
   fetchSeriesSuccess,
   selectMovie,
 } from "../../reducers/movieReducer";
+import {
+  ActiveStreamList_API,
+  GetAssets_API,
+  StreamList_API,
+} from "../../api/LiveStreamApi";
+import {
+  MuxAssetsResponse,
+  MuxStreamResponse,
+} from "../../model/types/live.types";
 
 export const HomePage = () => {
   const location = useLocation();
@@ -68,11 +77,6 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* <div className="mt-[0vh] md:mt-[30vh]">
-      <ScrollableSection title="Trending Now" />
-      <ScrollableSection title="Top Picks" />
-    </div> */}
-
       <ToastContainer theme="dark" />
     </div>
   );
@@ -82,18 +86,22 @@ const ScrollableSection = () => {
   const dispatch = useDispatch<AppDispatch>();
   const moviesRef = useRef<HTMLDivElement>(null);
   const seriesRef = useRef<HTMLDivElement>(null);
+  const assetsRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Pagination state
   const [moviePage, setMoviePage] = useState(1);
   const [seriesPage, setSeriesPage] = useState(1);
+  const [assetsPage, setAssetsPage] = useState(1);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
   const [hasMoreSeries, setHasMoreSeries] = useState(true);
+  const [hasMoreAssets, setHasMoreAssets] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [recommendedMovies, setRecommendedMovies] = useState<MetaData[]>([]);
+  const [liveEvents, setLiveEvents] = useState<MuxStreamResponse[]>([]);
+  const [assets, setAssets] = useState<MuxAssetsResponse[]>([]);
 
-  const { loading, movies, series } = useSelector(
-    (state: RootState) => state.movies
-  );
+  const { movies, series } = useSelector((state: RootState) => state.movies);
 
   const { user } = useSelector((state: RootState) => state.user);
 
@@ -110,7 +118,6 @@ const ScrollableSection = () => {
     }
   };
 
-  // Handle scroll-based loading for movies
   const handleMoviesScroll = async (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollWidth, clientWidth } = e.currentTarget;
     const scrollThreshold = scrollWidth - clientWidth - 100; // 100px before the end
@@ -134,14 +141,30 @@ const ScrollableSection = () => {
       setIsLoadingMore(false);
     }
   };
+  const handleAssetsScroll = async (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollLeft, scrollWidth, clientWidth } = e.currentTarget;
+    const scrollThreshold = scrollWidth - clientWidth - 100;
+
+    if (scrollLeft > scrollThreshold && !isLoadingMore && hasMoreAssets) {
+      console.log("calling api for assets", assetsPage + 1);
+
+      setIsLoadingMore(true);
+      const res = await GetAssets_API(assetsPage);
+      if (res.success) setAssets([...assets, ...res.data]);
+       setAssetsPage((prev) => prev + 1);
+      setIsLoadingMore(false);
+    }
+  };
 
   const fetchMovies = async (page: number) => {
+    console.log("fetchmovies");
     if (!hasMoreMovies) return;
 
     dispatch(fetchMoviesStart());
     try {
       const response = await getLatestMovies_API(page);
       if (response.success) {
+        console.log("response success of movie");
         if (page === 1) {
           dispatch(fetchMoviesSuccess(response.data));
         } else {
@@ -160,11 +183,13 @@ const ScrollableSection = () => {
 
   const fetchSeries = async (page: number) => {
     if (!hasMoreSeries) return;
+    console.log("fetching series");
 
     dispatch(fetchSeriesStart());
     try {
       const response = await getLatestSeries_API(page);
       if (response.success) {
+        console.log("Fetched series");
         if (page === 1) {
           dispatch(fetchSeriesSuccess(response.data));
         } else {
@@ -180,36 +205,27 @@ const ScrollableSection = () => {
       setHasMoreSeries(false);
     }
   };
-  const fetchRecommandation = async () => {
-    // if (!hasMoreSeries) return;
 
-    // dispatch(fetchSeriesStart());
-    try {
-      if (!user?.defaultProfile) return;
-      const response = await RecommendedMovie_API(user?.defaultProfile);
-      if (response.success) {
-        setRecommendedMovies(response.data);
-
-        // if (page === 1) {
-        //   dispatch(fetchSeriesSuccess(response.data));
-        // } else {
-        //   dispatch(fetchSeriesSuccess([...series, ...response.data]));
-        // }
-        //setHasMoreSeries(response.data.length > 0);
-      } else {
-        // dispatch(fetchSeriesFailure("Failed to fetch series"));
-        // setHasMoreSeries(false);
-      }
-    } catch (error: any) {
-      // dispatch(fetchSeriesFailure(error.message));
-      // setHasMoreSeries(false);
-    }
-  };
   useEffect(() => {
-    if (movies.length === 0) fetchMovies(1); 
-    if (series.length === 0) fetchSeries(1); 
-    if (user?.defaultProfile) fetchRecommandation();
-  }, []);
+    const initializeData = async () => {
+      if (movies.length === 0) await fetchMovies(1);
+      if (series.length === 0) await fetchSeries(1);
+
+      if (user?.defaultProfile) {
+        const [recommendedRes, liveRes, assetsRes] = await Promise.all([
+          RecommendedMovie_API(user.defaultProfile),
+          ActiveStreamList_API(),
+          GetAssets_API(assetsPage),
+        ]);
+
+        if (recommendedRes.success) setRecommendedMovies(recommendedRes.data);
+        if (liveRes.success) setLiveEvents(liveRes.data);
+        if (assetsRes.success) setAssets(assetsRes.data);
+      }
+    };
+
+    initializeData();
+  }, [user?.defaultProfile]);
 
   return (
     <div className=" relative mb-10 overflow-hidden">
@@ -229,7 +245,7 @@ const ScrollableSection = () => {
             <div
               // ref={seriesRef}
               //  onScroll={handleSeriesScroll}
-              className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+              className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
             >
               {recommendedMovies.map((movie, index) => (
                 <div
@@ -272,7 +288,7 @@ const ScrollableSection = () => {
         <div
           ref={seriesRef}
           onScroll={handleSeriesScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+          className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
         >
           {series.map((movie, index) => (
             <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
@@ -311,7 +327,7 @@ const ScrollableSection = () => {
         <div
           ref={moviesRef}
           onScroll={handleMoviesScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+          className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
         >
           {movies.map((movie, index) => (
             <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
@@ -336,6 +352,109 @@ const ScrollableSection = () => {
           <IoIosArrowForward />
         </button>
       </div>
+      {liveEvents.length ? (
+        <>
+          <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">Live</h1>
+          <div className="relative">
+            <button
+              onClick={() => scroll("left", moviesRef)}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
+            >
+              <IoIosArrowBack />
+            </button>
+
+            <div
+              ref={moviesRef}
+              onScroll={handleMoviesScroll}
+              className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
+            >
+              {liveEvents.map((live, index) => (
+                <div
+                  key={live.id}
+                  onClick={() =>
+                    navigate(
+                      `/live?streamId=${live?.id}&v=${live?.playback_ids[0]?.id}`
+                    )
+                  }
+                >
+                  <MovieCard
+                    url={`/movie/${live.id}/more`}
+                    title={live.status}
+                    description={"movie.description"}
+                    id={live.id}
+                    image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
+                    key={index}
+                    series={false}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Right Scroll Button */}
+            <button
+              onClick={() => scroll("right", moviesRef)}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
+            >
+              <IoIosArrowForward />
+            </button>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+      {assets.length > 0 ? (
+        <>
+          <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">
+            Recorded Live
+          </h1>
+          <div className="relative">
+            <button
+              // onClick={() => scroll("left", moviesRef)}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
+            >
+              <IoIosArrowBack />
+            </button>
+
+            <div
+              className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
+              ref={assetsRef}
+              onScroll={handleAssetsScroll}
+            >
+              {assets.map((live, index) => (
+                <div
+                  key={live.id}
+                  // onClick={() =>
+                  //   navigate(
+                  //     `/live?streamId=${live?.id}&v=${live?.playback_ids[0]?.id}`
+                  //   )
+                  // }
+                >
+                  <MovieCard
+                    url={`/movie/${live.id}/more`}
+                    title={live.status}
+                    description={"movie.description"}
+                    id={live.id}
+                    // image=""
+                    image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
+                    key={index}
+                    series={false}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Right Scroll Button */}
+            <button
+              onClick={() => scroll("right", moviesRef)}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
+            >
+              <IoIosArrowForward />
+            </button>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

@@ -26,6 +26,7 @@ import WatchingPage from "../pages/user/WatchingPage";
 import PremiumUserProtectedRoute from "./Protected/PremiumUserProtectedRoute";
 import WatchLater from "../pages/user/WatchLater";
 import NotFoundPage from "../pages/common/NotFoundPage";
+import LivePlayerPage from "../pages/admin/LivePlayerPage";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -205,6 +206,16 @@ const AppRoutes = () => {
           <PremiumUserProtectedRoute>
             <SecondaryLayout gradient={true}>
               <WatchingPage />
+            </SecondaryLayout>
+          </PremiumUserProtectedRoute>
+        }
+      />
+      <Route
+        path="/live"
+        element={
+          <PremiumUserProtectedRoute>
+            <SecondaryLayout gradient={true}>
+             <LivePlayerPage admin={false}/>
             </SecondaryLayout>
           </PremiumUserProtectedRoute>
         }
