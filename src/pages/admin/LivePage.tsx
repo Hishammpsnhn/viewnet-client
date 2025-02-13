@@ -8,28 +8,46 @@ import {
 import { useNavigate } from "react-router-dom";
 import BGLive from "../../assets/images/661bef1a0db9efe639a0483d_tnb-icon-video.webp";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import LiveDetailForm from "../../components/LiveDetailsForm";
+import { LiveDetailModel } from "../../model/types/live.types";
 
 // Existing icon interfaces and components...
 
 // Interface for Mux API response
 interface MuxStreamResponse {
-  test: boolean;
-  stream_key: string;
-  status: string;
-  srt_passphrase: string;
-  reconnect_window: number;
-  playback_ids: Array<{
-    policy: string;
+  stream: {
+    test: boolean;
+    stream_key: string;
+    status: string;
+    srt_passphrase: string;
+    recording: boolean;
+    reconnect_window: number;
+    playback_ids: Array<{
+      policy: string;
+      id: string;
+    }>;
+    new_asset_settings: {
+      playback_policies: string[];
+    };
+    max_continuous_duration: number;
+    latency_mode: string;
     id: string;
-  }>;
-  new_asset_settings: {
-    playback_policies: string[];
+    created_at: string;
+    connected: boolean;
+    active_ingest_protocol: string;
+    active_asset_id: string;
   };
-  max_continuous_duration: number;
-  latency_mode: string;
-  id: string;
-  created_at: string;
+  metadata: {
+    _id: string;
+    isPrivate: boolean;
+    thumbnailUrl: string;
+    streamId: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
 }
+
 
 // Extended StreamState interface
 interface StreamState {
@@ -53,12 +71,13 @@ const LivePage: React.FC = () => {
     duration: 0,
   });
   const [streamList, setStreamList] = useState<MuxStreamResponse[]>([]);
+  const [liveDetailModel, setLiveDetailModel] = useState(false);
   const [loading, setLoading] = useState(false);
   console.log(streamList);
 
-  const startStream = async () => {
+  const startStream = async (formData:LiveDetailModel) => {
     try {
-      const res = await StreamLiveStart_API();
+      const res = await StreamLiveStart_API(formData);
 
       if (res.success) {
         setStreamState((prev) => ({
@@ -66,8 +85,8 @@ const LivePage: React.FC = () => {
           isLive: true,
           muxStreamDetails: res.data,
         }));
-        setStreamList((prev) => [...prev, res.data]);
-      }
+      //   setStreamList((prev) => [...prev, {stream:res.data.data,metadata:res.data.metadata}]);
+       }
     } catch (error) {
       console.error("Failed to start stream:", error);
     } finally {
@@ -76,11 +95,11 @@ const LivePage: React.FC = () => {
 
   const toggleLiveStream = () => {
     if (!streamState.isLive) {
-      startStream();
+      setLiveDetailModel(true);
     } else {
-      if (!streamState.muxStreamDetails?.stream_key) return;
-      console.log("id ", streamState.muxStreamDetails?.id);
-      StopStreaming_API(streamState.muxStreamDetails?.id);
+      if (!streamState.muxStreamDetails?.stream.stream_key) return;
+      console.log("id ", streamState.muxStreamDetails?.stream.id);
+      StopStreaming_API(streamState.muxStreamDetails?.stream.id);
       setStreamState((prev) => ({
         ...prev,
         isLive: false,
@@ -204,6 +223,17 @@ const LivePage: React.FC = () => {
         >
           {streamState.isLive ? "End Stream" : "Start Stream"}
         </button>
+        {liveDetailModel && (
+          <LiveDetailForm
+            // liveDetailModel={liveDetailModel}
+            onSubmit={(formData) => {
+              startStream(formData);
+            }}
+            onClose={() => {
+              setLiveDetailModel(false);
+            }}
+          />
+        )}
         {streamState.isLive && (
           <div className="flex items-center space-x-4">
             <div className="h-4 w-4 rounded-full bg-red-500 animate-pulse"></div>
@@ -225,38 +255,38 @@ const LivePage: React.FC = () => {
             <div>
               <strong className="text-white">Stream Key:</strong>
               <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.stream_key}
+                {streamState.muxStreamDetails.stream.stream_key}
               </div>
             </div>
             <div>
               <strong className="text-white">SRT Passphrase:</strong>
               <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.srt_passphrase}
+                {streamState.muxStreamDetails.stream.srt_passphrase}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <strong className="text-white">Stream Status:</strong>
                 <div className="bg-gray-700 p-2 rounded mt-1">
-                  {streamState.muxStreamDetails.status}
+                  {streamState.muxStreamDetails.stream.status}
                 </div>
               </div>
               <div>
                 <strong className="text-white">Latency Mode:</strong>
                 <div className="bg-gray-700 p-2 rounded mt-1">
-                  {streamState.muxStreamDetails.latency_mode}
+                  {streamState.muxStreamDetails.stream.latency_mode}
                 </div>
               </div>
             </div>
             <div>
               <strong className="text-white">Playback ID:</strong>
               <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.playback_ids[0]?.id}
+                {streamState.muxStreamDetails.stream.playback_ids[0]?.id}
               </div>
             </div>
             <p className="text-sm text-yellow-400 mt-4">
               ⚠️ Copy these details to OBS. The stream will end after{" "}
-              {streamState.muxStreamDetails.max_continuous_duration} seconds.
+              {streamState.muxStreamDetails.stream.max_continuous_duration} seconds.
             </p>
           </div>
         </div>
@@ -280,16 +310,16 @@ const LivePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {streamList.map((stream) => (
               <div
-                key={stream.id}
+                key={stream.stream.id}
                 onClick={() =>
                   navigate(
-                    `/live?streamId=${stream?.id}&v=${stream?.playback_ids[0]?.id}`
+                    `/live?streamId=${stream?.stream.id}&v=${stream?.stream.playback_ids[0]?.id}`
                   )
                 }
                 className="group bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-102 hover:shadow-2xl cursor-pointer"
               >
                 <div className="relative">
-                  {stream.status === "idle" ? (
+                  {stream?.stream.status === "idle" ? (
                     <img
                       src={BGLive}
                       alt="Stream thumbnail"
@@ -298,8 +328,8 @@ const LivePage: React.FC = () => {
                   ) : (
                     <img
                       src={
-                        stream?.playback_ids?.[0]?.id &&
-                        `https://image.mux.com/${stream.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`
+                        stream?.stream.playback_ids?.[0]?.id &&
+                        `https://image.mux.com/${stream.stream.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`
                       }
                       alt="Stream thumbnail"
                       className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
@@ -308,10 +338,10 @@ const LivePage: React.FC = () => {
                   <div className="absolute top-4 right-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        stream.status
+                        stream?.stream.status
                       )} text-white`}
                     >
-                      {stream.status}
+                      {stream?.stream.status}
                     </span>
                   </div>
                 </div>
@@ -319,7 +349,7 @@ const LivePage: React.FC = () => {
                 <div className="p-6">
                   <div className="flex items-center space-x-2 text-gray-400 text-sm mb-2">
                     {/* <Calendar className="w-4 h-4" /> */}
-                    <span>{formatDate(stream.created_at)}</span>
+                    <span>{formatDate(stream.stream.created_at)}</span>
                   </div>
 
                   {/* <h3 className="text-lg font-semibold text-white mb-2 truncate">

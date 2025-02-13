@@ -4,11 +4,14 @@ import Login from "../features/user/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { searchMovie_API } from "../api/content";
+import { CiBellOn, CiTrash } from "react-icons/ci";
+import { useSocket } from "../providers/socketProvider";
 import {
   addSearchingMeta,
   fetchSearching,
   fetchSearchingFailure,
 } from "../reducers/movieReducer";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({
   search,
@@ -18,6 +21,8 @@ const Header = ({
   gradient?: boolean;
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { notifications } = useSocket();
+  const navigate = useNavigate();
 
   const { user, selectedProfile } = useSelector(
     (state: RootState) => state.user
@@ -25,6 +30,7 @@ const Header = ({
 
   const [loginModal, setLoginModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogin = () => {
     setLoginModal((prev) => !prev);
@@ -32,6 +38,10 @@ const Header = ({
 
   const handleProfileClick = () => {
     console.log("Profile clicked!");
+  };
+
+  const handleNotificationClick = () => {
+    setShowNotifications((prev) => !prev);
   };
 
   // Debounced search handler
@@ -63,7 +73,7 @@ const Header = ({
     <header
       className={`${
         gradient ? "bg-gray-900 border-b border-gray-600" : "bg-primary"
-      } text-white py-4 px-8 ml-16`}
+      } text-white py-4 px-8 ml-16 relative`}
     >
       <div className="container mx-auto flex justify-between items-center">
         {/* Left Side: Logo and Navigation */}
@@ -78,7 +88,7 @@ const Header = ({
           </nav>
         </div>
 
-        {/* Right Side: Search and Login/Profile */}
+        {/* Right Side: Search, Notifications, and Login/Profile */}
         <div className={`flex items-center space-x-4 ${search && "w-5/6"}`}>
           {/* Search Bar */}
           {search && (
@@ -96,6 +106,67 @@ const Header = ({
             </div>
           )}
 
+          {/* Notifications */}
+          {user && (
+            <div className="relative">
+              <button
+                onClick={handleNotificationClick}
+                className="relative p-2 hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <CiBellOn className="w-6 h-6" />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-0 -right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {notifications.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+                  <div className="px-4 py-2 border-b border-gray-700 flex justify-between">
+                    <h3 className="font-semibold">Notifications</h3>
+                    <span className="text-gray-600 cursor-pointer text-xs" onClick={()=>navigate("/notifications")}>more</span>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <p className="text-gray-400 text-center py-4">
+                        No new notifications
+                      </p>
+                    ) : (
+                      notifications.slice(0, 5).map((notification, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-3 hover:bg-gray-700 transition-colors cursor-pointer"
+                        >
+                          <p className="font-medium">{notification.message}</p>
+                          {/* <p className="text-sm text-gray-400">
+                            {notification.data.creator}
+                          </p> */}
+                          {/* <p className="text-xs text-gray-500 mt-1">
+                            {new Date(notification.timestamp).toLocaleTimeString()}
+                          </p> */}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {notifications.length > 5 && (
+                    <div className="px-4 py-2 border-t border-gray-700">
+                      <button
+                        onClick={() => {
+                          /* Add navigation to notifications page */
+                        }}
+                        className="text-blue-400 hover:text-blue-300 text-sm w-full text-center"
+                      >
+                        View all notifications
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Login or Profile */}
           {!user ? (
             <button
@@ -109,9 +180,9 @@ const Header = ({
               src={selectedProfile?.profilePic || "/default-profile.png"}
               alt={`Profile`}
               onClick={handleProfileClick}
-              className={`rounded-full border-2 object-cover cursor-pointer 
+              className={`rounded-full border-2 object-cover cursor-pointer
                 w-10 h-10 border-secondary
-                `}
+              `}
             />
           )}
         </div>

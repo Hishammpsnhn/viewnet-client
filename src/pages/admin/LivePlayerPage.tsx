@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
+  GetAssetsDetails_API,
   RemoveStreaming_API,
   StopStreaming_API,
   StreamLiveDetails_API,
@@ -36,12 +37,16 @@ interface MuxStreamResponse {
   id: string;
   created_at: string;
 }
-const LivePlayerPage = ({ admin }: { admin: boolean }) => {
+const LivePlayerPage = ({
+  admin,
+  assets,
+}: {
+  admin: boolean;
+  assets?: boolean;
+}) => {
   const { user } = useSelector((state: RootState) => state.user);
-  const currentUser = {
-    id: "123",
-    username: "User" + Math.floor(Math.random() * 1000),
-  };
+  const { id } = useParams();
+
   const [searchParams] = useSearchParams();
   const [streamState, setStreamState] = useState<StreamState>({
     isLive: false,
@@ -51,7 +56,10 @@ const LivePlayerPage = ({ admin }: { admin: boolean }) => {
     duration: 0,
   });
   const [loading, setLoading] = useState(false);
-  const videoId = searchParams.get("v");
+  const [assetsVideoId, setAssetsVideoId] = useState<string | undefined>(
+    undefined
+  );
+  let videoId = searchParams.get("v");
   const streamId = searchParams.get("streamId");
   const navigate = useNavigate();
   const toggleLiveStream = () => {
@@ -88,25 +96,36 @@ const LivePlayerPage = ({ admin }: { admin: boolean }) => {
         setLoading(false);
       }
     }
+    async function fetchAssetsDetails() {
+      if (id) {
+        try {
+          const res = await GetAssetsDetails_API(id);
+          if (res.success) {
+            setAssetsVideoId(res.data.playback_ids[0].id);
+            console.log(res.data.playback_ids[0].id);
+            videoId = res.data.playback_ids[0].id;
+          }
+        } catch (error) {}
+      }
+    }
     if (admin) fetchDetails();
-  }, [streamId]);
+    if (assets) fetchAssetsDetails();
+  }, []);
   return (
     <>
-      {!videoId ? (
-        <>Video Not Found</>
+      {!videoId && !assetsVideoId ? (
+        <>Video Not Found {videoId}</>
       ) : (
         <div className=" flex gap-2 p-5 max-h-max">
           <MuxPlayer
-            playbackId={videoId}
+            playbackId={videoId ? videoId : assetsVideoId}
             metadataVideoTitle="Placeholder (optional)"
             metadata-viewer-user-id="Placeholder (optional)"
             primary-color="#ffffff"
             secondary-color="#000000"
             accent-color="#fa50b5"
           />
-          {videoId && streamState.muxStreamDetails?.status === "active" && (
-            <LiveChat streamId={streamId || ""} />
-          )}
+          {!assets && <LiveChat streamId={streamId || ""} />}
         </div>
       )}
       {loading ? (
@@ -194,7 +213,7 @@ const LivePlayerPage = ({ admin }: { admin: boolean }) => {
                 <div>
                   <strong className="text-white">Playback ID:</strong>
                   <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                    {streamState.muxStreamDetails.playback_ids[0]?.id}
+                    {streamState.muxStreamDetails?.playback_ids[0]?.id}
                   </div>
                 </div>
                 <p className="text-sm text-yellow-400 mt-4">

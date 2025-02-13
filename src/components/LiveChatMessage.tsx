@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import { FaRegEye } from "react-icons/fa";
+import { useSocket } from "../providers/socketProvider";
 
 interface Message {
   id: string;
@@ -20,10 +21,12 @@ interface ChatProps {
 const socket: Socket = io("http://localhost:5005", {
   withCredentials: true,
 });
+// socket.emit('subscribeToNotifications');
 
 const LiveChat = ({ streamId }: ChatProps) => {
   const { user } = useSelector((state: RootState) => state.user);
   const [messages, setMessages] = useState<Message[]>([]);
+  // const { socket } = useSocket();
   const [viewers, setViewers] = useState(0);
   const [newMessage, setNewMessage] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(true);
@@ -39,6 +42,8 @@ const LiveChat = ({ streamId }: ChatProps) => {
 
   // Listen for incoming messages from the server
   useEffect(() => {
+    console.log(socket)
+    if (!socket) return;
     console.log({ streamId, userId: user?._id });
     socket.emit("joinRoom", { streamId, userId: user?._id });
 
@@ -63,6 +68,7 @@ const LiveChat = ({ streamId }: ChatProps) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
+    if (!socket) return;
     if (!user?._id) return;
 
     const message: Message = {
@@ -145,7 +151,12 @@ const LiveChat = ({ streamId }: ChatProps) => {
           </>
         </div>
       ) : (
-        <button className="min-w-max border border-white h-fit px-5 py-2 rounded-xl " onClick={() => setIsChatOpen(!isChatOpen)}>show chat</button>
+        <button
+          className="min-w-max border border-white h-fit px-5 py-2 rounded-xl "
+          onClick={() => setIsChatOpen(!isChatOpen)}
+        >
+          show chat
+        </button>
       )}
     </>
   );

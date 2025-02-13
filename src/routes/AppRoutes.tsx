@@ -27,11 +27,14 @@ import PremiumUserProtectedRoute from "./Protected/PremiumUserProtectedRoute";
 import WatchLater from "../pages/user/WatchLater";
 import NotFoundPage from "../pages/common/NotFoundPage";
 import LivePlayerPage from "../pages/admin/LivePlayerPage";
+import { NotificationsPage } from "../pages/user/NotificationPage";
+import { useSocket } from "../providers/socketProvider";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const { socket } = useSocket();
 
   useEffect(() => {
     if (
@@ -47,6 +50,9 @@ const AppRoutes = () => {
   useEffect(() => {
     if (user && !user.profiles.length) {
       navigate(`/profile/${user._id}`);
+    }
+    if (user && user._id && socket) {
+      socket.emit("register", user._id);
     }
   }, [user]);
 
@@ -163,6 +169,16 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/notifications"
+        element={
+          <ProtectedRoute>
+            <SecondaryLayout gradient={true}>
+              <NotificationsPage />
+            </SecondaryLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/payment-success"
         element={
           <SecondaryLayout>
@@ -215,17 +231,28 @@ const AppRoutes = () => {
         element={
           <PremiumUserProtectedRoute>
             <SecondaryLayout gradient={true}>
-             <LivePlayerPage admin={false}/>
+              <LivePlayerPage admin={false} />
             </SecondaryLayout>
           </PremiumUserProtectedRoute>
         }
       />
       <Route
+        path="/assets/:id"
+        element={
+          <PremiumUserProtectedRoute>
+            <SecondaryLayout gradient={true}>
+              <LivePlayerPage admin={false} assets={true} />
+            </SecondaryLayout>
+          </PremiumUserProtectedRoute>
+        }
+      />
+
+      <Route
         path="*"
         element={
-            <SecondaryLayout gradient={true}>
-              <NotFoundPage />
-            </SecondaryLayout>
+          <SecondaryLayout gradient={true}>
+            <NotFoundPage />
+          </SecondaryLayout>
         }
       />
     </Routes>

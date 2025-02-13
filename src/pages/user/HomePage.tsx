@@ -33,10 +33,12 @@ import {
   MuxAssetsResponse,
   MuxStreamResponse,
 } from "../../model/types/live.types";
+import { useSocket } from "../../providers/socketProvider";
 
 export const HomePage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+
 
   const token = queryParams.get("token");
 
@@ -370,19 +372,19 @@ const ScrollableSection = () => {
             >
               {liveEvents.map((live, index) => (
                 <div
-                  key={live.id}
+                  key={live.stream.id}
                   onClick={() =>
                     navigate(
-                      `/live?streamId=${live?.id}&v=${live?.playback_ids[0]?.id}`
+                      `/live?streamId=${live?.stream.id}&v=${live?.stream.playback_ids[0]?.id}`
                     )
                   }
                 >
                   <MovieCard
-                    url={`/movie/${live.id}/more`}
-                    title={live.status}
+                    url={`/movie/${live.stream.id}/more`}
+                    title={live.metadata.title}
                     description={"movie.description"}
-                    id={live.id}
-                    image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
+                    id={live.stream.id}
+                    image={`https://image.mux.com/${live.stream.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
                     key={index}
                     series={false}
                   />
@@ -430,12 +432,13 @@ const ScrollableSection = () => {
                   // }
                 >
                   <MovieCard
-                    url={`/movie/${live.id}/more`}
-                    title={live.status}
+                  
+                    url={`/assets/${live.assetsId}`}
+                    title={live.title}
                     description={"movie.description"}
                     id={live.id}
-                    // image=""
-                    image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
+                     image={live.thumbnailUrl}
+                    //image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
                     key={index}
                     series={false}
                   />
@@ -455,6 +458,7 @@ const ScrollableSection = () => {
       ) : (
         <></>
       )}
+      {/* <NotificationComponent/> */}
     </div>
   );
 };
