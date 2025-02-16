@@ -9,6 +9,7 @@ interface Column<T> {
   }
   
   const GenericTable = <T,>({ columns, data }: TableProps<T>) => {
+    console.log(data)
     return (
       <table className="table-auto w-full border-collapse border border-secondary">
         <thead>

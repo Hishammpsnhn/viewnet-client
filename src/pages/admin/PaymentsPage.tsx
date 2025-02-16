@@ -7,11 +7,15 @@ import { GETPaymentHistory_API } from "../../api/PlansApi";
 
 interface Payment {
   _id: string;
+  userId: string;
+  amount: string;
   email: string;
-  amount: number;
-  currency: string;
-  status: string;
+  planId: {
+    _id: string;
+    name: string;
+  };
   createdAt: string;
+  status: string;
 }
 
 interface Column<T> {
@@ -23,28 +27,18 @@ const PaymentHistory = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [maxPage, setMaxPage] = useState(0);
+  const [maxPage, setMaxPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       setLoading(true);
       try {
-        const res = await GETPaymentHistory_API(page, 5, searchQuery);
-        if (res.data ) {
-            console.log(res.data);
-          // Transform Stripe response to match Payment interface
-          const transformedData = res.data.map((transaction: any) => ({
-            _id: transaction.id,
-            email: transaction.description || "N/A", // Use description or default to "N/A"
-            amount: transaction.amount / 100, // Convert amount to dollars if necessary
-            currency: transaction.currency,
-            status: transaction.status,
-            createdAt: new Date(transaction.created * 1000).toISOString(), // Convert timestamp to ISO format
-          }));
-          console.log(transformedData)
-          setPayments(transformedData);
-        //  setMaxPage(res.data.total_pages || 1); // Assuming the response includes total_pages
+        const res = await GETPaymentHistory_API(page, 5);
+        if (res && res.data) {
+          console.log(res.data.data.transactions);
+          setPayments(res.data.data.transactions);
+          setMaxPage(res.data.data.totalPages || 1); // Corrected totalPages assignment
         } else {
           toast.error("Failed to fetch payment history.");
         }
@@ -60,7 +54,8 @@ const PaymentHistory = () => {
   const columns: Column<Payment>[] = [
     { header: "Payment ID", accessor: "_id" },
     { header: "Email", accessor: "email" },
-    { header: "Amount", accessor: (payment: Payment) => `${payment.amount} ${payment.currency}` },
+    { header: "Plan", accessor: (plan: Payment) => plan.planId.name },
+    { header: "Amount", accessor: (payment: Payment) => `${payment.amount} ` },
     { header: "Status", accessor: "status" },
     { header: "Date", accessor: (payment: Payment) => new Date(payment.createdAt).toLocaleString() },
   ];
@@ -89,15 +84,16 @@ const PaymentHistory = () => {
       <div className="flex justify-end mt-5">
         <button
           disabled={page <= 1}
-          onClick={() => setPage((prev) => prev - 1)}
-          className={`bg-slate-400 p-2 rounded-sm mr-3 ${page <= 1 && "opacity-60"}`}
+          onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+          className={`bg-slate-400 p-2 rounded-sm mr-3 ${page <= 1 && "opacity-60 cursor-not-allowed"}`}
         >
           <IoIosArrowBack />
         </button>
+        <span className="p-2">{`Page ${page} of ${maxPage}`}</span>
         <button
-          disabled={page === maxPage}
-          onClick={() => setPage((prev) => prev + 1)}
-          className={`bg-slate-400 p-2 rounded-sm ${page === maxPage && "opacity-60"}`}
+          disabled={page >= maxPage}
+          onClick={() => setPage((prev) => Math.min(maxPage, prev + 1))}
+          className={`bg-slate-400 p-2 rounded-sm ${page >= maxPage && "opacity-60 cursor-not-allowed"}`}
         >
           <IoIosArrowForward />
         </button>

@@ -1,10 +1,15 @@
 import apiClient, { handleError } from "./apiClient";
 
 //public
-export const getLatestMovies_API = async (page: number) => {
+export const getLatestMovies_API = async (page: number,limit:number=5) => {
   console.log("page", page);
   try {
-    const { data } = await apiClient.get(`/content/public/movies`);
+    const { data } = await apiClient.get(`/content/public/movies`,{
+      params: {
+        page,
+        limit
+      },
+    });
     console.log(data);
     return data;
   } catch (error) {

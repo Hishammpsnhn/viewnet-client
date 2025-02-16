@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import debounce from "lodash.debounce";
 import Login from "../features/user/Login";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import {
   fetchSearchingFailure,
 } from "../reducers/movieReducer";
 import { useNavigate } from "react-router-dom";
+import { GetNotificationCount_API } from "../api/notificationApi";
 
 const Header = ({
   search,
@@ -30,6 +31,7 @@ const Header = ({
 
   const [loginModal, setLoginModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogin = () => {
@@ -68,7 +70,17 @@ const Header = ({
     setSearchQuery(query);
     debouncedSearch(query);
   };
-
+  useEffect(() => {
+    async function fetchNotificationCount() {
+      if (user) {
+        const res = await GetNotificationCount_API(user._id);
+        if (res.success) {
+          setNotificationCount(notifications.length + res.data);
+        }
+      }
+    }
+    fetchNotificationCount();
+  }, [notifications]);
   return (
     <header
       className={`${
@@ -114,9 +126,9 @@ const Header = ({
                 className="relative p-2 hover:bg-gray-700 rounded-full transition-colors"
               >
                 <CiBellOn className="w-6 h-6" />
-                {notifications.length > 0 && (
+                {notificationCount > 0 && (
                   <span className="absolute -top-0 -right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {notifications.length}
+                    {notificationCount}
                   </span>
                 )}
               </button>
@@ -126,10 +138,15 @@ const Header = ({
                 <div className="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-700 flex justify-between">
                     <h3 className="font-semibold">Notifications</h3>
-                    <span className="text-gray-600 cursor-pointer text-xs" onClick={()=>navigate("/notifications")}>more</span>
+                    <span
+                      className="text-gray-600 cursor-pointer text-xs"
+                      onClick={() => navigate("/notifications")}
+                    >
+                      more
+                    </span>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
-                    {notifications.length === 0 ? (
+                    {notifications.length  === 0 ? (
                       <p className="text-gray-400 text-center py-4">
                         No new notifications
                       </p>

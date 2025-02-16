@@ -39,7 +39,6 @@ export const HomePage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-
   const token = queryParams.get("token");
 
   useEffect(() => {
@@ -153,7 +152,7 @@ const ScrollableSection = () => {
       setIsLoadingMore(true);
       const res = await GetAssets_API(assetsPage);
       if (res.success) setAssets([...assets, ...res.data]);
-       setAssetsPage((prev) => prev + 1);
+      setAssetsPage((prev) => prev + 1);
       setIsLoadingMore(false);
     }
   };
@@ -213,7 +212,7 @@ const ScrollableSection = () => {
       if (movies.length === 0) await fetchMovies(1);
       if (series.length === 0) await fetchSeries(1);
 
-      if (user?.defaultProfile) {
+      if (user && user?.defaultProfile) {
         const [recommendedRes, liveRes, assetsRes] = await Promise.all([
           RecommendedMovie_API(user.defaultProfile),
           ActiveStreamList_API(),
@@ -432,12 +431,11 @@ const ScrollableSection = () => {
                   // }
                 >
                   <MovieCard
-                  
                     url={`/assets/${live.assetsId}`}
                     title={live.title}
                     description={"movie.description"}
                     id={live.id}
-                     image={live.thumbnailUrl}
+                    image={live.thumbnailUrl}
                     //image={`https://image.mux.com/${live.playback_ids[0].id}/thumbnail.png?width=214&height=121&time=0`}
                     key={index}
                     series={false}

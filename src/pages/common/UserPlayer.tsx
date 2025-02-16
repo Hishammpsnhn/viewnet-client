@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import videojs from "video.js";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { selectMovie } from "../../reducers/movieReducer";
 import {
   fetchMovieCatalog_API,
@@ -14,6 +14,7 @@ import {
 import { MovieCatalogData } from "../../model/types/movie.types";
 import { EpisodeCatalog } from "../../model/types/series.types";
 import { getEpisodeCatalog_API } from "../../api/seriesApi";
+import { useSocket } from "../../providers/socketProvider";
 
 // Types
 interface PlayerState {
@@ -25,11 +26,11 @@ interface PlayerState {
 }
 export const UserPlayer = () => {
   const { selectedMovie } = useSelector((state: RootState) => state.movies);
+  const [searchParams] = useSearchParams();
   const { selectedProfile } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
-
-  console.log(selectedMovie);
-
+  const { socket } = useSocket();
+  const partyId = searchParams.get("partyId");
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const series = queryParams.get("series");
@@ -38,7 +39,7 @@ export const UserPlayer = () => {
 
   const playerRef = useRef<any>(null);
   const videoRef = useRef<HTMLDivElement | null>(null);
-
+  const [watchHours, setWatchedHours] = useState(0);
   const [state, setState] = useState<PlayerState>({
     currentProgress: 0,
     isPlaying: false,
@@ -47,7 +48,21 @@ export const UserPlayer = () => {
     episodeCatalog: null,
   });
 
-  console.log("state...", state);
+  let lastUpdateTime = Date.now();
+  const sendWatchTime = () => {
+    if (!socket) return;
+
+    const timeSpent = (Date.now() - lastUpdateTime) / 1000;
+
+    lastUpdateTime = Date.now();
+
+    console.log(timeSpent);
+
+    socket.emit("update_watch_time", {
+      profileId: selectedProfile._id,
+      watchTime: timeSpent,
+    });
+  };
   let duration = 0;
 
   // Video Player Setup
@@ -80,13 +95,41 @@ export const UserPlayer = () => {
   const setupPlayerEvents = (player: any) => {
     let lastApiCallTime = 0;
 
-    player.on("play", () => setState((prev) => ({ ...prev, isPlaying: true })));
-    player.on("pause", () =>
-      setState((prev) => ({ ...prev, isPlaying: false }))
-    );
+    player.on("play", () => {
+      setState((prev) => ({ ...prev, isPlaying: true }));
+      if (socket && partyId) {
+        socket.emit("sync-action", {
+          partyId,
+          videoState: "play",
+          time: player.currentTime(),
+        });
+      }
+      sendWatchTime();
+    });
+    player.on("pause", () => {
+      setState((prev) => ({ ...prev, isPlaying: false }));
+      console.log(partyId)
+      if (socket && partyId) {
+        socket.emit("sync-action", {
+          partyId,
+          videoState: "pause",
+          time: player.currentTime(),
+        });
+      }
+      sendWatchTime();
+    });
+    player.on("seek", () => {
+      const time = player.currentTime();
+      //const progress = (time / duration) * 100;
+      //setState((prev) => ({...prev, currentProgress: progress }));
+      if (socket && partyId) {
+        socket.emit("sync-action", { partyId, videoState: "pause", time });
+      }
+    });
 
     player.on("ended", async () => {
       setState((prev) => ({ ...prev, isPlaying: false }));
+      sendWatchTime();
       if (selectedMovie && selectedProfile) {
         await WatchHistoryUpdate_API(
           selectedProfile._id,
@@ -153,29 +196,25 @@ export const UserPlayer = () => {
     });
   };
 
-  // const playFromPercent = (player: any, percent: number) => {
-  //   if (
-  //     !player ||
-  //     typeof percent !== "number" ||
-  //     percent < 0 ||
-  //     percent > 100
-  //   ) {
-  //     console.error("Invalid percentage value. It must be between 0 and 100.");
-  //     return;
-  //   }
+  useEffect(() => {
 
-  //   const duration = player.duration();
-  //   if (duration) {
-  //     const targetTime = (percent / 100) * duration;
-  //     player.currentTime(targetTime);
-  //     player.play();
-  //     console.log(
-  //       `Video started playing from ${percent}% (time: ${targetTime}s).`
-  //     );
-  //   } else {
-  //     console.error("Video duration is not available.");
-  //   }
-  // };
+
+    socket?.on("sync-action", (state) => {
+      console.log("Video state sync", state);
+      if (state.action === "play") {
+        console.log("Video playing");
+        playerRef.current?.play();
+        playerRef.current?.currentTime(state.time);
+      } else if (state.action === "pause") {
+        console.log("Video paused");
+        playerRef.current?.pause();
+        playerRef.current?.currentTime(state.time);
+      } else if (state.action === "seek") {
+        console.log("Video seek", state.time);
+        playerRef.current?.currentTime(state.time);
+      }
+    });
+  }, [socket]);
 
   // Load Video Sources
   useEffect(() => {

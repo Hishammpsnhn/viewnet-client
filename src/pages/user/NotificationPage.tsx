@@ -3,7 +3,10 @@ import { useSocket } from "../../providers/socketProvider";
 import { CiBellOn, CiTrash } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { GetNotification_API } from "../../api/notificationApi";
+import {
+  DeleteNotification_API,
+  GetNotification_API,
+} from "../../api/notificationApi";
 interface Notification {
   _id: string;
   recipient: string;
@@ -30,9 +33,13 @@ export const NotificationsPage = () => {
     }));
   };
 
-  const clearAllNotifications = () => {
-    setReadStatus({});
-    // You might want to add logic here to clear notifications from your socket state
+  const clearAllNotifications = async() => {
+    //setReadStatus({});
+    if(!user?._id) return;
+   const res =  await DeleteNotification_API(user?._id);
+   if(res.success){
+     setUserNotifications([]);
+   }
   };
 
   useEffect(() => {
@@ -92,7 +99,7 @@ export const NotificationsPage = () => {
                       <h3 className="font-semibold text-lg">
                         {notification.message}
                       </h3>
-                      {!readStatus[index] && (
+                      {!notification.isRead && (
                         <span className="px-2 py-1 bg-blue-500 text-xs rounded-full">
                           New
                         </span>

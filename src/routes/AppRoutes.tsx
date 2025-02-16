@@ -29,6 +29,7 @@ import NotFoundPage from "../pages/common/NotFoundPage";
 import LivePlayerPage from "../pages/admin/LivePlayerPage";
 import { NotificationsPage } from "../pages/user/NotificationPage";
 import { useSocket } from "../providers/socketProvider";
+import WatchParty from "../pages/user/WatchParty";
 const AppRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -244,6 +245,16 @@ const AppRoutes = () => {
               <LivePlayerPage admin={false} assets={true} />
             </SecondaryLayout>
           </PremiumUserProtectedRoute>
+        }
+      />
+      <Route
+        path="/watch-party"
+        element={
+          // <PremiumUserProtectedRoute>
+            <SecondaryLayout gradient={true}>
+             <WatchParty/>
+            </SecondaryLayout>
+          // </PremiumUserProtectedRoute>
         }
       />
 

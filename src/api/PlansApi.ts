@@ -53,11 +53,12 @@ export const UpdatePlans_API = async (planId: string, planData: Plan) => {
 };
 
 // Payment APIs
-export const Payment_API = async (planId: string, userId: string) => {
+export const Payment_API = async (planId: string, userId: string,email:string) => {
   try {
     const { data } = await apiClient.post("/subscription/payment", {
       planId,
       userId,
+      email
     });
     return data;
   } catch (error) {
@@ -82,12 +83,19 @@ export const Payment_Success_API = async (
   }
 };
 
-export const GETPaymentHistory_API = async (page, limit, searchQuery) => {
-  const transactions = await stripe.balanceTransactions.list({
-    limit: 100, // Number of transactions to retrieve per request (maximum 100)
-  });
-  console.log("Transaction from stripe", transactions);
+export const GETPaymentHistory_API = async (page: number, limit: number) => {
+  try {
+    const transactions = await apiClient.get("/subscription/transactions", {
+      params: {
+        page,
+        limit,
+      },
+    });
+    console.log("Transaction from stripe", transactions);
+    return transactions;
+  } catch (error) {
+    handleError(error, "Transactions API request failed");
+  }
 
   // Mock API call
-  return transactions;
 };

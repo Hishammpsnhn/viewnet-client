@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 
@@ -19,6 +20,7 @@ const SocketContext = createContext<SocketContextType>({
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate()
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [notifications, setNotifications] = useState<
@@ -40,7 +42,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setSocket(socketInstance);
       socketInstance.emit("subscribeToNotifications");
     });
-
+    socketInstance.on("selectedMovie", (videoState) => {
+      console.log(videoState);
+      navigate(videoState);
+    });
     socketInstance.on("disconnect", () => {
       console.log("Disconnected from socket server");
       setIsConnected(false);
@@ -48,8 +53,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socketInstance.on("notification", (notification) => {
       console.log("Received new notification", notification);
-      toast.info(notification.message)
-      setNotifications(prev => [...prev, notification]);
+      toast.info(notification.message);
+      setNotifications((prev) => [...prev, notification]);
     });
 
     setSocket(socketInstance);

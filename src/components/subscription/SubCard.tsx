@@ -45,7 +45,7 @@ const SubCard: React.FC<SubCardProps> = ({
 
     try {
       if (user) {
-        const res = await Payment_API(planId, user?._id);
+        const res = await Payment_API(planId, user?._id,user.email);
         console.log(res)
         if (res.success) {
           console.log("Payment sucecs")
