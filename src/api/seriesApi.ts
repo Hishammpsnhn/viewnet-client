@@ -14,7 +14,7 @@ export const GetAllSeries_API = async () => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to fetch series");
     throw error;
   }
 };
@@ -24,7 +24,7 @@ export const CreateSeries_API = async (seriesData: ISeries) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to  create series");
     throw error;
   }
 };
@@ -35,7 +35,7 @@ export const fetchSeriesDetails_API = async (id: string) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to fetch series detail");
     throw error;
   }
 };
@@ -49,7 +49,7 @@ export const updateSeriesDetails_API = async (
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed ");
     throw error;
   }
 };
@@ -65,7 +65,7 @@ export const createSeason_API = async (id: string, seasonDetails: ISeason) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to create season");
     throw error;
   }
 };
@@ -81,7 +81,7 @@ export const createEpisodeWithSignedUrl_API = async (episodeData: IEpisode) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to create episode");
     throw error;
   }
 };
@@ -91,7 +91,7 @@ export const createEpisodeCatalog_API = async (obj: Catalog) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to create episode catalog");
     throw error;
   }
 };
@@ -101,7 +101,7 @@ export const getEpisodeCatalog_API = async (id:string) => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to get episode catalog");
     throw error;
   }
 };

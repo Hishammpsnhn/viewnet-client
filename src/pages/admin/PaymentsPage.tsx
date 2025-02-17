@@ -63,7 +63,7 @@ const PaymentHistory = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Payment History</h1>
-      <div className="flex gap-4 mb-4">
+      {/* <div className="flex gap-4 mb-4">
         <div className="search-container flex-1">
           <input
             type="text"
@@ -73,7 +73,7 @@ const PaymentHistory = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-      </div>
+      </div> */}
 
       {loading ? (
         <LoadingSpinner />

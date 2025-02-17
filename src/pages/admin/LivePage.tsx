@@ -48,7 +48,6 @@ interface MuxStreamResponse {
   };
 }
 
-
 // Extended StreamState interface
 interface StreamState {
   isLive: boolean;
@@ -73,9 +72,11 @@ const LivePage: React.FC = () => {
   const [streamList, setStreamList] = useState<MuxStreamResponse[]>([]);
   const [liveDetailModel, setLiveDetailModel] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [streamLoading, setStreamLoading] = useState(false);
   console.log(streamList);
 
-  const startStream = async (formData:LiveDetailModel) => {
+  const startStream = async (formData: LiveDetailModel) => {
+    setStreamLoading(true);
     try {
       const res = await StreamLiveStart_API(formData);
 
@@ -85,11 +86,12 @@ const LivePage: React.FC = () => {
           isLive: true,
           muxStreamDetails: res.data,
         }));
-      //   setStreamList((prev) => [...prev, {stream:res.data.data,metadata:res.data.metadata}]);
-       }
+        //   setStreamList((prev) => [...prev, {stream:res.data.data,metadata:res.data.metadata}]);
+      }
     } catch (error) {
       console.error("Failed to start stream:", error);
     } finally {
+      setStreamLoading(false);
     }
   };
 
@@ -228,6 +230,7 @@ const LivePage: React.FC = () => {
             // liveDetailModel={liveDetailModel}
             onSubmit={(formData) => {
               startStream(formData);
+              setLiveDetailModel(false);
             }}
             onClose={() => {
               setLiveDetailModel(false);
@@ -247,49 +250,57 @@ const LivePage: React.FC = () => {
           </div>
         )}
       </div>
-
-      {streamState.muxStreamDetails && (
-        <div className="bg-gray-900 rounded-lg shadow-lg p-6 mt-6">
-          <h2 className="text-xl font-semibold mb-4">Stream Configuration</h2>
-          <div className="space-y-4 text-gray-300">
-            <div>
-              <strong className="text-white">Stream Key:</strong>
-              <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.stream.stream_key}
-              </div>
-            </div>
-            <div>
-              <strong className="text-white">SRT Passphrase:</strong>
-              <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.stream.srt_passphrase}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <strong className="text-white">Stream Status:</strong>
-                <div className="bg-gray-700 p-2 rounded mt-1">
-                  {streamState.muxStreamDetails.stream.status}
+      {streamLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          {streamState.muxStreamDetails && (
+            <div className="bg-gray-900 rounded-lg shadow-lg p-6 mt-6 mb-2">
+              <h2 className="text-xl font-semibold mb-4">
+                Stream Configuration
+              </h2>
+              <div className="space-y-4 text-gray-300">
+                <div>
+                  <strong className="text-white">Stream Key:</strong>
+                  <div className="bg-gray-700 p-2 rounded mt-1 break-all">
+                    {streamState.muxStreamDetails.stream.stream_key}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <strong className="text-white">Latency Mode:</strong>
-                <div className="bg-gray-700 p-2 rounded mt-1">
-                  {streamState.muxStreamDetails.stream.latency_mode}
+                <div>
+                  <strong className="text-white">SRT Passphrase:</strong>
+                  <div className="bg-gray-700 p-2 rounded mt-1 break-all">
+                    {streamState.muxStreamDetails.stream.srt_passphrase}
+                  </div>
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <strong className="text-white">Stream Status:</strong>
+                    <div className="bg-gray-700 p-2 rounded mt-1">
+                      {streamState.muxStreamDetails.stream.status}
+                    </div>
+                  </div>
+                  <div>
+                    <strong className="text-white">Latency Mode:</strong>
+                    <div className="bg-gray-700 p-2 rounded mt-1">
+                      {streamState.muxStreamDetails.stream.latency_mode}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <strong className="text-white">Playback ID:</strong>
+                  <div className="bg-gray-700 p-2 rounded mt-1 break-all">
+                    {streamState.muxStreamDetails.stream.playback_ids[0]?.id}
+                  </div>
+                </div>
+                <p className="text-sm text-yellow-400 mt-4">
+                  ⚠️ Copy these details to OBS. The stream will end after{" "}
+                  {streamState.muxStreamDetails.stream.max_continuous_duration}{" "}
+                  seconds.
+                </p>
               </div>
             </div>
-            <div>
-              <strong className="text-white">Playback ID:</strong>
-              <div className="bg-gray-700 p-2 rounded mt-1 break-all">
-                {streamState.muxStreamDetails.stream.playback_ids[0]?.id}
-              </div>
-            </div>
-            <p className="text-sm text-yellow-400 mt-4">
-              ⚠️ Copy these details to OBS. The stream will end after{" "}
-              {streamState.muxStreamDetails.stream.max_continuous_duration} seconds.
-            </p>
-          </div>
-        </div>
+          )}
+        </>
       )}
       {loading ? (
         <div className="flex justify-center items-center h-full text-white p-5">

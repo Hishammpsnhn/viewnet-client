@@ -83,190 +83,196 @@ const AppRoutes = () => {
     );
   }
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <MainLayout>
-            <HomePage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path="/profile/:id"
-        element={
-          <ProtectedRoute>
-            <EmptyLayout>
-              <ProfileCreation />
-            </EmptyLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <Settings />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/editprofile"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout>
-              <ProfileEditPage />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/history"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout>
-              <HistoryPage />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
+    <>
+      {loading ? (
+        <></>
+      ) : (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainLayout>
+                <HomePage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <ProtectedRoute>
+                <EmptyLayout>
+                  <ProfileCreation />
+                </EmptyLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <Settings />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/editprofile"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout>
+                  <ProfileEditPage />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout>
+                  <HistoryPage />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
 
-      <Route
-        path="/plans"
-        element={
-          <SecondaryLayout gradient={true}>
-            <PlansPage isAdmin={false} />
-          </SecondaryLayout>
-        }
-      />
-      <Route
-        path="/blocked"
-        element={
-          <SecondaryLayout gradient={true}>
-            <BlockedPage />
-          </SecondaryLayout>
-        }
-      />
-      <Route
-        path="/settings/my-plans"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <MyPlanPage />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/watch-later"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <WatchLater />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/notifications"
-        element={
-          <ProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <NotificationsPage />
-            </SecondaryLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/payment-success"
-        element={
-          <SecondaryLayout>
-            <PaymentSuccessPage />
-          </SecondaryLayout>
-        }
-      />
-      <Route
-        path="/search"
-        element={
-          <SecondaryLayout search={true} gradient={true}>
-            <SearchPage />
-          </SecondaryLayout>
-        }
-      />
-      <Route
-        path="/movie/:id"
-        element={
-          <MainLayout>
-            <MovieDetailPage series={false} />
-          </MainLayout>
-        }
-      >
-        <Route path="more" element={<Details series={false} />} />
-        <Route path="related" element={<Related />} />
-      </Route>
-      <Route
-        path="/series/:id"
-        element={
-          <MainLayout>
-            <MovieDetailPage series={true} />
-          </MainLayout>
-        }
-      >
-        <Route path="more" element={<Details series={true} />} />
-        <Route path="related" element={<Related />} />
-      </Route>
-      <Route
-        path="/watch"
-        element={
-          <PremiumUserProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <WatchingPage />
-            </SecondaryLayout>
-          </PremiumUserProtectedRoute>
-        }
-      />
-      <Route
-        path="/live"
-        element={
-          <PremiumUserProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <LivePlayerPage admin={false} />
-            </SecondaryLayout>
-          </PremiumUserProtectedRoute>
-        }
-      />
-      <Route
-        path="/assets/:id"
-        element={
-          <PremiumUserProtectedRoute>
-            <SecondaryLayout gradient={true}>
-              <LivePlayerPage admin={false} assets={true} />
-            </SecondaryLayout>
-          </PremiumUserProtectedRoute>
-        }
-      />
-      <Route
-        path="/watch-party"
-        element={
-          // <PremiumUserProtectedRoute>
-            <SecondaryLayout gradient={true}>
-             <WatchParty/>
-            </SecondaryLayout>
-          // </PremiumUserProtectedRoute>
-        }
-      />
+          <Route
+            path="/plans"
+            element={
+              <SecondaryLayout gradient={true}>
+                <PlansPage isAdmin={false} />
+              </SecondaryLayout>
+            }
+          />
+          <Route
+            path="/blocked"
+            element={
+              <SecondaryLayout gradient={true}>
+                <BlockedPage />
+              </SecondaryLayout>
+            }
+          />
+          <Route
+            path="/settings/my-plans"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <MyPlanPage />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/watch-later"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <WatchLater />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <NotificationsPage />
+                </SecondaryLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment-success"
+            element={
+              <SecondaryLayout>
+                <PaymentSuccessPage />
+              </SecondaryLayout>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <SecondaryLayout search={true} gradient={true}>
+                <SearchPage />
+              </SecondaryLayout>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={
+              <MainLayout>
+                <MovieDetailPage series={false} />
+              </MainLayout>
+            }
+          >
+            <Route path="more" element={<Details series={false} />} />
+            <Route path="related" element={<Related />} />
+          </Route>
+          <Route
+            path="/series/:id"
+            element={
+              <MainLayout>
+                <MovieDetailPage series={true} />
+              </MainLayout>
+            }
+          >
+            <Route path="more" element={<Details series={true} />} />
+            <Route path="related" element={<Related />} />
+          </Route>
+          <Route
+            path="/watch"
+            element={
+              <PremiumUserProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <WatchingPage />
+                </SecondaryLayout>
+              </PremiumUserProtectedRoute>
+            }
+          />
+          <Route
+            path="/live"
+            element={
+              <PremiumUserProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <LivePlayerPage admin={false} />
+                </SecondaryLayout>
+              </PremiumUserProtectedRoute>
+            }
+          />
+          <Route
+            path="/assets/:id"
+            element={
+              <PremiumUserProtectedRoute>
+                <SecondaryLayout gradient={true}>
+                  <LivePlayerPage admin={false} assets={true} />
+                </SecondaryLayout>
+              </PremiumUserProtectedRoute>
+            }
+          />
+          <Route
+            path="/watch-party"
+            element={
+              // <PremiumUserProtectedRoute>
+              <SecondaryLayout gradient={true}>
+                <WatchParty />
+              </SecondaryLayout>
+              // </PremiumUserProtectedRoute>
+            }
+          />
 
-      <Route
-        path="*"
-        element={
-          <SecondaryLayout gradient={true}>
-            <NotFoundPage />
-          </SecondaryLayout>
-        }
-      />
-    </Routes>
+          <Route
+            path="*"
+            element={
+              <SecondaryLayout gradient={true}>
+                <NotFoundPage />
+              </SecondaryLayout>
+            }
+          />
+        </Routes>
+      )}
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { GetAllMetadata_API } from "../../api/movieUploadApi";
 import HistoryCardSkeleton from "../../components/movie/HistoryCardSkelition";
 import { ISeriesResponse } from "../../model/types/series.types";
 import { GetAllSeries_API } from "../../api/seriesApi";
+import { useSocket } from "../../providers/socketProvider";
 
 const task: Task[] = [
   {
@@ -34,6 +35,9 @@ interface Task {
 const AdminDashboard = () => {
   const [LatestMovies, setLatestMovies] = useState<MetaData[]>([]);
   const [LatestSeries, setLatestSeries] = useState<ISeriesResponse[]>([]);
+  const [userCount,setUserCount] = useState(0)
+
+  const {socket} = useSocket()
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -70,6 +74,14 @@ const AdminDashboard = () => {
     fetchLatestMovies();
   }, []);
 
+  useEffect(()=>{
+    socket?.on("activeUsers", (size) =>{
+      console.log(size);
+      setUserCount(size);
+
+    })
+  },[socket])
+
   return (
     <div className=" container mx-auto px-16 py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
@@ -84,9 +96,9 @@ const AdminDashboard = () => {
       </div>
       {/* Number Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-        <NumberCard />
-        <NumberCard />
-        <NumberCard />
+        <NumberCard userCount={userCount} />
+        <NumberCard userCount={0} />
+        <NumberCard userCount={0}/>
       </div>
 
       {/* History Cards Section */}

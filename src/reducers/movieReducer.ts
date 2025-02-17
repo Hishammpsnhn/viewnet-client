@@ -4,6 +4,7 @@ import { ISeriesResponse } from "../model/types/series.types";
 
 interface MoviesState {
   movies: MetaData[];
+  recommended: MetaData[];
   series: ISeriesResponse[];
   searchMeta: SearchMeta[];
   loading: boolean;
@@ -15,6 +16,7 @@ const initialState: MoviesState = {
   movies: [],
   series: [],
   searchMeta: [],
+  recommended:[],
   loading: false,
   error: null,
   selectedMovie: null,
@@ -59,6 +61,9 @@ const MoviesSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    fetchRecommended:(state,action)=>{
+      state.recommended = action.payload;
+    },
     // selectSeries: (state, action) => {
     //   state.selectedSeries = action.payload;
     // },
@@ -91,6 +96,7 @@ export const {
   addSearchingMeta,
   fetchSearching,
   fetchSearchingFailure,
+  fetchRecommended,
   //selectSeries,
   selectMovie,
   clearMovies,

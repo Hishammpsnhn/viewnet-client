@@ -61,7 +61,7 @@ export const GetAllMetadata_API = async (): Promise<GetAllMetadataResponse> => {
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to fetch movies");
     throw error;
   }
 };
@@ -74,7 +74,7 @@ export const GetMetadata_API = async (
     console.log(data);
     return data;
   } catch (error) {
-    handleError(error, "Failed to generate presigned URL");
+    handleError(error, "Failed to fetch");
     throw error;
   }
 };

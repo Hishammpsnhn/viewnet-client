@@ -19,6 +19,7 @@ import {
   fetchMoviesFailure,
   fetchMoviesStart,
   fetchMoviesSuccess,
+  fetchRecommended,
   fetchSeriesFailure,
   fetchSeriesStart,
   fetchSeriesSuccess,
@@ -102,9 +103,10 @@ const ScrollableSection = () => {
   const [liveEvents, setLiveEvents] = useState<MuxStreamResponse[]>([]);
   const [assets, setAssets] = useState<MuxAssetsResponse[]>([]);
 
-  const { movies, series } = useSelector((state: RootState) => state.movies);
+  const { movies, series ,recommended} = useSelector((state: RootState) => state.movies);
 
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user,loading } = useSelector((state: RootState) => state.user);
+  console.log(loading)
 
   const scroll = (
     direction: "left" | "right",
@@ -219,7 +221,10 @@ const ScrollableSection = () => {
           GetAssets_API(assetsPage),
         ]);
 
-        if (recommendedRes.success) setRecommendedMovies(recommendedRes.data);
+        if (recommendedRes.success) {
+          setRecommendedMovies(recommendedRes.data);
+          dispatch(fetchRecommended(recommendedRes.data))
+        }
         if (liveRes.success) setLiveEvents(liveRes.data);
         if (assetsRes.success) setAssets(assetsRes.data);
       }
@@ -248,7 +253,7 @@ const ScrollableSection = () => {
               //  onScroll={handleSeriesScroll}
               className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
             >
-              {recommendedMovies.map((movie, index) => (
+              {recommended.map((movie, index) => (
                 <div
                   key={movie._id}
                   onClick={() => dispatch(selectMovie(movie))}

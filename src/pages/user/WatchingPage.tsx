@@ -4,11 +4,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { MetaData } from "../../model/types/movie.types";
 import { RecommendedMovie_API } from "../../api/content";
-
+import { CiFacebook } from "react-icons/ci";
+import { CiTwitter } from "react-icons/ci";
+import { CiLink } from "react-icons/ci";
 const WatchingPage = () => {
   const { selectedMovie } = useSelector((state: RootState) => state.movies);
   const { user } = useSelector((state: RootState) => state.user);
   const [similar, setSimilar] = useState<MetaData[]>([]);
+  const [showShareTooltip, setShowShareTooltip] = useState(false);
 
   const fetchRecommandation = async () => {
     try {
@@ -19,9 +22,43 @@ const WatchingPage = () => {
       }
     } catch (error: any) {}
   };
+
   useEffect(() => {
     fetchRecommandation();
   }, []);
+
+  const handleShare = async (platform: "facebook" | "twitter" | "copy") => {
+    const url = window.location.href;
+    const title = selectedMovie?.title || "Check out this video";
+
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            url
+          )}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+            url
+          )}&text=${encodeURIComponent(title)}`,
+          "_blank"
+        );
+        break;
+      case "copy":
+        try {
+          await navigator.clipboard.writeText(url);
+          setShowShareTooltip(true);
+          setTimeout(() => setShowShareTooltip(false), 2000);
+        } catch (err) {
+          console.error("Failed to copy URL:", err);
+        }
+        break;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -35,8 +72,44 @@ const WatchingPage = () => {
             </div>
             {/* Video Info */}
             <div className="mt-4">
-              <h1 className="text-xl font-bold">{selectedMovie?.title}</h1>
-              <p className="text-gray-400 mt-2">{selectedMovie?.description}</p>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h1 className="text-xl font-bold">{selectedMovie?.title}</h1>
+                  <p className="text-gray-400 mt-2">
+                    {selectedMovie?.description}
+                  </p>
+                </div>
+                {/* Share Options */}
+                <div className="relative">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleShare("facebook")}
+                      className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+                    >
+                      
+                      <CiFacebook />
+                    </button>
+                    <button
+                      onClick={() => handleShare("twitter")}
+                      className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+                    >
+                      <CiTwitter />
+                      {/* <Twitter className="w-5 h-5" /> */}
+                    </button>
+                    <button
+                      onClick={() => handleShare("copy")}
+                      className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+                    >
+                      <CiLink />
+                    </button>
+                  </div>
+                  {showShareTooltip && (
+                    <div className="absolute top-12 right-0 bg-gray-800 text-white px-3 py-1 rounded text-sm">
+                      Link copied!
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
