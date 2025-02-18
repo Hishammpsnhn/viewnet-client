@@ -96,7 +96,7 @@ const Carousel = ({ selectedMovie, series }: CarouselProp) => {
           ) : (
             <>
               {paidUser ? (
-                <>
+                <div className="gap-2 flex">
                   <button
                     className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
                     onClick={handleWatch}
@@ -104,12 +104,12 @@ const Carousel = ({ selectedMovie, series }: CarouselProp) => {
                     Watch Now
                   </button>
                   <button
-                    className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
+                    className="mt-4 border border-secondary  px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"
                     onClick={handleParty}
                   >
-                    Party
+                    Invite
                   </button>
-                </>
+                </div>
               ) : (
                 <button
                   className="mt-4 bg-secondary px-6 py-2 rounded-lg text-white hover:opacity-90 opacity-100"

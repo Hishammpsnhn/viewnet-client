@@ -7,13 +7,20 @@ import { RecommendedMovie_API } from "../../api/content";
 import { CiFacebook } from "react-icons/ci";
 import { CiTwitter } from "react-icons/ci";
 import { CiLink } from "react-icons/ci";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  FacebookShareCount,
+  TwitterShareButton,
+} from "react-share";
 const WatchingPage = () => {
+  const shareUrl = import.meta.env.VITE_CLIENT_URL;
   const { selectedMovie } = useSelector((state: RootState) => state.movies);
   const { user } = useSelector((state: RootState) => state.user);
   const [similar, setSimilar] = useState<MetaData[]>([]);
   const [showShareTooltip, setShowShareTooltip] = useState(false);
 
-  const fetchRecommandation = async () => {
+  const fetchRecommendation = async () => {
     try {
       if (!user?.defaultProfile) return;
       const response = await RecommendedMovie_API(user?.defaultProfile);
@@ -24,33 +31,15 @@ const WatchingPage = () => {
   };
 
   useEffect(() => {
-    fetchRecommandation();
+    fetchRecommendation();
   }, []);
 
   const handleShare = async (platform: "facebook" | "twitter" | "copy") => {
-    const url = window.location.href;
-    const title = selectedMovie?.title || "Check out this video";
 
     switch (platform) {
-      case "facebook":
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            url
-          )}`,
-          "_blank"
-        );
-        break;
-      case "twitter":
-        window.open(
-          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-            url
-          )}&text=${encodeURIComponent(title)}`,
-          "_blank"
-        );
-        break;
       case "copy":
         try {
-          await navigator.clipboard.writeText(url);
+          await navigator.clipboard.writeText(shareUrl);
           setShowShareTooltip(true);
           setTimeout(() => setShowShareTooltip(false), 2000);
         } catch (err) {
@@ -82,19 +71,15 @@ const WatchingPage = () => {
                 {/* Share Options */}
                 <div className="relative">
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => handleShare("facebook")}
-                      className="p-2 rounded-full hover:bg-gray-800 transition-colors"
-                    >
-                      
-                      <CiFacebook />
+                    <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                      <FacebookShareButton url={shareUrl}>
+                        <CiFacebook />
+                      </FacebookShareButton>
                     </button>
-                    <button
-                      onClick={() => handleShare("twitter")}
-                      className="p-2 rounded-full hover:bg-gray-800 transition-colors"
-                    >
-                      <CiTwitter />
-                      {/* <Twitter className="w-5 h-5" /> */}
+                    <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                      <TwitterShareButton url={shareUrl}>
+                        <CiTwitter />
+                      </TwitterShareButton>
                     </button>
                     <button
                       onClick={() => handleShare("copy")}

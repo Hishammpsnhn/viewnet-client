@@ -91,10 +91,20 @@ export const GETPaymentHistory_API = async (page: number, limit: number) => {
         limit,
       },
     });
-    console.log("Transaction from stripe", transactions);
     return transactions;
   } catch (error) {
     handleError(error, "Transactions API request failed");
+  }
+
+  // Mock API call
+};
+export const getUsersPlansCount = async () => {
+  try {
+    const {data} = await apiClient.get("/subscription/pie_chart", {
+    });
+    return data;
+  } catch (error) {
+    handleError(error, "Pie chart request failed");
   }
 
   // Mock API call

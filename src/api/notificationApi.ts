@@ -34,3 +34,11 @@ export const GetWatchTime_API = async (userId: string) => {
     handleError(error, "Failed to fetch plans");
   }
 };
+export const GetActive_API = async () => {
+  try {
+    const { data } = await apiClient.get(`/notification/watchTime/heatmap`);
+    return data;
+  } catch (error) {
+    handleError(error, "Failed to fetch plans");
+  }
+};

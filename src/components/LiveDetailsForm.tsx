@@ -77,10 +77,10 @@ const LiveDetailForm: React.FC<LiveDetailFormProps> = ({ onSubmit, onClose }) =>
     formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "");
 
     try {
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        formData
-      );
+       const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData
+    );
       setFormData(prev => ({ ...prev, thumbnailUrl: response.data.secure_url }));
     } catch (error) {
       console.error('Upload error:', error);

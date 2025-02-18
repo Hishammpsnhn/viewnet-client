@@ -250,9 +250,7 @@ const LivePage: React.FC = () => {
           </div>
         )}
       </div>
-      {streamLoading ? (
-        <LoadingSpinner />
-      ) : (
+     
         <>
           {streamState.muxStreamDetails && (
             <div className="bg-gray-900 rounded-lg shadow-lg p-6 mt-6 mb-2">
@@ -301,7 +299,7 @@ const LivePage: React.FC = () => {
             </div>
           )}
         </>
-      )}
+    
       {loading ? (
         <div className="flex justify-center items-center h-full text-white p-5">
           <LoadingSpinner />
