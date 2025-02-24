@@ -84,12 +84,12 @@ const Header = ({
     <header
       className={`${
         gradient ? "bg-gray-900 border-b border-gray-600" : "bg-primary"
-      } text-white py-4 px-8 ml-16 relative`}
+      } text-white py-2 px-4 sm:4 sm:8 ml-16 relative`}
     >
       <div className="container mx-auto flex justify-between items-center">
         {/* Left Side: Logo and Navigation */}
-        <div className="flex items-center space-x-6">
-          <nav className="hidden md:flex space-x-4">
+        <div className=" hidden  lg:flex  items-center space-x-6 ">
+          <nav className=" space-x-4">
             <a href="#tvshows" className="hover:text-gray-400">
               TV Shows
             </a>
@@ -103,7 +103,7 @@ const Header = ({
         <div className={`flex items-center space-x-4 ${search && "w-5/6"}`}>
           {/* Search Bar */}
           {search && (
-            <div className="relative hidden md:block w-full">
+            <div className="relative block w-full">
               <input
                 type="text"
                 placeholder="Search..."

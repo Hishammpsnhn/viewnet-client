@@ -62,40 +62,42 @@ const Settings = () => {
           </button>
         </div>
         <div className="bg-gray-600 w-full h-0.5 mt-4 mb-8"></div>
-        <div className="flex justify-between">
-          <div className="flex gap-4 items-center">
+
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
             {user.user?.profiles.map((item) => (
               <img
                 key={item._id}
                 src={item.profilePic}
                 alt={`Profile ${item.username + 1}`}
                 onClick={() => handleChangeProfile(item._id)}
-                className={`rounded-full border-2 object-cover cursor-pointer ${
+                className={`rounded-full border-2 object-cover cursor-pointer transition-all duration-300 ${
                   selectedProfile === item._id
-                    ? "w-20 h-20 border-secondary"
-                    : "w-16 h-16 border-black"
+                    ? "w-16 h-16 sm:w-20 sm:h-20 border-secondary"
+                    : "w-14 h-14 sm:w-16 sm:h-16 border-black"
                 }`}
               />
             ))}
             <button
               onClick={openModal}
               disabled={user.user?.profiles && user.user?.profiles.length >= 5}
-              className={`rounded-full border-2 flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out w-14 h-14 ${
+              className={`rounded-full border-2 flex justify-center items-center cursor-pointer transition-all duration-300 ease-in-out w-12 h-12 sm:w-14 sm:h-14 ${
                 user.user?.profiles && user.user?.profiles.length >= 5
                   ? "opacity-10 cursor-not-allowed"
                   : ""
               }`}
             >
-              <FaPlus size={24} className="text-gray-500" />
+              <FaPlus size={20} className="text-gray-500" />
             </button>
           </div>
           <button
-            className="px-5 py-2 mt-6 text-lg bg-secondary text-black font-semibold text-sm rounded-md my-auto opacity-90 hover:opacity-100"
+            className="w-full h-fit sm:w-auto px-4 sm:px-5 py-2 text-base sm:text-lg bg-secondary text-black font-semibold rounded-md opacity-90 hover:opacity-100"
             onClick={() => navigate("/editProfile")}
           >
             Edit
           </button>
         </div>
+
         <div className="flex justify-between mt-10">
           <p className="font-medium capitalize">my plans</p>
           <button

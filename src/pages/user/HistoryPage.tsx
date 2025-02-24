@@ -80,7 +80,7 @@ const HistoryPage = () => {
 
         <button
           onClick={() => setShowConfirmDialog(true)}
-          className="px-4 py-2 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
+          className="px-3 py-1  text-sm text-white  border border-red-800 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
           disabled={loading || watchHistory.length === 0}
         >
           Clear History
