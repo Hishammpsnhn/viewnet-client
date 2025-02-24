@@ -5,6 +5,7 @@ import { MdEdit } from "react-icons/md";
 import { Payment_API } from "../../api/PlansApi";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 interface SubCardProps {
   planId: string;
@@ -30,6 +31,7 @@ const SubCard: React.FC<SubCardProps> = ({
   sessionLimit,
 }) => {
   const { user } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +46,8 @@ const SubCard: React.FC<SubCardProps> = ({
       if (user) {
         const res = await Payment_API(planId, user?._id,user.email);
         if (res.success) {
-          window.location.href = res.data.url
+          //window.location.href = res.data.url
+          navigate(res.data.url);
         }
       }else{
         toast.error("Please login to make a payment");
