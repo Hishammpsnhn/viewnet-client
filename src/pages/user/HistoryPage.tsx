@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import HistoryGraph from "../../components/HistoryGraph";

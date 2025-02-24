@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HistoryCard from "./movie/HistoryCard";
 import { useParams } from "react-router-dom";
 import { getSeriesDetails_API } from "../api/content";
-import { ISeries, ISeriesDetailsResponse } from "../model/types/series.types";
+import {  ISeriesDetailsResponse } from "../model/types/series.types";
 import HistoryCardSkeleton from "./movie/HistoryCardSkelition";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
@@ -14,11 +14,11 @@ const Details = ({ series }: DetailsProps) => {
   const [seriesDetails, setSeriesDetails] = useState<ISeriesDetailsResponse>();
   const [loading, setLoading] = useState(false);
   
-  const { selectedProfile } = useSelector((state: RootState) => state.user);
+  const { selectedProfile ,user} = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchSeriesDetails = async () => {
-      if (!id) return;
+      if (!id || !user ) return;
       setLoading(true);
       try {
         const res = await getSeriesDetails_API(id,selectedProfile._id);
@@ -61,7 +61,7 @@ const Details = ({ series }: DetailsProps) => {
                     uniqueKey={episode.key}
                     title={episode.title}
                     transcoding={episode.transcoding}
-                    description="somthing desc"
+                    description="something desc"
                     image={episode.thumbnailUrl}
                     id={episode._id}
                     seriesWatch={true}

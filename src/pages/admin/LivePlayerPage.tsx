@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
@@ -9,8 +9,6 @@ import {
 } from "../../api/LiveStreamApi";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import LiveChat from "../../components/LiveChatMessage";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
 interface StreamState {
   isLive: boolean;
   isMicOn: boolean;
@@ -44,7 +42,6 @@ const LivePlayerPage = ({
   admin: boolean;
   assets?: boolean;
 }) => {
-  const { user } = useSelector((state: RootState) => state.user);
   const { id } = useParams();
 
   const [searchParams] = useSearchParams();
@@ -64,7 +61,6 @@ const LivePlayerPage = ({
   const navigate = useNavigate();
   const toggleLiveStream = () => {
     if (!streamState.muxStreamDetails?.stream_key) return;
-    console.log("id ", streamState.muxStreamDetails?.id);
     StopStreaming_API(streamState.muxStreamDetails?.id);
     setStreamState((prev) => ({
       ...prev,
@@ -76,11 +72,9 @@ const LivePlayerPage = ({
 
   const toggleLiveStreamDelete = () => {
     if (!streamState.muxStreamDetails?.stream_key) return;
-    console.log("id ", streamState.muxStreamDetails?.id);
     RemoveStreaming_API(streamState.muxStreamDetails?.id);
     navigate("/dashboard/live");
   };
-  //   alert("helo")
   useEffect(() => {
     async function fetchDetails() {
       if (!streamId) return;
@@ -102,7 +96,6 @@ const LivePlayerPage = ({
           const res = await GetAssetsDetails_API(id);
           if (res.success) {
             setAssetsVideoId(res.data.playback_ids[0].id);
-            console.log(res.data.playback_ids[0].id);
             videoId = res.data.playback_ids[0].id;
           }
         } catch (error) {}
@@ -114,9 +107,17 @@ const LivePlayerPage = ({
   return (
     <>
       {!videoId && !assetsVideoId ? (
-        <>Video Not Found {videoId}</>
+        <>
+          {assets ? (
+            <>
+              <LoadingSpinner />
+            </>
+          ) : (
+            <div>Video Not Found {videoId}</div>
+          )}
+        </>
       ) : (
-        <div className=" flex gap-2 p-5 max-h-max">
+        <div className=" flex gap-2 p-5 w-[70%]">
           <MuxPlayer
             playbackId={videoId ? videoId : assetsVideoId}
             metadataVideoTitle="Placeholder (optional)"

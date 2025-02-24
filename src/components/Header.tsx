@@ -4,7 +4,7 @@ import Login from "../features/user/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { searchMovie_API } from "../api/content";
-import { CiBellOn, CiTrash } from "react-icons/ci";
+import { CiBellOn } from "react-icons/ci";
 import { useSocket } from "../providers/socketProvider";
 import {
   addSearchingMeta,
@@ -39,7 +39,7 @@ const Header = ({
   };
 
   const handleProfileClick = () => {
-    console.log("Profile clicked!");
+    navigate("/settings")
   };
 
   const handleNotificationClick = () => {
@@ -49,7 +49,6 @@ const Header = ({
   // Debounced search handler
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
-      console.log("Searching for:", query);
       dispatch(fetchSearching());
       try {
         const res = await searchMovie_API(query);

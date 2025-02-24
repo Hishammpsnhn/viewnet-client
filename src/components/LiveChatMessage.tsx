@@ -16,8 +16,10 @@ interface ChatProps {
   streamId: string;
 }
 
-const socket: Socket = io("http://localhost:5005", {
+const socket: Socket = io(import.meta.env.VITE_GATEWAY_URL, {
   withCredentials: true,
+  path: "/live-stream/",
+   transports: ["websocket"],
 });
 
 const LiveChat = ({ streamId }: ChatProps) => {
@@ -37,7 +39,6 @@ const LiveChat = ({ streamId }: ChatProps) => {
 
   useEffect(() => {
     if (!socket) return;
-    console.log({ streamId, userId: user?._id });
     socket.emit("joinRoom", { streamId, userId: user?._id });
 
     socket.on("receiveMessage", (message: Message) => {

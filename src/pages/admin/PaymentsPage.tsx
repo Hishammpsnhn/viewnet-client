@@ -26,7 +26,7 @@ interface Column<T> {
 const PaymentHistory = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const [maxPage, setMaxPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -35,10 +35,9 @@ const PaymentHistory = () => {
       setLoading(true);
       try {
         const res = await GETPaymentHistory_API(page, 5);
-        if (res && res.data) {
-          console.log(res.data.data.transactions);
+        if (res && res.data) {;
           setPayments(res.data.data.transactions);
-          setMaxPage(res.data.data.totalPages || 1); // Corrected totalPages assignment
+          setMaxPage(res.data.data.totalPages || 1); 
         } else {
           toast.error("Failed to fetch payment history.");
         }
@@ -49,7 +48,7 @@ const PaymentHistory = () => {
       }
     };
     fetchPaymentHistory();
-  }, [page, searchQuery]);
+  }, [page]);
 
   const columns: Column<Payment>[] = [
     { header: "Payment ID", accessor: "_id" },

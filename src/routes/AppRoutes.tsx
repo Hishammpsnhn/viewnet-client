@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { HomePage } from "../pages/user/HomePage";
 import MainLayout from "../layouts/MainLayout";
 import ProfileCreation from "../pages/user/ProfileCreation";
@@ -20,8 +20,6 @@ import Related from "../components/Related";
 import HistoryPage from "../pages/user/HistoryPage";
 import MyPlanPage from "../pages/user/MyplansPage";
 import BlockedPage from "../pages/user/BlockPage";
-import Player from "../pages/common/Player";
-import { UserPlayer } from "../pages/common/UserPlayer";
 import WatchingPage from "../pages/user/WatchingPage";
 import PremiumUserProtectedRoute from "./Protected/PremiumUserProtectedRoute";
 import WatchLater from "../pages/user/WatchLater";

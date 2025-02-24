@@ -1,5 +1,4 @@
 import { Elements } from "@stripe/react-stripe-js";
-import React, { Dispatch, SetStateAction } from "react";
 import CheckoutPage from "../../components/subscription/Checkout";
 import { loadStripe } from "@stripe/stripe-js";
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { UserPlayer } from "../common/UserPlayer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -8,9 +8,7 @@ import { CiFacebook } from "react-icons/ci";
 import { CiTwitter } from "react-icons/ci";
 import { CiLink } from "react-icons/ci";
 import {
-  FacebookIcon,
   FacebookShareButton,
-  FacebookShareCount,
   TwitterShareButton,
 } from "react-share";
 const WatchingPage = () => {

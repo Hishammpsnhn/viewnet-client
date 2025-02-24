@@ -101,7 +101,6 @@ const PieGraph: React.FC = () => {
   useEffect(() => {
     const chartData = async () => {
       const data = await getUsersPlansCount();
-      console.log(data);
       setPieData(data?.data);
     };
     chartData();

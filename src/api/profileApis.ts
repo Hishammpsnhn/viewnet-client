@@ -26,7 +26,7 @@ export const updateProfile_API = async (
   defaultProfile: any
 ) => {
   try {
-    const { data } = await apiClient.patch(`/user/profile/${userId}`, {
+    const { data } = await apiClient.post(`/user/profile/${userId}`, {
       defaultProfile,
     });
     return data;

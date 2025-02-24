@@ -1,10 +1,4 @@
 import apiClient, { handleError } from "./apiClient";
-import { UserPlan } from "../model/types/plan.types";
-
-interface GetUserPlanDetailsResponse {
-  success: boolean;
-  userPlan: UserPlan[];
-}
 
 export const GETMe_API = async () => {
   try {
@@ -72,7 +66,7 @@ export const GETAllUsers_API = async (
 
 export const UpdateUser_API = async (id: string, newData: any) => {
   try {
-    const { data } = await apiClient.patch(`/user/admin/${id}`, {
+    const { data } = await apiClient.post(`/user/admin/${id}`, {
       newData,
     });
     return data;

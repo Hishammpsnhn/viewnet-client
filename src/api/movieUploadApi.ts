@@ -32,7 +32,6 @@ export const UploadMetadataAndGenerateSingedURL_API = async (
       "/uploading/movies/generate-presigned-url",
       formData
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to generate presigned URL");
@@ -48,7 +47,6 @@ export const UpdataMetadata_API = async (
       `/uploading/movies/${id}`,
       formData
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to generate presigned URL");
@@ -58,7 +56,6 @@ export const UpdataMetadata_API = async (
 export const GetAllMetadata_API = async (): Promise<GetAllMetadataResponse> => {
   try {
     const { data } = await apiClient.get(`/uploading/movies`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to fetch movies");
@@ -71,7 +68,6 @@ export const GetMetadata_API = async (
 ): Promise<GetMetadataResponse> => {
   try {
     const { data } = await apiClient.get(`uploading/movies/${id}`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to fetch");
@@ -97,7 +93,6 @@ export const getLatestMovies_API =
   async (): Promise<GetAllMetadataResponse> => {
     try {
       const { data } = await apiClient.get(`/uploading/movies/latest-movies`);
-      console.log(data);
       return data;
     } catch (error) {
       handleError(error, "Failed to generate presigned URL");

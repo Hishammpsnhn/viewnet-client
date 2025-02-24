@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetWatchTime_API } from "../api/notificationApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-// import { Clock } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,7 +9,8 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartOptions
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
@@ -39,8 +39,7 @@ const HistoryGraph = () => {
     const res = await GetWatchTime_API(user.defaultProfile);
     if (res.success) {
       setData(res.data);
-      const total = res.data.reduce((acc:number, curr:GraphData) => acc + curr.watchTime, 0);
-      console.log(total)
+      const total = res.data.reduce((acc: number, curr: GraphData) => acc + curr.watchTime, 0);
       setTotalHours(Math.round(total));
     }
   };
@@ -49,8 +48,8 @@ const HistoryGraph = () => {
     fetchWatchTime();
   }, [user]);
 
-  // Chart.js options
-  const options = {
+  // Chart.js options with correct typing
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -59,8 +58,8 @@ const HistoryGraph = () => {
       },
       tooltip: {
         callbacks: {
-          label: (context: any) => {
-            const hours = context.raw;
+          label: function(context) {
+            const hours = context.raw as number;
             if (hours < 1) return `${Math.round(hours * 60)} minutes`;
             return hours === 1 ? "1 hour" : `${hours} hours`;
           },
@@ -69,11 +68,13 @@ const HistoryGraph = () => {
     },
     scales: {
       y: {
+        type: 'linear' as const,
         beginAtZero: true,
         ticks: {
-          callback: (value: number) => {
-            if (value < 1) return `${Math.round(value * 60)}m`;
-            return `${value}h`;
+          callback: function(value) {
+            const numValue = value as number;
+            if (numValue < 1) return `${Math.round(numValue * 60)}m`;
+            return `${numValue}h`;
           },
         },
         grid: {
@@ -81,6 +82,7 @@ const HistoryGraph = () => {
         },
       },
       x: {
+        type: 'category' as const,
         grid: {
           display: false,
         },
@@ -107,7 +109,6 @@ const HistoryGraph = () => {
       <div className="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center">
           <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center me-3">
-            {/* <Clock className="w-6 h-6 text-blue-600 dark:text-blue-300" /> */}
           </div>
           <div>
             <h5 className="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">

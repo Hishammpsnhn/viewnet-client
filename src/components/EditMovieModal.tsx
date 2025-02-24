@@ -44,9 +44,6 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
             "Content-Type": newThumbnail.type,
           },
         });
-        const thumbnailKey = `uploads/thumbnail/${newTitle}_thumbnail.jpg`;
-        const bucketName = import.meta.env.VITE_AWS_BUCKET_NAME;
-        const thumnailUrl = `https://s3.us-east-1.amazonaws.com/${bucketName}/${thumbnailKey}`;
       }
 
       // Step 4: Update the movie metadata with the new title, description, genre, and thumbnail URL

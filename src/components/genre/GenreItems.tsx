@@ -1,10 +1,9 @@
 import { Genre } from "../../model/types/genrePage";
-import { EditIcon, TrashIcon } from "../../svg/svg";
+import { EditIcon } from "../../svg/svg";
 
 export const GenreItem: React.FC<{
   genre: Genre;
   onEdit: (genre: Genre) => void;
- // onDelete: (id: number) => void;
 }> = ({ genre, onEdit }) => {
   return (
     <>

@@ -22,7 +22,6 @@ interface NewProfileProps {
 }
 
 const NewProfile: React.FC<NewProfileProps> = ({ closeModal, profileData }) => {
-  console.log(profileData?._id);
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const [isAdult, setIsAdult] = useState(profileData?.isAdult || false);

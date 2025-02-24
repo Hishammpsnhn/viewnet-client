@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import videojs from "video.js";
@@ -13,7 +13,6 @@ import {
 } from "../../api/content";
 import { MovieCatalogData } from "../../model/types/movie.types";
 import { EpisodeCatalog } from "../../model/types/series.types";
-import { getEpisodeCatalog_API } from "../../api/seriesApi";
 import { useSocket } from "../../providers/socketProvider";
 
 // Types
@@ -26,6 +25,7 @@ interface PlayerState {
 }
 export const UserPlayer = () => {
   const { selectedMovie } = useSelector((state: RootState) => state.movies);
+  const dataSaver = true;
   const [searchParams] = useSearchParams();
   const { selectedProfile } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +39,6 @@ export const UserPlayer = () => {
 
   const playerRef = useRef<any>(null);
   const videoRef = useRef<HTMLDivElement | null>(null);
-  const [watchHours, setWatchedHours] = useState(0);
   const [state, setState] = useState<PlayerState>({
     currentProgress: 0,
     isPlaying: false,
@@ -55,8 +54,6 @@ export const UserPlayer = () => {
     const timeSpent = (Date.now() - lastUpdateTime) / 1000;
 
     lastUpdateTime = Date.now();
-
-    console.log(timeSpent);
 
     socket.emit("update_watch_time", {
       profileId: selectedProfile._id,
@@ -83,7 +80,7 @@ export const UserPlayer = () => {
       responsive: true,
       fluid: true,
       poster: selectedMovie?.thumbnailUrl || "",
-      sources: [{ src: lowRes }],
+      sources: [{ src: dataSaver ? lowRes : autoRes }],
     });
 
     // Player Event Handlers
@@ -108,7 +105,6 @@ export const UserPlayer = () => {
     });
     player.on("pause", () => {
       setState((prev) => ({ ...prev, isPlaying: false }));
-      console.log(partyId)
       if (socket && partyId) {
         socket.emit("sync-action", {
           partyId,
@@ -143,9 +139,6 @@ export const UserPlayer = () => {
       const durationMain = player.duration();
       duration = durationMain;
       setState((prev) => ({ ...prev, videoDuration: duration }));
-      console.log(
-        `Video duration loaded: ${duration} seconds ${state.currentProgress}`
-      );
 
       if (!state.currentProgress) return;
       // Overlay for center point indication
@@ -154,7 +147,6 @@ export const UserPlayer = () => {
         "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/50 text-black px-4 py-2 rounded";
 
       // Set current time and play
-      console.log((state.currentProgress * duration) / 100);
       if ((state.currentProgress * duration) / 100 === duration) {
         player.currentTime(0);
         centerIndicator.textContent = `Replaying..`;
@@ -182,7 +174,6 @@ export const UserPlayer = () => {
         Math.floor(currentTime) % 10 === 0 &&
         Math.floor(currentTime) !== lastApiCallTime
       ) {
-        console.log("state", state);
         if (selectedMovie && selectedProfile && duration) {
           const progress = (Math.floor(currentTime) / duration) * 100;
           await WatchHistoryUpdate_API(
@@ -197,20 +188,14 @@ export const UserPlayer = () => {
   };
 
   useEffect(() => {
-
-
     socket?.on("sync-action", (state) => {
-      console.log("Video state sync", state);
       if (state.action === "play") {
-        console.log("Video playing");
         playerRef.current?.play();
         playerRef.current?.currentTime(state.time);
       } else if (state.action === "pause") {
-        console.log("Video paused");
         playerRef.current?.pause();
         playerRef.current?.currentTime(state.time);
       } else if (state.action === "seek") {
-        console.log("Video seek", state.time);
         playerRef.current?.currentTime(state.time);
       }
     });

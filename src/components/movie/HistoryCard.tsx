@@ -44,9 +44,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
   if (user?.isAdmin && uniqueKey) {
     isUploadingOrTranscoding =
       (progress && progress[id]) || transcoding !== "completed";
-    console.log(isUploadingOrTranscoding);
   }
-  console.log(progress, transcoding, isUploadingOrTranscoding);
 
   const handleWatch = () => {
     if (seriesManagement) {

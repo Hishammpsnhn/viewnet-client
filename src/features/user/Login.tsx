@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { otpValidator, useLoginValidator } from "../../hooks/useValidate.ts";
+import { otpValidator } from "../../hooks/useValidate.ts";
 import {
   getME,
   loginUser,
   verifyOtp,
 } from "../../reducers/userReducer/userThunks.ts";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store.ts";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store.ts";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { QRSave_API, QRValidate_API } from "../../api/qrLogin.ts";
+import { QRSave_API } from "../../api/qrLogin.ts";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import { emailVerify } from "../../utils/Validation.tsx";
 import * as Yup from "yup";
@@ -85,18 +85,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         setValidationErrors(errors);
       }
     }
-
-    // if (validate) {
-    //   setEmailError(validate);
-    // } else {
-    //   const resultAction = await dispatch(loginUser(email));
-
-    //   if (resultAction.payload) {
-    //     setResendCountdown(29);
-    //   } else {
-    //     toast.error("something went wrong");
-    //   }
-    // }
   };
 
   const handleOtpChange = (
@@ -184,19 +172,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       const randomNumber = Math.floor(Math.random() * 1000000).toString();
       setRandom(randomNumber);
       QRSave_API(randomNumber);
-      console.log(`http://localhost:5173/?token=${randomNumber}`);
+      console.log(`${import.meta.env.VITE_CLIENT_URL}/?token=${randomNumber}`);
 
       // Initialize SSE
       const eventSource = new EventSource(
-        `http://localhost:4000/api/user/public/qr/${randomNumber}`
+        `${import.meta.env.VITE_GATEWAY_URL}/api/user/public/qr/${randomNumber}`
       );
       eventSource.onopen = () => {
         console.log("SSE connection opened");
       };
       eventSource.addEventListener("validated", (event) => {
-        console.log("alidated event received:", event);
         const data = JSON.parse(event.data);
-        console.log("Parsed data:", data);
         if (data.success) {
           eventSource.close();
           closeModal();
@@ -214,8 +200,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
         console.log("Ping event received:", event);
       });
 
-      
-
       eventSource.onerror = (error) => {
         console.error("SSE error:", error);
         eventSource.close();
@@ -226,8 +210,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
       };
     }
   }, [isOpen, otpVisible]);
-  
-  
 
   useEffect(() => {
     if (resendCountdown > 0) {
@@ -262,7 +244,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
                 <div className="flex justify-center flex-1 mb-4 md:mb-0">
                   <div className="text-center">
                     <QRCodeSVG
-                      value={`http://localhost:5173/?token=${random}`}
+                      value={`${
+                        import.meta.env.VITE_CLIENT_URL
+                      }/?token=${random}`}
                       size={150}
                     />
                     <h6 className="font-semibold text-gray-100 p-1">
@@ -314,7 +298,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
             ) : (
               <div className="flex flex-col items-center gap-1 text-center bg-black w-2/4 mx-auto">
                 <p className="w-full  text-sm text-gray-400">
-                  Enter OTP sent to demo@gmail.com
+                  Enter OTP sent to {email}
                 </p>
                 {validateOtp && <p className="text-red-800">{validateOtp}</p>}
                 <form onSubmit={handleOtpSubmit}>
@@ -358,7 +342,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ login }) => {
               </div>
             )}
           </div>
-          <ToastContainer theme="dark"/>
+          <ToastContainer theme="dark" />
         </div>
       )}
     </>

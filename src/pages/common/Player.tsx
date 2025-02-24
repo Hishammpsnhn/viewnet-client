@@ -1,32 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
-import { GetMetadata_API } from "../../api/movieUploadApi";
-import { MetaData, MovieCatalogData } from "../../model/types/movie.types";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import {
-  fetchMovieCatalog_API,
-  getEpisodeDetails_API,
-} from "../../api/content";
-import { EpisodeCatalog, IEpisode } from "../../model/types/series.types";
+import { MovieCatalogData } from "../../model/types/movie.types";
+
+import { fetchMovieCatalog_API } from "../../api/content";
+import { EpisodeCatalog } from "../../model/types/series.types";
 import { useLocation } from "react-router-dom";
 import { getEpisodeCatalog_API } from "../../api/seriesApi";
 
 const Player: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.user);
-
   const location = useLocation();
 
   let dataSave = false;
-  const [metadata, setMetadata] = useState<MetaData | null>(null);
-  const [episode, setEpisode] = useState<IEpisode | null>(null);
   const [catalogs, setCatalogs] = useState<MovieCatalogData | null>(null);
   const [episodeCatalog, setEpisodeCatalog] = useState<EpisodeCatalog | null>(
     null
   );
-  const { title, image } = location.state || {};
+  const { image } = location.state || {};
 
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("v");
@@ -61,26 +51,22 @@ const Player: React.FC = () => {
   }, [series]);
   useEffect(() => {
     if (catalogs) {
-      console.log(catalogs);
       const autoResolution = catalogs?.encodedFiles?.find(
         (item) => item.resolution === "auto"
       );
       const lowResolution = catalogs?.encodedFiles.find(
         (item) => item.resolution === "360p"
       );
-      console.log(autoResolution);
       if (autoResolution && lowResolution)
         playerSetup(autoResolution?.fileUrl, lowResolution.fileUrl);
     }
     if (episodeCatalog) {
-      console.log("finding res")
       const autoResolution = episodeCatalog?.resolutions.find(
         (item) => item.resolution === "auto"
       );
       const lowResolution = episodeCatalog?.resolutions.find(
         (item) => item.resolution === "360p"
       );
-      console.log(autoResolution);
       if (autoResolution && lowResolution)
         playerSetup(autoResolution?.fileUrl, lowResolution.fileUrl);
     }
@@ -116,19 +102,6 @@ const Player: React.FC = () => {
       });
     }
   };
-
-  // useEffect(() => {}, [metadata, episode]);
-
-  // Update poster when metadata changes
-  // useEffect(() => {
-  //   if (playerRef.current && metadata?.thumbnailUrl) {
-  //     playerRef.current.poster(metadata.thumbnailUrl);
-  //   }
-  // }, [metadata]);
-
-  // if (!videoId) {
-  //   return <p className="text-white">No video found.</p>;
-  // }
 
   return (
     <div className="w-full mx-auto">

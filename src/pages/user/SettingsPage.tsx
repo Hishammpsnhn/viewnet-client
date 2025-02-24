@@ -64,7 +64,7 @@ const Settings = () => {
         <div className="bg-gray-600 w-full h-0.5 mt-4 mb-8"></div>
         <div className="flex justify-between">
           <div className="flex gap-4 items-center">
-            {user.user?.profiles.map((item, index) => (
+            {user.user?.profiles.map((item) => (
               <img
                 key={item._id}
                 src={item.profilePic}

@@ -5,7 +5,6 @@ export const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
   
     if (!refreshToken) {
-      console.error("No refresh token available");
       return null;
     }
   

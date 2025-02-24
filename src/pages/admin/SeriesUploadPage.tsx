@@ -10,11 +10,6 @@ import { Genre } from "../../model/types/genrePage";
 
 interface SeriesUploadPageProps {}
 
-interface Episode {
-  title: string;
-  file: File | null;
-}
-
 const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
   const [title, setTitle] = useState<string>("");
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -22,12 +17,10 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [genre, setGenre] = useState<string>("");
   const [audience, setAudience] = useState<"kids" | "adults">("kids");
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
   const navigate = useNavigate();
 
   const handleThumbnailUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      console.log(e.target.files[0]);
       setThumbnail(e.target.files[0]);
     }
   };
@@ -38,13 +31,11 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
     id: string
   ): Promise<void> => {
     try {
-      console.log("uplaoding");
       const uploadResponse = await axios.put(url, file, {
         headers: {
           "Content-Type": "image/jpeg",
         },
       });
-      console.log(uploadResponse);
       if (uploadResponse.status === 200) {
         navigate(`/series/${id}`);
       } else {
@@ -74,9 +65,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
       seasons: [],
     };
     const res = await CreateSeries_API(formData);
-    console.log("Form Data Submitted:", res);
     if (res.success) {
-      console.log(res.thumbnailSignedUrl, thumbnail);
       if (res.thumbnailSignedUrl && thumbnail) {
         uploadFileToS3Thumbnail(
           res.thumbnailSignedUrl.url,

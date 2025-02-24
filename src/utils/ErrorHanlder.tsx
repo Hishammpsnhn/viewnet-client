@@ -1,33 +1,32 @@
-import { AxiosError } from "axios"; 
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-export const handleApiError = (err: unknown): void => {
+const TOAST_ERROR_ID = "api-error";
+
+export const handleApiError = (err: unknown, retry?: () => void): void => {
+  let errorMessage = "An unknown error occurred";
 
   if (err instanceof AxiosError) {
-    if (err.response && err.response.data && err.response.data.message) {
-
-      toast.error(err.response.data.message);
-      console.error("API Error:", err.response.data.message);
-      return;
+    if (err.response?.data?.message) {
+      errorMessage = err.response.data.message;
+    } else if (err.request) {
+      errorMessage = "No response from server. Please check your network.";
     } else {
-      const fallbackMessage = "An unknown error occurred";
-      toast.error(fallbackMessage);
-      console.error("API Error:", fallbackMessage);
-      return;
+      errorMessage = "Request failed. Please try again.";
     }
+  } else if (err instanceof Error) {
+    errorMessage = err.message;
+  } else if (err && typeof err === "object" && "message" in err) {
+    errorMessage = (err as { message: string }).message;
   }
 
-  if (err instanceof Error) {
-    toast.error(err.message);
-    console.error("API Error:", err.message);
-  } else if (err && typeof err === "object" && "message" in err) {
-    // Handle custom errors with a 'message' property
-    const errorMessage = (err as { message: string }).message;
-    toast.error(errorMessage);
-    console.error("API Error:", errorMessage);
-  } else {
-    // Handle unknown errors
-    toast.error("An unknown error occurred");
-    console.error("Unknown error occurred");
+  console.error("API Error:", errorMessage);
+
+  if (!toast.isActive(TOAST_ERROR_ID)) {
+    toast.error(errorMessage, { toastId: TOAST_ERROR_ID });
+  }
+
+  if (retry) {
+    setTimeout(retry, 3000);
   }
 };

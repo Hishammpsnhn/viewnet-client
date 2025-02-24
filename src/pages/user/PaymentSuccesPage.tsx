@@ -1,12 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Payment_Success_API } from "../../api/PlansApi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+
 
 const PaymentSuccessPage = () => {
-  const { user } = useSelector((state: RootState) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
 

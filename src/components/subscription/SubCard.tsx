@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { MdEdit } from "react-icons/md";
-import { loadStripe } from "@stripe/stripe-js";
-import PaymentModal from "../../features/subscription/PaymentModal";
 import { Payment_API } from "../../api/PlansApi";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner";
@@ -24,7 +22,6 @@ const SubCard: React.FC<SubCardProps> = ({
   planId,
   name,
   price,
-  discount,
   onEdit,
   isActive,
   uhd,
@@ -33,12 +30,12 @@ const SubCard: React.FC<SubCardProps> = ({
   sessionLimit,
 }) => {
   const { user } = useSelector((state: RootState) => state.user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clientSecret, setClientSecret] = useState("");
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   const handlePayment = async () => {
     setLoading(true);
@@ -46,11 +43,7 @@ const SubCard: React.FC<SubCardProps> = ({
     try {
       if (user) {
         const res = await Payment_API(planId, user?._id,user.email);
-        console.log(res)
         if (res.success) {
-          console.log("Payment sucecs")
-          // setClientSecret(res.clientSecret);
-          // setIsModalOpen(true);
           window.location.href = res.data.url
         }
       }else{
@@ -139,14 +132,14 @@ const SubCard: React.FC<SubCardProps> = ({
         {loading ? <LoadingSpinner /> : "BUY"}
       </button>
 
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <PaymentModal
           clientSecret={clientSecret}
           planId={planId}
           price={parseInt(price)}
           closeModal={closeModal}
         />
-      )}
+      )} */}
       <ToastContainer theme="dark" />
     </div>
   );

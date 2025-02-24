@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UploadCard from "../../components/admin/uploadCard/UplaodCard";
 import NumberCard from "../../components/admin/NumberCard/NumberCard";
 import HistoryCard from "../../components/movie/HistoryCard";
@@ -78,7 +78,6 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     socket?.on("activeUsers", (size) => {
-      console.log(size);
       setUserCount(size);
     });
   }, [socket]);

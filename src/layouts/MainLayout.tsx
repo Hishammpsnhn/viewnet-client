@@ -12,10 +12,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children,gradient }) => {
       <Header gradient={gradient}  />
       <div className="flex flex-1">
         {/* Sidebar is fixed on the left, only on larger screens */}
-        <div className=" fixed top-0 left-0 h-full z-10">
+        <div className=" fixed top-0 left-0 h-full z-20">
           <Sidebar />
         </div>
-        <main className="flex-grow overflow-y-auto scrollbar-hidden">{children}</main>
+        <main className="flex-grow overflow-y-auto scrollbar-hidden z-10">{children}</main>
       </div>
     </div>
   );

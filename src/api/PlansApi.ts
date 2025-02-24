@@ -1,25 +1,5 @@
 import apiClient, { handleError } from "./apiClient";
 import { Plan } from "../model/types/user.types";
-import Stripe from "stripe";
-
-const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY);
-
-// // Interfaces for API responses
-// export interface PlansResponse {
-//   success: boolean;
-//   plan: Plan;
-// }
-
-// export interface GetPlansResponse {
-//   success: boolean;
-//   plans: Plan[];
-// }
-
-// export interface PaymentResponse {
-//   success: boolean;
-//   clientSecret: string;
-//   message?: string;
-// }
 
 // Plans APIs
 export const GetPlans_API = async () => {

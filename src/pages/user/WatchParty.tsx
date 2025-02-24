@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSocket } from "../../providers/socketProvider";
 import { useSelector } from "react-redux";
@@ -40,22 +40,6 @@ const WatchParty = () => {
     }
   };
 
-  const modalStyles = {
-    overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    content: {
-      position: 'relative',
-      inset: 'auto',
-      border: 'none',
-      background: 'transparent',
-      overflow: 'auto',
-      padding: '0'
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">

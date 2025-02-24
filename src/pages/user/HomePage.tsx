@@ -11,7 +11,6 @@ import {
   getLatestSeries_API,
   RecommendedMovie_API,
 } from "../../api/content";
-import { ISeries, ISeriesResponse } from "../../model/types/series.types";
 import { MetaData } from "../../model/types/movie.types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -28,13 +27,11 @@ import {
 import {
   ActiveStreamList_API,
   GetAssets_API,
-  StreamList_API,
 } from "../../api/LiveStreamApi";
 import {
   MuxAssetsResponse,
   MuxStreamResponse,
 } from "../../model/types/live.types";
-import { useSocket } from "../../providers/socketProvider";
 
 export const HomePage = () => {
   const location = useLocation();
@@ -105,8 +102,7 @@ const ScrollableSection = () => {
 
   const { movies, series ,recommended} = useSelector((state: RootState) => state.movies);
 
-  const { user,loading } = useSelector((state: RootState) => state.user);
-  console.log(loading)
+  const { user, } = useSelector((state: RootState) => state.user);
 
   const scroll = (
     direction: "left" | "right",
@@ -149,25 +145,23 @@ const ScrollableSection = () => {
     const scrollThreshold = scrollWidth - clientWidth - 100;
 
     if (scrollLeft > scrollThreshold && !isLoadingMore && hasMoreAssets) {
-      console.log("calling api for assets", assetsPage + 1);
 
       setIsLoadingMore(true);
       const res = await GetAssets_API(assetsPage);
       if (res.success) setAssets([...assets, ...res.data]);
       setAssetsPage((prev) => prev + 1);
+      setHasMoreAssets(true)
       setIsLoadingMore(false);
     }
   };
 
   const fetchMovies = async (page: number) => {
-    console.log("fetchmovies");
     if (!hasMoreMovies) return;
 
     dispatch(fetchMoviesStart());
     try {
       const response = await getLatestMovies_API(page);
       if (response.success) {
-        console.log("response success of movie");
         if (page === 1) {
           dispatch(fetchMoviesSuccess(response.data));
         } else {
@@ -186,7 +180,6 @@ const ScrollableSection = () => {
 
   const fetchSeries = async (page: number) => {
     if (!hasMoreSeries) return;
-    console.log("fetching series");
 
     dispatch(fetchSeriesStart());
     try {

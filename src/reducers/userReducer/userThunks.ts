@@ -58,7 +58,6 @@ export const loginUser = createAsyncThunk(
       { rejectWithValue }
     ) => {
       try {
-        console.log("data",profileData)
         const response = await editProfile_API(userId, profileData);
         return response;
       } catch (error: any) {

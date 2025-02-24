@@ -9,7 +9,6 @@ import {
 } from "../../api/seriesApi";
 import {
   IEpisode,
-  IEpisodeResponse,
   ISeason,
   ISeries,
 } from "../../model/types/series.types";
@@ -17,8 +16,6 @@ import axios from "axios";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { toast } from "react-toastify";
 import { createEpisodeCatalog_API } from "../../api/seriesApi";
-import { UpdataMetadata_API } from "../../api/movieUploadApi";
-
 const SeriesManagement = () => {
   const { seriesId } = useParams();
 
@@ -27,11 +24,9 @@ const SeriesManagement = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<ISeason | null>();
-  const [episodeDetails, setEpisodeDetails] = useState<IEpisodeResponse>();
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
     {}
   );
-  console.log(uploadProgress);
 
   const [episodeData, setEpisodeData] = useState<IEpisode>({
     title: "",
@@ -44,7 +39,6 @@ const SeriesManagement = () => {
     transcoding: "pending",
     key: "",
   });
-  console.log(series);
   useEffect(() => {
     async function fetchMovies() {
       try {
@@ -85,7 +79,6 @@ const SeriesManagement = () => {
   };
 
   const handleAddEpisode = (season: ISeason) => {
-    console.log("seoan", season);
     setSelectedSeason(season);
     setIsModalOpen(true);
   };
@@ -106,7 +99,6 @@ const SeriesManagement = () => {
     e: ChangeEvent<HTMLInputElement>,
     field: string
   ) => {
-    console.log(e, field);
     if (e.target.files) {
       setEpisodeData((prev) => ({ ...prev, [field]: e.target.files![0] }));
     }
@@ -137,7 +129,6 @@ const SeriesManagement = () => {
     file: File,
     key: string
   ): Promise<void> => {
-    console.log("callled s3");
     try {
       const uploadResponse = await axios.put(url, file, {
         headers: {
@@ -152,7 +143,6 @@ const SeriesManagement = () => {
           }
         },
       });
-      console.log(uploadResponse);
 
       if (uploadResponse.status === 200) {
         console.log("File uploaded successfully");
@@ -161,21 +151,14 @@ const SeriesManagement = () => {
           episodeId: id,
           format: "mp4",
         };
-        // UpdataMetadata_API(id, { uploadStatus: "success" });
-        // setUploadProgress({ movie: 0, thumbnail: 0 });
-        // navigate("/uploads/details");
-        const res = await createEpisodeCatalog_API(obj);
-        console.log(res);
+         await createEpisodeCatalog_API(obj);
       } else {
         console.log("Failed to upload file");
         // toast.error("Failed to upload file");
       }
     } catch (error) {
-      // UpdataMetadata_API(id, { uploadStatus: "failed" });
       // console.error("Error uploading file to S3:", error);
       // toast.error("Failed to upload file");
-    } finally {
-      //setLoadingStart(false);
     }
   };
   const uploadFileToS3Thumbnail = async (
@@ -188,7 +171,6 @@ const SeriesManagement = () => {
           "Content-Type": "image/jpeg",
         },
       });
-      console.log(uploadResponse);
       if (uploadResponse.status === 200) {
       } else {
         console.log("Failed to upload file");
@@ -201,8 +183,6 @@ const SeriesManagement = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Episode Data:", episodeData);
-    console.log(selectedSeason);
     if (!selectedSeason || !selectedSeason._id) return;
     const obj: IEpisode = {
       description: episodeData.description,
@@ -216,7 +196,6 @@ const SeriesManagement = () => {
       key: "",
     };
     const res = await createEpisodeWithSignedUrl_API(obj);
-    console.log(res);
     if (res.success && episodeData.videoUrl && episodeData.thumbnailUrl) {
       uploadFileToS3Movie(
         res.episode._id,
@@ -224,7 +203,6 @@ const SeriesManagement = () => {
         episodeData.videoUrl,
         res.key
       );
-      setEpisodeDetails(res.episode);
 
       setSeries((prev) => {
         if (!prev) return null;
@@ -259,7 +237,9 @@ const SeriesManagement = () => {
         {loading && <>Loading....</>}
         {!series && !loading && <>Not found</>}
         <div className="md:w-1/2 text-left flex flex-col h-64">
-          <h2 className="text-2xl font-bold text-gray-300 capitalize">{series?.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-300 capitalize">
+            {series?.title}
+          </h2>
           <p className="text-gray-400 mt-2 capitalize">{series?.description}</p>
           <div className="mt-auto space-x-4 pt-4 flex items-center">
             <button
@@ -306,8 +286,9 @@ const SeriesManagement = () => {
               ))
             ) : (
               <>
-                {season.episodes.map((episode, i) => (
+                {season.episodes.map((episode) => (
                   <HistoryCard
+                    key={episode._id}
                     title={episode.title}
                     id={episode._id || ""}
                     image={

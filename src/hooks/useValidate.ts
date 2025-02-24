@@ -32,7 +32,6 @@ export const useLoginValidator = ({ email }: { email?: string }) => {
 };
 
 export const otpValidator = (otp: string[]) => {
-  console.log(otp.join(""));
   if (!otp) {
     return "Please provide an OTP1";
   }

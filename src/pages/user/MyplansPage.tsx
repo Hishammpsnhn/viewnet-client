@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UserPlan } from "../../model/types/plan.types";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
@@ -16,8 +16,6 @@ const MyPlanPage = () => {
         try {
           setLoading(true);
           const data = await GETUserPlanDetails_API(user.user._id);
-          console.log(data);
-
           if (data && data.success) {
             setMyPlans(data.userPlan);
           }

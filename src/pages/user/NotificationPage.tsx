@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSocket } from "../../providers/socketProvider";
 import { CiBellOn, CiTrash } from "react-icons/ci";
 import { useSelector } from "react-redux";
@@ -19,7 +19,7 @@ interface Notification {
 }
 
 export const NotificationsPage = () => {
-  const { notifications, isConnected } = useSocket();
+  const { isConnected } = useSocket();
   const { user } = useSelector((state: RootState) => state.user);
   const [readStatus, setReadStatus] = useState<Record<number, boolean>>({});
   const [userNotifications, setUserNotifications] = useState<Notification[]>(
@@ -33,20 +33,19 @@ export const NotificationsPage = () => {
     }));
   };
 
-  const clearAllNotifications = async() => {
+  const clearAllNotifications = async () => {
     //setReadStatus({});
-    if(!user?._id) return;
-   const res =  await DeleteNotification_API(user?._id);
-   if(res.success){
-     setUserNotifications([]);
-   }
+    if (!user?._id) return;
+    const res = await DeleteNotification_API(user?._id);
+    if (res.success) {
+      setUserNotifications([]);
+    }
   };
 
   useEffect(() => {
     async function fetchNotifications() {
       if (!user) return;
       const res = await GetNotification_API(user?._id);
-      console.log(res);
       if (res.success) {
         setUserNotifications(res.data);
       }

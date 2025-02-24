@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { CreatePlans_API, UpdatePlans_API } from "../../api/PlansApi";
+import React, { useState } from "react";
 import { Plan } from "../../model/types/user.types";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
@@ -42,14 +41,12 @@ const EditSubscription: React.FC<EditSubscriptionProps> = ({
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    console.log(name, checked);
     setFormData((prevData) => ({
       ...prevData,
       [name]: checked,
     }));
   };
   const handleSubmit = () => {
-    console.log(formData);
     onSubmit(formData);
   };
 

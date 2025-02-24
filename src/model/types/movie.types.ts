@@ -51,5 +51,6 @@ export interface SearchMeta {
   description: string;
   genre: string;
   thumbnailUrl: string;
+  isMovie?: boolean;
 
 }

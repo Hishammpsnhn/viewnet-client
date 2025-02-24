@@ -43,7 +43,6 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     Record<string, string>
   >({});
 
-  const bucketName = import.meta.env.VITE_AWS_BUCKET_NAME;
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -55,7 +54,6 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     e: ChangeEvent<HTMLInputElement>,
     field: string
   ) => {
-    console.log(e, field);
     if (e.target.files) {
       setFormData((prev) => ({ ...prev, [field]: e.target.files![0] }));
     }
@@ -66,7 +64,6 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     url: string,
     file: File
   ): Promise<void> => {
-    console.log("uploadFileToS3Movie", id, url, file);
     try {
       const uploadResponse = await axios.put(url, file, {
         headers: {
@@ -81,7 +78,6 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
           }
         },
       });
-      console.log(uploadResponse);
 
       if (uploadResponse.status === 200) {
         UpdataMetadata_API(id, { uploadStatus: "success" });
@@ -121,12 +117,8 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
           }
         },
       });
-      console.log(uploadResponse);
       if (uploadResponse.status === 200) {
         console.log("File thumbnail uploaded successfully");
-        const thumbnailKey = `uploads/thumbnail/${formData.title}_thumbnail.jpg`;
-        const thumnailUrl = `https://s3.us-east-1.amazonaws.com/${bucketName}/${thumbnailKey}`;
-        console.log(formData, thumnailUrl);
       } else {
         console.log("Failed to upload file");
       }
@@ -141,9 +133,7 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
     setLoadingStart(true);
     try {
       await movieUpload.validate(formData, { abortEarly: false });
-      console.log("Form Data Submitted:", formData);
       const data = await UploadMetadataAndGenerateSingedURL_API(formData);
-      console.log(data);
       if (data.signedUrls) {
         const { movieSignedUrl, thumbnailSignedUrl } = data.signedUrls;
 

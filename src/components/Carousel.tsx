@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MetaData } from "../model/types/movie.types";
 import { ISeriesResponse } from "../model/types/series.types";
 import { useNavigate } from "react-router-dom";
@@ -11,11 +11,10 @@ interface CarouselProp {
   series: boolean;
 }
 const Carousel = ({ selectedMovie, series }: CarouselProp) => {
-  const { planDetails, user, selectedProfile } = useSelector(
+  const { planDetails, user } = useSelector(
     (state: RootState) => state.user
   );
   const [paidUser, setPaidUser] = useState(false);
-  const [party, setParty] = useState<any | null>(null);
   const [id, setId] = useState<string | null>(null);
 
   const { socket } = useSocket();
@@ -36,11 +35,8 @@ const Carousel = ({ selectedMovie, series }: CarouselProp) => {
     }
   };
   const handleWatch = () => {
-    console.log("party: " + id);
-    const partyQuery = id ? `&partyId=${id}` : "";
     navigate(`/watch?v=${selectedMovie?._id}`);
     if (id && socket) {
-      console.log(id);
       socket.emit("selectedMovie", {
         link: `/watch?v=${selectedMovie?._id}&partyId=${id}`,
         partyId: id,
@@ -60,12 +56,6 @@ const Carousel = ({ selectedMovie, series }: CarouselProp) => {
     socket.on("partyUpdate", (party) => {
       if (party.host === user?.defaultProfile) return;
       toast.info("someone has joined");
-      console.log(party);
-      if (party) setParty(party);
-      // setParticipants(party.participants);
-      // if (!isHost) {
-      //   syncVideoState(party.videoState);
-      // }
     });
   }, [socket]);
 

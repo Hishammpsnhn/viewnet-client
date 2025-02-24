@@ -30,20 +30,34 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   >([]);
 
   useEffect(() => {
-    const socketInstance = io("http://localhost:5006", {
+    const socketInstance = io("http://api.viewnet.cfd", {
       withCredentials: true,
+      path: "/socket.io/",
+      transports: ["websocket"],
     });
+    
+    socketInstance.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
+    });
+    
+    socketInstance.on("error", (error) => {
+      console.error("Socket Error:", error);
+    });
+    
+    socketInstance.io.on("ping", () => {
+      console.log("ping");
+    });
+    
+
 
     // Set up event listeners
     socketInstance.on("connect", () => {
-      console.log("Connected to socket server");
       setIsConnected(true);
       // Subscribe to notifications
       setSocket(socketInstance);
       socketInstance.emit("subscribeToNotifications");
     });
     socketInstance.on("selectedMovie", (videoState) => {
-      console.log(videoState);
       navigate(videoState);
     });
     socketInstance.on("disconnect", () => {
@@ -52,7 +66,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socketInstance.on("notification", (notification) => {
-      console.log("Received new notification", notification);
       toast.info(notification.message);
       setNotifications((prev) => [...prev, notification]);
     });

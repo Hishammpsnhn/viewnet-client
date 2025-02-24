@@ -100,9 +100,7 @@ const GenrePage: React.FC = () => {
     }
   };
 
-  const handleDeleteGenre = (id: string) => {
-    setGenres(genres.filter((genre) => genre.id !== id));
-  };
+
 
   if (isLoading) {
     return <div className="min-h-screen p-8 text-white">Loading...</div>;

@@ -1,6 +1,4 @@
-// pages/UploadDetailsPage.tsx
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetAllMetadata_API } from "../../api/movieUploadApi";
 import { MetaData } from "../../model/types/movie.types";
 import EditMovieModal from "../../components/EditMovieModal";
@@ -27,7 +25,6 @@ const UploadDetailsPage = () => {
   };
 
   const handleSaveEdit = (updatedMovie: MetaData): void => {
-   
     setMovies((prevMovies) =>
       prevMovies.map((movie) =>
         movie._id === updatedMovie._id ? updatedMovie : movie

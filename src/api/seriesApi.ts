@@ -11,7 +11,6 @@ interface Catalog {
 export const GetAllSeries_API = async () => {
   try {
     const { data } = await apiClient.get(`/uploading/series`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to fetch series");
@@ -21,7 +20,6 @@ export const GetAllSeries_API = async () => {
 export const CreateSeries_API = async (seriesData: ISeries) => {
   try {
     const { data } = await apiClient.post(`/uploading/series`, seriesData);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to  create series");
@@ -32,7 +30,6 @@ export const CreateSeries_API = async (seriesData: ISeries) => {
 export const fetchSeriesDetails_API = async (id: string) => {
   try {
     const { data } = await apiClient.get(`/uploading/series/${id}`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to fetch series detail");
@@ -46,7 +43,6 @@ export const updateSeriesDetails_API = async (
 ) => {
   try {
     const { data } = await apiClient.put(`/uploading/series/${id}`, newData);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed ");
@@ -62,7 +58,6 @@ export const createSeason_API = async (id: string, seasonDetails: ISeason) => {
       `/uploading/seasons/${id}`,
       seasonDetails
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to create season");
@@ -78,7 +73,6 @@ export const createEpisodeWithSignedUrl_API = async (episodeData: IEpisode) => {
       `/uploading/episode/generateSignedUrl`,
       episodeData
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to create episode");
@@ -88,7 +82,6 @@ export const createEpisodeWithSignedUrl_API = async (episodeData: IEpisode) => {
 export const createEpisodeCatalog_API = async (obj: Catalog) => {
   try {
     const { data } = await apiClient.post(`/uploading/episode/catalog`, obj);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to create episode catalog");
@@ -98,7 +91,6 @@ export const createEpisodeCatalog_API = async (obj: Catalog) => {
 export const getEpisodeCatalog_API = async (id:string) => {
   try {
     const { data } = await apiClient.get(`/uploading/episode/catalog/${id}`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed to get episode catalog");

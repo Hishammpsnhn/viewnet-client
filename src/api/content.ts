@@ -1,16 +1,14 @@
 import apiClient, { handleError } from "./apiClient";
 
 //public
-export const getLatestMovies_API = async (page: number,limit:number=5) => {
-  console.log("page", page);
+export const getLatestMovies_API = async (page: number, limit: number = 5) => {
   try {
-    const { data } = await apiClient.get(`/content/public/movies`,{
+    const { data } = await apiClient.get(`/content/public/movies`, {
       params: {
         page,
-        limit
+        limit,
       },
     });
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -18,11 +16,12 @@ export const getLatestMovies_API = async (page: number,limit:number=5) => {
   }
 };
 export const getLatestSeries_API = async (page: number) => {
- 
-
   try {
-    const { data } = await apiClient.get(`/content/public/series`);
-    console.log(data);
+    const { data } = await apiClient.get(`/content/public/series`,{
+      params: {
+        page,
+      },
+    });
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -40,7 +39,6 @@ export const fetchMovieCatalog_API = async (
         profileId,
       },
     });
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -50,7 +48,6 @@ export const fetchMovieCatalog_API = async (
 export const fetchMovieMetadata_API = async (id: string) => {
   try {
     const { data } = await apiClient.get(`/content/public/movies/meta/${id}`);
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -65,7 +62,6 @@ export const getSeriesDetails_API = async (id: string, profileId?: string) => {
         profileId,
       },
     });
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -87,7 +83,6 @@ export const getEpisodeDetails_API = async (
         },
       }
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -107,7 +102,6 @@ export const getEpisodeCatalogDetails_API = async (
         },
       }
     );
-    console.log(data);
     return data;
   } catch (error) {
     handleError(error, "Failed");
@@ -143,7 +137,6 @@ export const WatchHistoryUpdate_API = async (
   progress: number
 ) => {
   try {
-    console.log(profileId, videoCatalogId, progress);
     const { data } = await apiClient.post(`content/public/history`, {
       profileId,
       videoCatalogId,
@@ -159,7 +152,6 @@ export const HistoryContinue_API = async (
   videoCatalogId: string
 ) => {
   try {
-    console.log(profileId, videoCatalogId);
     const { data } = await apiClient.get(`content/public/history/continue`, {
       params: {
         profileId,

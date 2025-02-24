@@ -1,4 +1,3 @@
-import React from "react";
 import backgroundVideo from "../assets/Avathar.mp4";
 
 const VideoBanner = () => {

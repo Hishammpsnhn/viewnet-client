@@ -3,7 +3,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Payment_Success_API } from "../../api/PlansApi";
@@ -25,7 +25,6 @@ const CheckoutPage = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("Form submitted");
     e.preventDefault();
 
     if (!stripe || !elements || !user) {
@@ -46,11 +45,6 @@ const CheckoutPage = ({
       const paymentIntentResponse = await stripe.retrievePaymentIntent(
         clientSecret
       );
-      console.log(
-        "Payment intent response:",
-        paymentIntentResponse.paymentIntent?.status
-      );
-      alert("dk");
 
       // Confirm payment
       const { error } = await stripe.confirmPayment({
@@ -76,8 +70,7 @@ const CheckoutPage = ({
         paymentIntentResponse.paymentIntent?.id &&
         paymentIntentResponse.paymentIntent.status === "succeeded"
       ) {
-        const res = await Payment_Success_API(planId, user._id, clientSecret);
-        console.log(res);
+         await Payment_Success_API(planId, user._id, clientSecret);
       }
     } catch (err) {
       console.error("Error in handleSubmit:", err);

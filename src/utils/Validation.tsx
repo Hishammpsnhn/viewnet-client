@@ -1,4 +1,3 @@
-import { isAction } from "redux";
 import * as Yup from "yup";
 
 export const profileCreation = Yup.object({

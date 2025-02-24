@@ -1,2 +1,2 @@
 export const baseURL = "/api";
-export const gateWayUrl = "http://localhost:4000";
+export const gateWayUrl = import.meta.env.VITE_GATEWAY_URL;

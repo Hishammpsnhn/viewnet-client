@@ -47,7 +47,7 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
@@ -60,7 +60,6 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
@@ -124,13 +123,11 @@ const userSlice = createSlice({
       })
       .addCase(editProfile.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
 
         if (state.user) {
           const updatedProfileIndex = state.user.profiles.findIndex(
             (profile: any) => profile._id === action.payload.user._id
           );
-          console.log(updatedProfileIndex);
           if (updatedProfileIndex !== -1) {
             state.user.profiles[updatedProfileIndex] = action.payload.user;
           }
@@ -150,7 +147,6 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateDefaultProfile.fulfilled, (state, action) => {
-        console.log(action.payload);
         action.payload;
         state.loading = false;
         state.user = action.payload.user;

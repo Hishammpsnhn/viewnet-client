@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetActive_API } from "../api/notificationApi";
 interface PeekHour{
     hour: number;
     count: number;
 }
 const HeatMap = () => {
- 
-  const currentHour = new Date().getHours();
-  console.log(currentHour);
   const [heatMapData,setHeatMapData] = useState<PeekHour[]>([])
   
   

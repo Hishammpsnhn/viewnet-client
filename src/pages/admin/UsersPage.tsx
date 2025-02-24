@@ -5,7 +5,6 @@ import {
   UpdateUser_API,
 } from "../../api/userApi";
 import PlanDetailModal from "../../components/PlanDetailModal";
-import { Subscription } from "../../model/types/user.types";
 import { toast, ToastContainer } from "react-toastify";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import GenericTable from "../../components/GenericTable";

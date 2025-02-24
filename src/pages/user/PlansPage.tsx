@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SubCard from "../../components/subscription/SubCard";
 import SubscriptionModal from "../../features/subscription/EditSubscription"; // Assuming you have a modal component like this
 import {
@@ -62,12 +62,10 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
         }
       } else {
         const res = await CreatePlans_API(formData);
-        console.log(res);
         if (res.success) {
           closeModal();
           setPlans((prevPlans) => [...prevPlans, res.plan]);
         }
-        console.log(formData);
       }
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
@@ -85,7 +83,6 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
     const fetchPlans = async () => {
       try {
         const data = await GetPlans_API();
-        console.log(data);
         if (data.success) {
           setPlans(data.plans);
         }
@@ -96,7 +93,6 @@ const PlansPage = ({ isAdmin }: { isAdmin: boolean }) => {
 
     fetchPlans();
   }, []);
-  console.log(plans);
   return (
     <div
       className={`min-h-screen py-8 px-4 ${
