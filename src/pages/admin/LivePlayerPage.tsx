@@ -117,7 +117,7 @@ const LivePlayerPage = ({
           )}
         </>
       ) : (
-        <div className=" flex gap-2 p-5 w-[70%]">
+        <div className=" flex gap-2 p-5">
           <MuxPlayer
             playbackId={videoId ? videoId : assetsVideoId}
             metadataVideoTitle="Placeholder (optional)"
