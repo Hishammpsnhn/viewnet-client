@@ -160,21 +160,14 @@ const ProfileCreation = () => {
               <p className="text-sm text-red-700">{validationErrors.dob}</p>
             )}
           </div>
-
           <button
             type="submit"
-            className={`px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100 ${
+            className={`px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100 flex justify-center items-center ${
               loading && "opacity-80"
             }`}
             disabled={loading}
           >
-            {loading ? (
-              <>
-                <LoadingSpinner />
-              </>
-            ) : (
-              "Create Profile"
-            )}
+            {loading ? <LoadingSpinner /> : "Create Profile"}
           </button>
         </form>
       </div>
