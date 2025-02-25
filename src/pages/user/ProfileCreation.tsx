@@ -7,6 +7,7 @@ import { updateUserProfile } from "../../reducers/userReducer/userThunks.ts";
 import { profilePics } from "../../utils/mockData.ts";
 import { profileCreation } from "../../utils/Validation.tsx";
 import * as Yup from "yup";
+import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 
 const ProfileCreation = () => {
   const { user } = useSelector((state: RootState) => state.user);
@@ -22,10 +23,11 @@ const ProfileCreation = () => {
     dob: "",
   });
   const [isAdult, setIsAdult] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const navigate = useNavigate();
-console.log(validationErrors)
-
+  console.log(validationErrors);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -113,8 +115,10 @@ console.log(validationErrors)
 
         <form noValidate onSubmit={handleSubmit}>
           <div className="mb-4">
-          {validationErrors.username && (
-              <p className="text-sm text-red-700">{validationErrors.username}</p>
+            {validationErrors.username && (
+              <p className="text-sm text-red-700">
+                {validationErrors.username}
+              </p>
             )}
             <input
               type="text"
@@ -124,8 +128,8 @@ console.log(validationErrors)
               onChange={handleChange}
               className="p-3 text-md border border-secondary bg-black rounded-md w-full mb-3"
             />
-         
-         {validationErrors.phone && (
+
+            {validationErrors.phone && (
               <p className="text-sm text-red-700">{validationErrors.phone}</p>
             )}
             <input
@@ -136,7 +140,6 @@ console.log(validationErrors)
               onChange={handleChange}
               className="p-3 text-md border border-secondary bg-black rounded-md w-full"
             />
-         
           </div>
 
           <div className="mb-4">
@@ -160,10 +163,18 @@ console.log(validationErrors)
 
           <button
             type="submit"
-            className="px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100"
+            className={`px-3 py-2 mt-6 text-lg bg-secondary w-full text-white rounded-md opacity-90 hover:opacity-100 ${
+              loading && "opacity-80"
+            }`}
             disabled={loading}
           >
-            {loading ? "Creating Profile..." : "Create Profile"}
+            {loading ? (
+              <>
+                <LoadingSpinner />
+              </>
+            ) : (
+              "Create Profile"
+            )}
           </button>
         </form>
       </div>

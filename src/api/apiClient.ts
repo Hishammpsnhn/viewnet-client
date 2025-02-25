@@ -37,12 +37,12 @@ apiClient.interceptors.response.use(
     if (status === 403) {
      
         toast.error('Unauthorized')
-        sessionStorage.setItem("isRedirecting", "true"); 
-        localStorage.removeItem("accessToken"); 
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
+        // sessionStorage.setItem("isRedirecting", "true"); 
+        // localStorage.removeItem("accessToken"); 
+        // localStorage.removeItem("refreshToken");
+        // localStorage.removeItem("user");
        
-        window.location.href = "/blocked";
+        // window.location.href = "/blocked";
         return;
       
     }
