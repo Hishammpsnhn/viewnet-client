@@ -66,8 +66,8 @@ const GenrePage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       await genreValidation.validate(updatedGenre, { abortEarly: false });
-      
-      console.log(updatedGenre)
+
+      console.log(updatedGenre);
       if (!updatedGenre.id) {
         const res = await createGenre_API(updatedGenre);
         if (res.success) {
@@ -101,12 +101,6 @@ const GenrePage: React.FC = () => {
     }
   };
 
-
-
-  if (isLoading) {
-    return <LoadingSpinner/>
-  }
-
   return (
     <div className="min-h-screen p-8 text-white">
       <div className="container mx-auto">
@@ -127,73 +121,79 @@ const GenrePage: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex mb-6 space-x-4">
-          <div className="relative flex-grow">
-            <input
-              type="text"
-              placeholder="Search genres..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-800 px-4 py-2 rounded-lg pl-10"
-            />
-            <div className="absolute left-3 top-3 text-gray-500">
-              <SearchIcon />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <div className="text-gray-500">
-              <FilterIcon />
-            </div>
-            <select
-              value={filter}
-              onChange={(e) =>
-                setFilter(e.target.value as "all" | "active" | "inactive")
-              }
-              className="bg-gray-800 px-4 py-2 rounded-lg"
-            >
-              <option value="all">All Genres</option>
-              <option value="active">Active Genres</option>
-              <option value="inactive">Inactive Genres</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="grid gap-4">
-          {filteredGenres.map((genre) => (
-            <div
-              key={genre.id}
-              className="bg-gray-800 p-4 rounded-lg flex justify-between items-center"
-            >
-              {editingGenre?.id === genre.id ? (
-                <GenreEditForm
-                  validationErrors={validationErrors}
-                  genre={editingGenre}
-                  onSave={handleSaveGenre}
-                  onCancel={() => setEditingGenre(null)}
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <div className="flex mb-6 space-x-4">
+              <div className="relative flex-grow">
+                <input
+                  type="text"
+                  placeholder="Search genres..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-gray-800 px-4 py-2 rounded-lg pl-10"
                 />
-              ) : (
-                <GenreItem
-                  genre={genre}
-                  onEdit={setEditingGenre}
-                  // onDelete={handleDeleteGenre}
-                />
+                <div className="absolute left-3 top-3 text-gray-500">
+                  <SearchIcon />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <div className="text-gray-500">
+                  <FilterIcon />
+                </div>
+                <select
+                  value={filter}
+                  onChange={(e) =>
+                    setFilter(e.target.value as "all" | "active" | "inactive")
+                  }
+                  className="bg-gray-800 px-4 py-2 rounded-lg"
+                >
+                  <option value="all">All Genres</option>
+                  <option value="active">Active Genres</option>
+                  <option value="inactive">Inactive Genres</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              {filteredGenres.map((genre) => (
+                <div
+                  key={genre.id}
+                  className="bg-gray-800 p-4 rounded-lg flex justify-between items-center"
+                >
+                  {editingGenre?.id === genre.id ? (
+                    <GenreEditForm
+                      validationErrors={validationErrors}
+                      genre={editingGenre}
+                      onSave={handleSaveGenre}
+                      onCancel={() => setEditingGenre(null)}
+                    />
+                  ) : (
+                    <GenreItem
+                      genre={genre}
+                      onEdit={setEditingGenre}
+                      // onDelete={handleDeleteGenre}
+                    />
+                  )}
+                </div>
+              ))}
+
+              {/* Show form for new genre */}
+              {editingGenre && !editingGenre.id && (
+                <div className="bg-gray-800 p-4 rounded-lg">
+                  <GenreEditForm
+                    genre={editingGenre}
+                    validationErrors={validationErrors}
+                    onSave={handleSaveGenre}
+                    onCancel={() => setEditingGenre(null)}
+                  />
+                </div>
               )}
             </div>
-          ))}
-
-          {/* Show form for new genre */}
-          {editingGenre && !editingGenre.id && (
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <GenreEditForm
-                genre={editingGenre}
-                validationErrors={validationErrors}
-                onSave={handleSaveGenre}
-                onCancel={() => setEditingGenre(null)}
-              />
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
