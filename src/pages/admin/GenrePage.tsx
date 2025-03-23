@@ -6,6 +6,7 @@ import { FilterIcon, PlusIcon, SearchIcon } from "../../svg/svg";
 import { createGenre_API, getAllGenre_API } from "../../api/genreApi";
 import { genreValidation } from "../../utils/Validation";
 import * as Yup from "yup";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const GenrePage: React.FC = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -103,7 +104,7 @@ const GenrePage: React.FC = () => {
 
 
   if (isLoading) {
-    return <div className="min-h-screen p-8 text-white">Loading...</div>;
+    return <LoadingSpinner/>
   }
 
   return (

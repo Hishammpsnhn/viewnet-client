@@ -391,7 +391,7 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
           </div>
         </div>
       </div>
-      {uploadingStart && uploadProgress.movie && (
+      {uploadingStart && uploadProgress.movie ? (
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Upload Progress</h3>
           <div className="mb-2">
@@ -413,6 +413,8 @@ const MovieUploadPage: React.FC<MovieUploadPageProps> = () => {
             <span className="text-sm">{uploadProgress.thumbnail}%</span>
           </div> */}
         </div>
+      ) : (
+        <></>
       )}
 
       {/* Submit Button */}
