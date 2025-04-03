@@ -24,10 +24,7 @@ import {
   fetchSeriesSuccess,
   selectMovie,
 } from "../../reducers/movieReducer";
-import {
-  ActiveStreamList_API,
-  GetAssets_API,
-} from "../../api/LiveStreamApi";
+import { ActiveStreamList_API, GetAssets_API } from "../../api/LiveStreamApi";
 import {
   MuxAssetsResponse,
   MuxStreamResponse,
@@ -100,9 +97,11 @@ const ScrollableSection = () => {
   const [liveEvents, setLiveEvents] = useState<MuxStreamResponse[]>([]);
   const [assets, setAssets] = useState<MuxAssetsResponse[]>([]);
 
-  const { movies, series ,recommended} = useSelector((state: RootState) => state.movies);
+  const { movies, series, recommended } = useSelector(
+    (state: RootState) => state.movies
+  );
 
-  const { user, } = useSelector((state: RootState) => state.user);
+  const { user } = useSelector((state: RootState) => state.user);
 
   const scroll = (
     direction: "left" | "right",
@@ -145,12 +144,11 @@ const ScrollableSection = () => {
     const scrollThreshold = scrollWidth - clientWidth - 100;
 
     if (scrollLeft > scrollThreshold && !isLoadingMore && hasMoreAssets) {
-
       setIsLoadingMore(true);
       const res = await GetAssets_API(assetsPage);
       if (res.success) setAssets([...assets, ...res.data]);
       setAssetsPage((prev) => prev + 1);
-      setHasMoreAssets(true)
+      setHasMoreAssets(true);
       setIsLoadingMore(false);
     }
   };
@@ -216,7 +214,7 @@ const ScrollableSection = () => {
 
         if (recommendedRes.success) {
           setRecommendedMovies(recommendedRes.data);
-          dispatch(fetchRecommended(recommendedRes.data))
+          dispatch(fetchRecommended(recommendedRes.data));
         }
         if (liveRes.success) setLiveEvents(liveRes.data);
         if (assetsRes.success) setAssets(assetsRes.data);
@@ -273,84 +271,98 @@ const ScrollableSection = () => {
           </div>
         </>
       )}
-      <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6 ">
-        Latest Series
-      </h1>
-      <div className="relative mb-5">
-        <button
-          onClick={() => scroll("left", seriesRef)}
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
-        >
-          <IoIosArrowBack />
-        </button>
+      {series.length && (
+        <>
+          <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6 ">
+            Latest Series
+          </h1>
+          <div className="relative mb-5">
+            <button
+              onClick={() => scroll("left", seriesRef)}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
+            >
+              <IoIosArrowBack />
+            </button>
 
-        <div
-          ref={seriesRef}
-          onScroll={handleSeriesScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
-        >
-          {series.map((movie, index) => (
-            <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
-              <MovieCard
-                url={`/series/${movie._id}/more`}
-                title={movie.title}
-                description={movie.description}
-                id={movie._id}
-                image={movie.posterImage}
-                key={index}
-                series={true}
-              />
+            <div
+              ref={seriesRef}
+              onScroll={handleSeriesScroll}
+              className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
+            >
+              {series.map((movie, index) => (
+                <div
+                  key={movie._id}
+                  onClick={() => dispatch(selectMovie(movie))}
+                >
+                  <MovieCard
+                    url={`/series/${movie._id}/more`}
+                    title={movie.title}
+                    description={movie.description}
+                    id={movie._id}
+                    image={movie.posterImage}
+                    key={index}
+                    series={true}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Right Scroll Button */}
-        <button
-          onClick={() => scroll("right", seriesRef)}
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
-        >
-          <IoIosArrowForward />
-        </button>
-      </div>
-      <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">
-        Latest Movies
-      </h1>
-      <div className="relative">
-        <button
-          onClick={() => scroll("left", moviesRef)}
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
-        >
-          <IoIosArrowBack />
-        </button>
+            {/* Right Scroll Button */}
+            <button
+              onClick={() => scroll("right", seriesRef)}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
+            >
+              <IoIosArrowForward />
+            </button>
+          </div>
+        </>
+      )}
+      {movies.length && (
+        <>
+          <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">
+            Latest Movies
+          </h1>
+          <div className="relative">
+            <button
+              onClick={() => scroll("left", moviesRef)}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-transparent to-black text-white p-3 shadow-md z-10 h-full "
+            >
+              <IoIosArrowBack />
+            </button>
 
-        <div
-          ref={moviesRef}
-          onScroll={handleMoviesScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
-        >
-          {movies.map((movie, index) => (
-            <div key={movie._id} onClick={() => dispatch(selectMovie(movie))}>
-              <MovieCard
-                url={`/movie/${movie._id}/more`}
-                title={movie.title}
-                description={movie.description}
-                id={movie._id}
-                image={movie.thumbnailUrl}
-                key={index}
-                series={false}
-              />
+            <div
+              ref={moviesRef}
+              onScroll={handleMoviesScroll}
+              className="flex gap-4 overflow-x-auto scrollbar-hidden scroll-smooth pb-4"
+            >
+              {movies.map((movie, index) => (
+                <div
+                  key={movie._id}
+                  onClick={() => dispatch(selectMovie(movie))}
+                >
+                  <MovieCard
+                    url={`/movie/${movie._id}/more`}
+                    title={movie.title}
+                    description={movie.description}
+                    id={movie._id}
+                    image={movie.thumbnailUrl}
+                    key={index}
+                    series={false}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Right Scroll Button */}
-        <button
-          onClick={() => scroll("right", moviesRef)}
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
-        >
-          <IoIosArrowForward />
-        </button>
-      </div>
+            {/* Right Scroll Button */}
+            <button
+              onClick={() => scroll("right", moviesRef)}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-transparent to-black text-white p-3 shadow-md z-10 h-full"
+            >
+              <IoIosArrowForward />
+            </button>
+          </div>
+        </>
+      )}
       {liveEvents.length ? (
         <>
           <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">Live</h1>

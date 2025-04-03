@@ -84,7 +84,7 @@ const Header = ({
     <header
       className={`${
         gradient ? "bg-gray-900 border-b border-gray-600" : "bg-primary"
-      } text-white py-2 px-4 sm:4 sm:8 ml-16 relative`}
+      } text-white py-3 px-4 sm:4 sm:8 ml-16 relative`}
     >
       <div className="container mx-auto flex justify-between items-center">
         {/* Left Side: Logo and Navigation */}

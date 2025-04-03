@@ -45,7 +45,7 @@ const AppRoutes = () => {
         setLoading(false);
       });
     }
-  }, []);
+  }, [user?.email]);
   useEffect(() => {
     if (user && !user.profiles.length) {
       navigate(`/profile/${user._id}`);
@@ -53,6 +53,7 @@ const AppRoutes = () => {
     if (user && user._id && socket) {
       socket.emit("register", user._id);
     }
+  
   }, [user]);
 
   if (loading) {
