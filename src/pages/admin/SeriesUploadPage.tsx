@@ -48,6 +48,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
   };
   const handleUpload = async () => {
     if (!title || !desc || !thumbnail || !genre) {
+      console.log(genre)
       toast.error(
         "Please fill in all required fields and add at least one episode."
       );
@@ -81,6 +82,7 @@ const SeriesUploadPage: React.FC<SeriesUploadPageProps> = () => {
         const res = await getAllGenre_API();
         if (res.success) {
           setGenres(res.data);
+          if (!genre) setGenre(res.data[0]?.id);
         } else {
         }
       } catch (err) {
