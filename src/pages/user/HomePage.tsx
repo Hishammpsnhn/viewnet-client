@@ -273,7 +273,7 @@ const ScrollableSection = () => {
       ) : (
         <></>
       )}
-      {series.length && (
+      {series.length ? (
         <>
           <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6 ">
             Latest Series
@@ -318,8 +318,8 @@ const ScrollableSection = () => {
             </button>
           </div>
         </>
-      )}
-      {movies.length && (
+      ):(<></>)}
+      {movies.length ? (
         <>
           <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">
             Latest Movies
@@ -364,7 +364,7 @@ const ScrollableSection = () => {
             </button>
           </div>
         </>
-      )}
+      ):(<></>)}
       {liveEvents.length ? (
         <>
           <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6">Live</h1>
