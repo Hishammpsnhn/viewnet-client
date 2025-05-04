@@ -226,7 +226,7 @@ const ScrollableSection = () => {
 
   return (
     <div className=" relative mb-10 overflow-hidden">
-      {recommendedMovies.length > 0 && (
+      {recommendedMovies.length > 0 ? (
         <>
           <h1 className="text-lg font-bold pb-2 md:text-2xl md:pb-6 ">
             Recommended
@@ -270,6 +270,8 @@ const ScrollableSection = () => {
             </button>
           </div>
         </>
+      ) : (
+        <></>
       )}
       {series.length && (
         <>
