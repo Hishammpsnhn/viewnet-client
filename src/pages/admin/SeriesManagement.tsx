@@ -7,11 +7,7 @@ import {
   fetchSeriesDetails_API,
   updateSeriesDetails_API,
 } from "../../api/seriesApi";
-import {
-  IEpisode,
-  ISeason,
-  ISeries,
-} from "../../model/types/series.types";
+import { IEpisode, ISeason, ISeries } from "../../model/types/series.types";
 import axios from "axios";
 import HistoryCard from "../../components/movie/HistoryCard";
 import { toast } from "react-toastify";
@@ -151,7 +147,7 @@ const SeriesManagement = () => {
           episodeId: id,
           format: "mp4",
         };
-         await createEpisodeCatalog_API(obj);
+        await createEpisodeCatalog_API(obj);
       } else {
         console.log("Failed to upload file");
         // toast.error("Failed to upload file");
@@ -236,36 +232,42 @@ const SeriesManagement = () => {
       <div className="flex flex-col md:flex-row items-center md:items-start p-6 max-w-4xl mx-auto shadow-lg rounded-lg">
         {loading && <>Loading....</>}
         {!series && !loading && <>Not found</>}
-        <div className="md:w-1/2 text-left flex flex-col h-64">
-          <h2 className="text-2xl font-bold text-gray-300 capitalize">
-            {series?.title}
-          </h2>
-          <p className="text-gray-400 mt-2 capitalize">{series?.description}</p>
-          <div className="mt-auto space-x-4 pt-4 flex items-center">
-            <button
-              className="px-4 py-3 border border-secondary bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40"
-              onClick={handleAddSeason}
-            >
-              ADD NEW SEASON
-            </button>
-            <button
-              className={`px-4 py-3 border ${
-                series?.isBlock ? "border-green-900" : "border-red-900"
-              } bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40`}
-              onClick={handleBlockSeries}
-            >
-              {series?.isBlock ? "RELEASE" : "BLOCK"} SERIES
-            </button>
-          </div>
-        </div>
+        {!loading && (
+          <>
+            <div className="md:w-1/2 text-left flex flex-col h-64">
+              <h2 className="text-2xl font-bold text-gray-300 capitalize">
+                {series?.title}
+              </h2>
+              <p className="text-gray-400 mt-2 capitalize">
+                {series?.description}
+              </p>
+              <div className="mt-auto space-x-4 pt-4 flex items-center">
+                <button
+                  className="px-4 py-3 border border-secondary bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40"
+                  onClick={handleAddSeason}
+                >
+                  ADD NEW SEASON
+                </button>
+                <button
+                  className={`px-4 py-3 border ${
+                    series?.isBlock ? "border-green-900" : "border-red-900"
+                  } bg-black text-white rounded-lg shadow-md hover:bg-gray-900 text-xs w-40`}
+                  onClick={handleBlockSeries}
+                >
+                  {series?.isBlock ? "RELEASE" : "BLOCK"} SERIES
+                </button>
+              </div>
+            </div>
 
-        <div className="md:w-1/2 flex justify-center mt-6 md:mt-0">
-          <img
-            className="w-64 h-auto rounded-lg shadow-md object-cover"
-            src={series?.posterImage || ""}
-            alt={series?.title || "Series Poster"}
-          />
-        </div>
+            <div className="md:w-1/2 flex justify-center mt-6 md:mt-0">
+              <img
+                className="w-64 h-auto rounded-lg shadow-md object-cover"
+                src={series?.posterImage || ""}
+                alt={series?.title || "Series Poster"}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {series?.seasons.map((season) => (
